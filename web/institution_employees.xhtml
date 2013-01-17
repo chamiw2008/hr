@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./resources/template/template_1.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:pou="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+
+        <h:form  rendered="#{sessionController.privilege.viewInsData}">
+            
+            <pou:growl ></pou:growl>
+            <h:panelGrid columns="2" >
+                <h:outputText value="Institution"/>
+                <h:selectOneListbox id="cmbLoc" value="#{dbfController.institution}" >
+                    <f:selectItems value="#{institutionController.items}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
+                </h:selectOneListbox>
+                <h:commandButton value="Display" />
+            </h:panelGrid>
+            <pou:panel header="Employee Data">
+                <pou:dataTable value="#{dbfController.existingPersonInstitutions}" var="exPi">
+                    <pou:column>
+                        <f:facet name="header">Employee Id</f:facet>
+                        <h:outputLabel value="#{exPi.empNo}"/>
+                    </pou:column>
+                    <pou:column>
+                        <f:facet name="header">Name</f:facet>
+                        <h:outputLabel value="#{exPi.person.name}"/>
+                    </pou:column> 
+                    <pou:column>
+                        <f:facet name="header">Designation</f:facet>
+                        <h:outputLabel value="#{exPi.designation.name}"/>
+                    </pou:column>                 
+                </pou:dataTable>
+            </pou:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

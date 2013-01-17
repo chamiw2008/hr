@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./resources/template/template_1.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:pou="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+
+        <h:form enctype="multipart/form-data">
+            <pou:growl ></pou:growl>
+            <h:outputLabel value="Upload File" ></h:outputLabel>
+            <h:panelGroup>
+                This page allows you to upload the data in the payroll system to the web application. <br/>
+                <br/>
+                First you have to select your institution. If you institution is not listed, please contact the administrators to add it for you.
+                <br/>
+                You need to locate the Folder where the payroll application is installed. Usually it is located in the c:gpswt12 folder. Please locate PYREMPMA.DBF file and upload it. It containts all the details of the employees.
+                <br/>
+                After you select the file and click the upload button, you will see a list of the details you are going to save to the system.  You will also see the list of the data already stored in the system. If you click the save button, the system will replace the existing data with the new data you upload.
+                <br/>
+                <br/>
+            </h:panelGroup>
+            <h:panelGrid columns="2" >
+                <h:outputText value="Institution"/>
+                <h:selectOneListbox id="cmbLoc" value="#{dbfController.institution}" >
+                    <f:selectItems value="#{institutionController.items}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
+                </h:selectOneListbox>
+            </h:panelGrid>
+            <h:panelGrid columns="2" >
+                <pou:fileUpload value="#{dbfController.file}" mode="simple"/>
+                <h:commandButton value="Upload" action="#{dbfController.extractData}"/>
+            </h:panelGrid>
+        </h:form>
+        <h:form>
+            <pou:panel header="Existing Data">
+                <pou:dataTable value="#{dbfController.existingPersonInstitutions}" var="exPi">
+                    <pou:column>
+                        <f:facet name="header">Employee Id</f:facet>
+                        <h:outputLabel value="#{exPi.empNo}"/>
+                    </pou:column>
+                    <pou:column>
+                        <f:facet name="header">Name</f:facet>
+                        <h:outputLabel value="#{exPi.person.name}"/>
+                    </pou:column> 
+                    <pou:column>
+                        <f:facet name="header">Designation</f:facet>
+                        <h:outputLabel value="#{exPi.designation.name}"/>
+                    </pou:column>                 
+                </pou:dataTable>
+            </pou:panel>
+            <pou:panel header="New Data">
+                <pou:dataTable value="#{dbfController.newPersonInstitutions}" var="newPi">
+                    <pou:column>
+                        <f:facet name="header">Employee Id</f:facet>
+                        <h:outputLabel value="#{newPi.empNo}"/>
+                    </pou:column>
+                    <pou:column>
+                        <f:facet name="header">Name</f:facet>
+                        <h:outputLabel value="#{newPi.person.name}"/>
+                    </pou:column> 
+                    <pou:column>
+                        <f:facet name="header">Designation</f:facet>
+                        <h:outputLabel value="#{newPi.designation.name}"/>
+                    </pou:column>                 
+                </pou:dataTable>
+            </pou:panel>            
+            <pou:panel header="Replace Existing Data With new Data">
+                <h:commandButton value="Replace" action="#{dbfController.replaceData}"/>
+            </pou:panel>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

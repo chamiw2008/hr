@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./resources/template/template_1.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <ui:define name="content">
+
+
+
+
+        <h:form >
+            <p:growl autoUpdate="true" />
+            <p:focus id="selectFocus" context="gpSelect" />
+            <p:focus id="detailFocus" context="gpDetail" />
+            <p:panel header="Manage Persons" >
+                <h:panelGrid id ="gpVeda" columns="2" >
+
+                    <h:panelGrid id="gpSelect" columns="1"  >
+                        <p:panel >
+
+                            <h:panelGrid id="gpSelectText" columns="2" >
+
+                                <h:outputText id="lblSelect" value="Persons" >
+                                </h:outputText>
+
+
+                                <p:inputText  id="txtSelect" value="#{personController.selectText}" disabled="#{personController.selectControlDisable}"  style="min-width: 200px" >
+                                    <f:ajax  event="keyup" render="lstSelect gpDetail" >
+                                    </f:ajax>
+                                </p:inputText>
+
+                                <h:outputLabel value="&#160;">
+                                </h:outputLabel>
+
+
+
+                                <h:selectOneListbox  id="lstSelect"  disabled="#{personController.selectControlDisable}" value="#{personController.current}" style="min-width: 223px;" size="10">
+                                    <f:selectItems value="#{personController.items}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
+                                    <f:ajax render="gpDetail" execute="lstSelect" >                                
+                                    </f:ajax>
+                                </h:selectOneListbox>
+
+                            </h:panelGrid>
+
+                            <h:panelGrid id="gpSelectButtons" columns="4"  >
+                                <p:commandButton id="btnAdd" update="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail detailFocus" value="Add" disabled="#{personController.selectControlDisable}" actionListener="#{personController.prepareAdd()}" >
+                                </p:commandButton>
+                                <p:commandButton id ="btnEdit" update="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail detailFocus" value="Edit" disabled="#{personController.selectControlDisable}" actionListener="#{personController.prepareEdit()}"  styleClass="buttons">
+                                </p:commandButton>
+                                <p:commandButton id ="btnImages" value="Documents" disabled="#{personController.selectControlDisable}" ajax="false" actionListener ="#{personController.prepareEdit()}"  styleClass="buttons">
+                                </p:commandButton>                                
+                                <p:commandButton id="btnDelete" onclick="confirmation.show()" value="Delete" disabled="#{personController.selectControlDisable}" >
+                                </p:commandButton>
+                            </h:panelGrid>
+                            <p:confirmDialog appendToBody="true" message="Are you sure you want to delete" header="Initiating destroy process" severity="alert" widgetVar="confirmation">  
+                                <p:commandButton value="Yes" oncomplete="confirmation.hide()" actionListener="#{personController.delete()}" update="lstSelect gpDetail"  />  
+                                <p:commandButton value="No" onclick="confirmation.hide()" type="button" />   
+                            </p:confirmDialog>
+                        </p:panel>
+                    </h:panelGrid  >
+
+                    <p:panel>
+                        <h:panelGrid id="gpDetail" columns="1">
+                            <h:panelGrid id="gpDetailText" columns="2">
+                                <h:outputText id="lblName" value="Person" ></h:outputText>
+                                <h:inputText id="txtName" value="#{personController.current.name}" disabled="#{personController.modifyControlDisable}" ></h:inputText>
+                                <h:outputText id="lblCode" value="Code" ></h:outputText>
+                                <h:inputText id="txtCode" value="#{personController.current.givenName}" disabled="#{personController.modifyControlDisable}" ></h:inputText>
+                                <h:selectOneListbox rendered="#{personController.current.id!=null}" id="cmbCon" value="#{personController.currentContact.contactType}" size="1">
+                                    <f:selectItems value="#{contactTypeController.items}"/>
+                                    <f:ajax execute="cmbCon" event="change"/>
+                                    <f:ajax execute="cmbCon" event="focus"/>
+                                </h:selectOneListbox>
+
+                                <h:panelGroup rendered="#{personController.current.id!=null}">
+                                    <h:inputText id="txtCon" value="#{personController.currentContact.name}">
+                                        <f:ajax execute="txtCon" event="keyup"/>
+                                    </h:inputText>
+                                    <h:commandButton id="btnCon" action="#{personController.addContact}" value="Add Contact" >
+                                        <f:ajax execute="btnCon" render="dtCon txtCon cmbCon" />
+                                    </h:commandButton> 
+                                </h:panelGroup>
+
+                                <h:outputLabel  rendered="#{personController.current.id!=null}"> </h:outputLabel>
+                                <p:dataTable emptyMessage="No Contact Details Found"  rendered="#{personController.current.id!=null}" id="dtCon" value="#{personController.currentContacts}" var="con">
+                                    <p:column>
+                                        <h:outputLabel value="#{con.contactType.name}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputLabel value="#{con.name}"/>
+                                    </p:column>
+                                </p:dataTable>
+                                <h:outputText id="lblProvince" value="Institution" ></h:outputText>
+                                <h:selectOneListbox id="cmbProvince" value="#{personController.current.institution}" disabled="#{personController.modifyControlDisable}" style="height: 200px;width: 250px;">
+                                    <f:selectItems value="#{personController.institutions}" var="p" itemValue="#{p}" itemLabel="#{p.name}" />
+                                </h:selectOneListbox>
+
+                            </h:panelGrid>
+                            <h:panelGrid id="gpDetailButtons" columns="2">
+                                <p:commandButton id="btnSave" value="Save" update="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail selectFocus"  process="gpDetail" disabled="#{personController.modifyControlDisable}" actionListener="#{personController.saveSelected()}" styleClass="buttons">
+                                </p:commandButton>
+                                <p:commandButton id="btnCancel" value="Cancel" disabled="#{personController.modifyControlDisable}" actionListener="#{personController.cancelSelect}" update="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail selectFocus" process="gpDetail">
+                                </p:commandButton>                                
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:panel>
+                </h:panelGrid>
+            </p:panel>
+        </h:form>        
+
+
+
+    </ui:define>
+
+</ui:composition>
