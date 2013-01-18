@@ -98,7 +98,7 @@ public class Menu implements Serializable {
         submenu.getChildren().add(item);
 
         item = new MenuItem();
-        item.setValue("Designation Categories");
+        item.setValue("Manage Service Type");
         item.setUrl("designation_category.xhtml");
         submenu.getChildren().add(item);
         return submenu;
