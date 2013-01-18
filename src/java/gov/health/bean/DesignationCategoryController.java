@@ -8,8 +8,8 @@
  */
 package gov.health.bean;
 
-import gov.health.facade.ContactTypeFacade;
-import gov.health.entity.ContactType;
+import gov.health.facade.DesignationCategoryFacade;
+import gov.health.entity.DesignationCategory;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
@@ -31,28 +31,28 @@ import javax.faces.model.ListDataModel;
  */
 @ManagedBean
 @SessionScoped
-public final class ContactTypeController  implements Serializable {
+public final class DesignationCategoryController  implements Serializable {
 
     @EJB
-    private ContactTypeFacade ejbFacade;
+    private DesignationCategoryFacade ejbFacade;
     @ManagedProperty(value = "#{sessionController}")
     SessionController sessionController;
-    List<ContactType> lstItems;
-    private ContactType current;
-    private DataModel<ContactType> items = null;
+    List<DesignationCategory> lstItems;
+    private DesignationCategory current;
+    private DataModel<DesignationCategory> items = null;
     private int selectedItemIndex;
     boolean selectControlDisable = false;
     boolean modifyControlDisable = true;
     String selectText = "";
 
-    public ContactTypeController() {
+    public DesignationCategoryController() {
     }
 
-    public ContactTypeFacade getEjbFacade() {
+    public DesignationCategoryFacade getEjbFacade() {
         return ejbFacade;
     }
 
-    public void setEjbFacade(ContactTypeFacade ejbFacade) {
+    public void setEjbFacade(DesignationCategoryFacade ejbFacade) {
         this.ejbFacade = ejbFacade;
     }
 
@@ -67,11 +67,11 @@ public final class ContactTypeController  implements Serializable {
     
     
     
-    public List<ContactType> getLstItems() {
-        return getFacade().findBySQL("Select d From ContactType d");
+    public List<DesignationCategory> getLstItems() {
+        return getFacade().findBySQL("Select d From DesignationCategory d");
     }
 
-    public void setLstItems(List<ContactType> lstItems) {
+    public void setLstItems(List<DesignationCategory> lstItems) {
         this.lstItems = lstItems;
     }
 
@@ -83,22 +83,22 @@ public final class ContactTypeController  implements Serializable {
         this.selectedItemIndex = selectedItemIndex;
     }
 
-    public ContactType getCurrent() {
+    public DesignationCategory getCurrent() {
         if (current == null) {
-            current = new ContactType();
+            current = new DesignationCategory();
         }
         return current;
     }
 
-    public void setCurrent(ContactType current) {
+    public void setCurrent(DesignationCategory current) {
         this.current = current;
     }
 
-    private ContactTypeFacade getFacade() {
+    private DesignationCategoryFacade getFacade() {
         return ejbFacade;
     }
 
-    public DataModel<ContactType> getItems() {
+    public DataModel<DesignationCategory> getItems() {
         items = new ListDataModel(getFacade().findAll("name", true));
         return items;
     }
@@ -122,7 +122,7 @@ public final class ContactTypeController  implements Serializable {
                         true));
                 if (items.getRowCount() > 0) {
                     items.setRowIndex(0);
-                    current = (ContactType) items.getRowData();
+                    current = (DesignationCategory) items.getRowData();
                     Long temLong = current.getId();
                     selectedItemIndex = intValue(temLong);
                 } else {
@@ -135,14 +135,14 @@ public final class ContactTypeController  implements Serializable {
 
     }
 
-    public ContactType searchItem(String itemName, boolean createNewIfNotPresent) {
-        ContactType searchedItem = null;
+    public DesignationCategory searchItem(String itemName, boolean createNewIfNotPresent) {
+        DesignationCategory searchedItem = null;
         items = new ListDataModel(getFacade().findAll("name", itemName, true));
         if (items.getRowCount() > 0) {
             items.setRowIndex(0);
-            searchedItem = (ContactType) items.getRowData();
+            searchedItem = (DesignationCategory) items.getRowData();
         } else if (createNewIfNotPresent) {
-            searchedItem = new ContactType();
+            searchedItem = new DesignationCategory();
             searchedItem.setName(itemName);
             searchedItem.setCreatedAt(Calendar.getInstance().getTime());
             searchedItem.setCreater(sessionController.loggedUser);
@@ -170,7 +170,7 @@ public final class ContactTypeController  implements Serializable {
 
     public void prepareAdd() {
         selectedItemIndex = -1;
-        current = new ContactType();
+        current = new DesignationCategory();
         this.prepareSelectControlDisable();
     }
 
@@ -204,7 +204,7 @@ public final class ContactTypeController  implements Serializable {
 
             getFacade().create(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
-            current = new ContactType();
+            current = new DesignationCategory();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, "Error");
         }
@@ -268,15 +268,15 @@ public final class ContactTypeController  implements Serializable {
         modifyControlDisable = true;
     }
 
-    @FacesConverter(forClass = ContactType.class)
-    public static class ContactTypeControllerConverter implements Converter {
+    @FacesConverter(forClass = DesignationCategory.class)
+    public static class DesignationCategoryControllerConverter implements Converter {
 
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            ContactTypeController controller = (ContactTypeController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "contactTypeController");
+            DesignationCategoryController controller = (DesignationCategoryController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "designationCategoryController");
             return controller.ejbFacade.find(getKey(value));
         }
 
@@ -296,12 +296,12 @@ public final class ContactTypeController  implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof ContactType) {
-                ContactType o = (ContactType) object;
+            if (object instanceof DesignationCategory) {
+                DesignationCategory o = (DesignationCategory) object;
                 return getStringKey(o.getId());
             } else {
                 throw new IllegalArgumentException("object " + object + " is of type "
-                        + object.getClass().getName() + "; expected type: " + ContactTypeController.class.getName());
+                        + object.getClass().getName() + "; expected type: " + DesignationCategoryController.class.getName());
             }
         }
     }

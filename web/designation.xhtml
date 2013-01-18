@@ -70,6 +70,12 @@
                             <h:panelGrid id="gpDetailText" columns="2">
                                 <h:outputText id="lblName" value="#{labels.Designation}" ></h:outputText>
                                 <h:inputText id="txtName" value="#{designationController.current.name}" disabled="#{designationController.modifyControlDisable}" ></h:inputText>
+                                <h:outputText id="lblCatName" value="Service Type" ></h:outputText>
+
+                                <h:selectOneListbox id="lstCatSelect"  disabled="#{designationController.selectControlDisable}" size="1" value="#{designationController.current.category}" style="min-width: 223px">
+                                    <f:selectItems value="#{designationCategoryController.items}" var="myCatItem" itemValue="#{myCatItem}" itemLabel="#{myCatItem.name}" ></f:selectItems>
+                                </h:selectOneListbox>
+
                             </h:panelGrid>
                             <h:panelGrid id="gpDetailButtons" columns="2">
                                 <h:commandButton id="btnSave" value="#{labels.save}" disabled="#{designationController.modifyControlDisable}" action="#{designationController.saveSelected()}" styleClass="buttons">
@@ -86,9 +92,9 @@
                 </h:panelGrid>
             </p:panel>
         </h:form>        
-        
-        
-        
+
+
+
     </ui:define>
 
 </ui:composition>
