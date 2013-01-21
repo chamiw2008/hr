@@ -212,7 +212,7 @@ public final class WebUserRoleController  implements Serializable {
     }
 
     public void saveSelected() {
-        if (sessionController.getPrivilege().isManageAccounts()==false){
+        if (sessionController.getPrivilege().isInstAdmin()==false){
             JsfUtil.addErrorMessage("You are not autherized to make changes to any content");
             return;
         }            
@@ -257,7 +257,7 @@ public final class WebUserRoleController  implements Serializable {
     }
 
     public void delete() {
-        if (sessionController.getPrivilege().isManageAccounts()==false){
+        if (sessionController.getPrivilege().isInstAdmin()==false){
             JsfUtil.addErrorMessage("You are not autherized to delete any content");
             return;
         }

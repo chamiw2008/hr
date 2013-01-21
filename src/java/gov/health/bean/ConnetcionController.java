@@ -155,7 +155,7 @@ public class ConnetcionController implements Serializable {
             prepareFirstVisit();
             return true;
         } else {
-//            JsfUtil.addSuccessMessage("Checking Old Users");
+        //JsfUtil.addSuccessMessage("Checking Old Users");
             return checkUsers();
         }
     }
@@ -181,10 +181,10 @@ public class ConnetcionController implements Serializable {
         //
         p.setName("user Previlage");
 
-        p.setManageAccounts(true);
-        p.setManageMetadata(true);
-        p.setUploadInsData(true);
-        p.setViewInsData(true);
+        p.setInstAdmin(true);
+        p.setInstUser(true);
+        p.setSuperUser(true);
+        p.setSystemAdmin(true);
         p.setWebUser(user);
         //
         getvFacade().create(p);
@@ -194,10 +194,10 @@ public class ConnetcionController implements Serializable {
         p = new Privilege();
         //
         p.setName("Role Previlage");
-        p.setManageAccounts(true);
-        p.setManageMetadata(true);
-        p.setUploadInsData(true);
-        p.setViewInsData(true);        //
+        p.setInstAdmin(true);
+        p.setInstUser(true);
+        p.setSuperUser(true);
+        p.setSystemAdmin(true);        //
         p.setWebUserRole(role);
         //
         getvFacade().create(p);
@@ -247,11 +247,11 @@ public class ConnetcionController implements Serializable {
         }
 
         if (!userNameAvailable(newUserName)) {
-            JsfUtil.addErrorMessage("User name already Exists. Plese enter another user name");
+            JsfUtil.addErrorMessage("User name already exists. Plese enter another user name");
             return "";
         }
         if (!newPassword.equals(newPasswordConfirm)) {
-            JsfUtil.addErrorMessage("Password and Re-entered password are not maching");
+            JsfUtil.addErrorMessage("Password and Re-entered password are not matching");
             return "";
         }
         WebUser user = new WebUser();
@@ -356,17 +356,17 @@ public class ConnetcionController implements Serializable {
 
         for (Privilege pv : allP) {
             //Cadre
-            if (pv.isManageAccounts() == true) {
-                p.setManageAccounts(true);
+            if (pv.isInstAdmin() == true) {
+                p.setInstAdmin(true);
             }
-            if (pv.isManageMetadata() == true) {
-                p.setManageMetadata(true);
+            if (pv.isInstUser() == true) {
+                p.setInstUser(true);
             }
-            if (pv.isUploadInsData() == true) {
-                p.setUploadInsData(true);
+            if (pv.isSuperUser() == true) {
+                p.setSuperUser(true);
             }
-            if (pv.isViewInsData() == true) {
-                p.setViewInsData(true);
+            if (pv.isSystemAdmin() == true) {
+                p.setSystemAdmin(true);
             }
             if (pv.getRestrictedArea() != null) {
                 p.setRestrictedArea(pv.getRestrictedArea());

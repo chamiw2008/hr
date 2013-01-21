@@ -56,56 +56,77 @@ public class Menu implements Serializable {
         item.setUrl("index.xhtml");
         model.addMenuItem(item);
 
-        if (sessionController.privilege.isViewInsData()) {
-            model.addSubmenu(viewData());
 
+
+        if (sessionController.privilege.isSystemAdmin()) {
+            //model.addSubmenu(viewData());
         }
 
-        if (sessionController.privilege.isUploadInsData()) {
-            model.addSubmenu(uploadData());
+        if (sessionController.privilege.isSuperUser()) {
+            //model.addSubmenu(uploadData());
         }
 
-        if (sessionController.privilege.isManageMetadata()) {
-            model.addSubmenu(matadata());
+        if (sessionController.privilege.isInstUser()) {
+            //model.addSubmenu(matadata());
         }
 
-        if (sessionController.privilege.isManageAccounts()) {
-            model.addSubmenu(adminSubmenu());
+        if (sessionController.privilege.isInstAdmin()) {
+            //model.addSubmenu(adminSubmenu());
         }
 
+        // View data
+        model.addSubmenu(viewData());
+
+        // Upload File
+        model.addSubmenu(uploadData());
+
+        // Metadata management
+        model.addSubmenu(matadata());
+
+        // Admin mene {admin management)
+        model.addSubmenu(adminSubmenu());
+
+        // User menu {Edit Password, Change Profile}
         model.addSubmenu(userSubmenu());
     }
 
     private Submenu matadata() {
+
         Submenu submenu = new Submenu();
         submenu.setLabel("Edit Metadata");
 
         MenuItem item;
 
-        item = new MenuItem();
-        item.setValue("Institution Types");
-        item.setUrl("institution_type.xhtml");
-        submenu.getChildren().add(item);
+        if (sessionController.privilege.isSystemAdmin()) {
 
-        item = new MenuItem();
-        item.setValue("Institutions");
-        item.setUrl("institutions.xhtml");
-        submenu.getChildren().add(item);
+            item = new MenuItem();
+            item.setValue("Institution Types");
+            item.setUrl("institution_type.xhtml");
+            submenu.getChildren().add(item);
 
-        item = new MenuItem();
-        item.setValue("Designations");
-        item.setUrl("designation.xhtml");
-        submenu.getChildren().add(item);
+            item = new MenuItem();
+            item.setValue("Institutions");
+            item.setUrl("institutions.xhtml");
+            submenu.getChildren().add(item);
 
-        item = new MenuItem();
-        item.setValue("Manage Service Type");
-        item.setUrl("designation_category.xhtml");
-        submenu.getChildren().add(item);
+            item = new MenuItem();
+            item.setValue("Designations");
+            item.setUrl("designation.xhtml");
+            submenu.getChildren().add(item);
+
+            item = new MenuItem();
+            item.setValue("Manage (Designation) Service Type");
+            item.setUrl("designation_category.xhtml");
+            submenu.getChildren().add(item);
+
+        }
+
         return submenu;
 
     }
 
     private Submenu viewData() {
+
         Submenu submenu;
 
         MenuItem item;
@@ -113,12 +134,23 @@ public class Menu implements Serializable {
         submenu = new Submenu();
         submenu.setLabel("View Data");
 
-        item = new MenuItem();
-        item.setValue("Institution Employees");
-        item.setUrl("institution_employees.xhtml");
-        submenu.getChildren().add(item);
+        // for Super user & System admins
+        if (sessionController.privilege.isSystemAdmin() || sessionController.privilege.isSuperUser()) {
+            item = new MenuItem();
+            item.setValue("Full Summary");
+            item.setUrl("full_summary.xhtml");
+            submenu.getChildren().add(item);
+        }
 
-         return submenu;
+        // for all 4 categories
+        if (sessionController.privilege.isSystemAdmin() || sessionController.privilege.isSuperUser() || sessionController.privilege.isInstAdmin() || sessionController.privilege.isInstUser()) {
+            item = new MenuItem();
+            item.setValue("Institution Summary");
+            item.setUrl("inst_summary.xhtml");
+            submenu.getChildren().add(item);
+        }
+
+        return submenu;
     }
 
     private Submenu userSubmenu() {
@@ -141,6 +173,7 @@ public class Menu implements Serializable {
     }
 
     private Submenu uploadData() {
+
         Submenu submenu;
 
         MenuItem item;
@@ -149,7 +182,7 @@ public class Menu implements Serializable {
         submenu.setLabel("Upload");
 
         item = new MenuItem();
-        item.setValue("Upload From Payroll Software");
+        item.setValue("Upload Payroll Database");
         item.setUrl("upload_dbf.xhtml");
         submenu.getChildren().add(item);
 
@@ -164,12 +197,11 @@ public class Menu implements Serializable {
         submenu = new Submenu();
         submenu.setLabel("Admin");
 
-        item = new MenuItem();
-        item.setValue("Activate Accounts");
-        item.setUrl("activate_users.xhtml");
+       item = new MenuItem();
+        item.setValue("Add Account");
+        item.setUrl("register_user.xhtml");
         submenu.getChildren().add(item);
-
-
+        
         item = new MenuItem();
         item.setValue("Manage Accounts");
         item.setUrl("manage_users.xhtml");
@@ -190,8 +222,7 @@ public class Menu implements Serializable {
     public void setModel(MenuModel model) {
         this.model = model;
     }
-    
-    
+
     @PostConstruct
     public void init() {
         try {
@@ -200,5 +231,4 @@ public class Menu implements Serializable {
             System.out.println("Error in init method. It is " + e.getMessage());
         }
     }
-    
 }

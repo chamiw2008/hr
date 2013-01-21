@@ -23,24 +23,25 @@ public class Privilege implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    boolean viewInsData;
-    boolean uploadInsData;
-    boolean manageAccounts;
-    boolean manageMetadata;
+    boolean systemAdmin;
+    boolean superUser;
+    boolean instAdmin;
+    boolean instUser;
+    
+    
     @ManyToOne
     Institution restrictedInstitution;
     @ManyToOne
     Area restrictedArea;
 
-    public boolean isManageMetadata() {
-        return manageMetadata;
+    public boolean isInstUser() {
+        return instUser;
     }
 
-    public void setManageMetadata(boolean manageMetadata) {
-        this.manageMetadata = manageMetadata;
+    public void setInstUser(boolean instUser) {
+        this.instUser = instUser;
     }
-
-    
+   
     
     public Area getRestrictedArea() {
         return restrictedArea;
@@ -142,12 +143,12 @@ public class Privilege implements Serializable {
         this.id = id;
     }
 
-    public boolean isManageAccounts() {
-        return manageAccounts;
+    public boolean isInstAdmin() {
+        return instAdmin;
     }
 
-    public void setManageAccounts(boolean manageAccounts) {
-        this.manageAccounts = manageAccounts;
+    public void setInstAdmin(boolean instAdmin) {
+        this.instAdmin = instAdmin;
     }
 
     public String getName() {
@@ -221,20 +222,20 @@ public class Privilege implements Serializable {
         return hash;
     }
 
-    public boolean isUploadInsData() {
-        return uploadInsData;
+    public boolean isSuperUser() {
+        return superUser;
     }
 
-    public void setUploadInsData(boolean uploadInsData) {
-        this.uploadInsData = uploadInsData;
+    public void setSuperUser(boolean superUser) {
+        this.superUser = superUser;
     }
 
-    public boolean isViewInsData() {
-        return viewInsData;
+    public boolean isSystemAdmin() {
+        return systemAdmin;
     }
 
-    public void setViewInsData(boolean viewInsData) {
-        this.viewInsData = viewInsData;
+    public void setSystemAdmin(boolean systemAdmin) {
+        this.systemAdmin = systemAdmin;
     }
 
     

@@ -14,7 +14,7 @@
     <ui:define name="content">
         <p:growl autoUpdate="true" />
         <h:outputStylesheet library="css" name="pdhscss1.css"   />
-        <h:form rendered="#{sessionController.privilege.manageAccounts}">
+        <h:form rendered="#{sessionController.privilege.instAdmin}">
 
             <h:panelGrid columns="1">
                 <h:outputLabel class="pdPageTitle" value="Manage User Accounts" />
@@ -34,17 +34,17 @@
                         <h:outputLabel value="Privilege" />
                         <h:outputLabel value="Status" />
 
-                        <h:outputLabel rendered="#{sessionController.privilege.manageAccounts}"  value="Administration" />
-                        <h:selectBooleanCheckbox rendered="#{sessionController.privilege.manageAccounts}" value="#{userApproveController.privilege.manageAccounts}"/>
+                        <h:outputLabel rendered="#{sessionController.privilege.instAdmin}"  value="Administration" />
+                        <h:selectBooleanCheckbox rendered="#{sessionController.privilege.instAdmin}" value="#{userApproveController.privilege.instAdmin}"/>
 
-                        <h:outputLabel rendered="#{sessionController.privilege.manageMetadata}"  value="Edit Metadata" />
-                        <h:selectBooleanCheckbox rendered="#{sessionController.privilege.manageMetadata}" value="#{userApproveController.privilege.manageMetadata}"/>
+                        <h:outputLabel rendered="#{sessionController.privilege.instUser}"  value="Edit Metadata" />
+                        <h:selectBooleanCheckbox rendered="#{sessionController.privilege.instUser}" value="#{userApproveController.privilege.instUser}"/>
                         
-                        <h:outputLabel rendered="#{sessionController.privilege.uploadInsData}"  value="Upload" />
-                        <h:selectBooleanCheckbox rendered="#{sessionController.privilege.uploadInsData}" value="#{userApproveController.privilege.uploadInsData}"/>
+                        <h:outputLabel rendered="#{sessionController.privilege.superUser}"  value="Upload" />
+                        <h:selectBooleanCheckbox rendered="#{sessionController.privilege.superUser}" value="#{userApproveController.privilege.superUser}"/>
 
-                        <h:outputLabel rendered="#{sessionController.privilege.viewInsData}"  value="View" />
-                        <h:selectBooleanCheckbox rendered="#{sessionController.privilege.viewInsData}" value="#{userApproveController.privilege.viewInsData}"/>
+                        <h:outputLabel rendered="#{sessionController.privilege.systemAdmin}"  value="View" />
+                        <h:selectBooleanCheckbox rendered="#{sessionController.privilege.systemAdmin}" value="#{userApproveController.privilege.systemAdmin}"/>
                         
                         
                         
@@ -69,7 +69,7 @@
                 </h:panelGroup>
             </h:panelGrid>
         </h:form>        
-        <h:form rendered="#{!sessionController.privilege.manageAccounts}">
+        <h:form rendered="#{!sessionController.privilege.instAdmin}">
             <h:outputLabel class="pdPageErrorText" value="You are not autherized to view this page."/>
         </h:form>
     </ui:define>
