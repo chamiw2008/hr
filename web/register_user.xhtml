@@ -47,7 +47,7 @@
                 <tr>
                     <td class="pdLabel" align="right">Institution</td>
                     <td align="left">
-                        <h:selectOneListbox id="cmbIns" value="#{connetcionController.institution}" size="10" width="70">
+                        <h:selectOneListbox id="cmbIns" value="#{connetcionController.institution}" style="min-width: 300px;">
                             <f:selectItems value="#{connetcionController.institutions}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}"/>
                         </h:selectOneListbox>
                     </td>
