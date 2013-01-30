@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./resources/template/template_1.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <ui:define name="content">
+        <p:growl autoUpdate="true"/>
+       
+        <h:form>
+            <table  width="400px" class="pdTable" align="center">
+                <tr>
+                    <td colspan="2"  class="pdTableHighlightRow">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="pdLabel">&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <td align="center" colspan="2">
+                        <span class="pdHeading1">Please fill the details to register</span>
+                    </td>
+                </tr>                  
+                <tr>
+                    <td colspan="2" class="pdLabel">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="pdLabel" align="right" width="40%">Name</td>
+                    <td align="left" width="60%"><h:inputText value="#{connetcionController.newPersonName}"/></td>
+                </tr>
+                <tr>
+                    <td class="pdLabel" align="right">Designation</td>
+                    <td align="left"><h:inputText value="#{connetcionController.newDesignation}"  /></td>
+                </tr>
+                <tr>
+                    <td class="pdLabel" align="right">Tel No</td>
+                    <td align="left"><h:inputText value="#{connetcionController.telNo}"  /></td>
+                </tr>
+                <tr>
+                    <td class="pdLabel" align="right">Email</td>
+                    <td align="left"><h:inputText value="#{connetcionController.email}"  /></td>
+                </tr>
+                <tr>
+                    <td class="pdLabel" align="right">Institution</td>
+                    <td align="left">
+                        <h:selectOneListbox id="cmbIns" value="#{connetcionController.institution}" style="min-width: 300px;">
+                            <f:selectItems value="#{connetcionController.institutions}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}"/>
+                        </h:selectOneListbox>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pdLabel" align="right">Username</td>
+                    <td align="left"><h:inputText value="#{connetcionController.newUserName}"  /></td>
+                </tr>                
+                <tr>
+                    <td class="pdLabel" align="right">Password</td>
+                    <td align="left"><h:inputSecret value="#{connetcionController.newPassword}"  /></td>
+                </tr>                
+                <tr>
+                    <td class="pdLabel" align="right">Reenter Password</td>
+                    <td align="left"><h:inputSecret value="#{connetcionController.newPasswordConfirm}"  /></td>
+                </tr>
+                <tr>                                    
+                    <td align="left"></td>
+                    <td align="left">
+                        <h:commandButton id="btnReg" class="pdButton" type="submit" value="Register" action="#{connetcionController.registeUser}" /> 
+                    </td>
+                    
+                </tr>                  
+                <tr>
+                    <td colspan="2" class="pdLabel">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="2"  class="pdTableHighlightRow">&nbsp;
+                        <p:messages globalOnly="true"  ></p:messages>
+                    </td>
+                </tr>
+
+
+            </table>
+        </h:form>
+
+    </ui:define>
+
+    </ui:composition>
+

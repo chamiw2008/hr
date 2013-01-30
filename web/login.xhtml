@@ -11,15 +11,8 @@
     <ui:define name="content">
 
         <h:form>
-            <h:commandLink action="areas" value="Areas" > </h:commandLink><br/>
+
             <h:commandLink action="login" value="Login Page"> </h:commandLink>
-            <h:commandLink action="register" value="Register Page" > </h:commandLink>
-            <h:commandLink action="population" value="Population Page" > </h:commandLink> <br/>
-
-
-
-
-
 
             <table cellpadding="2px" cellspacing="1px" bgcolor="#F4F5F7" width="400px" class="pdTable" align="center">
                 <tr>
@@ -47,11 +40,7 @@
                     <td align="left"><h:inputSecret value="#{connetcionController.passord}"  /></td>
                 </tr>
                 <tr>
-
-                    <td align="left"><h:commandButton  class="pdButton" type="submit" value="Register" action="register" /> </td>
                     <td align="left"><h:commandButton class="pdButton" type="submit" value="Login" action="#{connetcionController.loginAction()}"/></td>
-
-
                 </tr>                  
                 <tr>
                     <td colspan="2" class="pdLabel">&nbsp;</td>

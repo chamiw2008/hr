@@ -175,7 +175,7 @@ public final class DesignationCategoryController  implements Serializable {
     }
 
     public void saveSelected() {
-        if (sessionController.getPrivilege().isManageMetadata()==false){
+        if (sessionController.getPrivilege().isInstUser()==false){
             JsfUtil.addErrorMessage("You are not autherized to make changes to any content");
             return;
         }            
