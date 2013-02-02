@@ -28,18 +28,8 @@
                                 <h:outputText id="lblSelect" value="#{labels.Designations}" >
                                 </h:outputText>
 
-                                <h:inputText id="txtSelect" value="#{designationController.selectText}" disabled="#{designationController.selectControlDisable}"  style="min-width: 200px" >
-                                    <f:ajax  event="keyup" render="lstSelect txtName" >
-                                    </f:ajax>
-                                </h:inputText>
-
-                                <h:outputLabel value="&#160;">
-                                </h:outputLabel>
-
-
-
                                 <h:selectOneListbox id="lstSelect"  disabled="#{designationController.selectControlDisable}" size="10" value="#{designationController.current}" style="min-width: 223px">
-                                    <f:selectItems value="#{designationController.items}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
+                                    <f:selectItems value="#{designationController.officialDesignations}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
                                     <f:ajax render="txtName" execute="lstSelect" >                                
                                     </f:ajax>
                                 </h:selectOneListbox>

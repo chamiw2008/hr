@@ -34,26 +34,92 @@ import javax.faces.model.ListDataModel;
 public final class DesignationController  implements Serializable {
 
     @EJB
-    private DesignationFacade ejbFacade;
+    private DesignationFacade facade;
     @ManagedProperty(value = "#{sessionController}")
     SessionController sessionController;
-    List<Designation> lstItems;
+    List<Designation> officialDesignations;
+    List<Designation> unOfficialDesignations;
+    List<Designation> allDesignations;
     private Designation current;
     private DataModel<Designation> items = null;
     private int selectedItemIndex;
     boolean selectControlDisable = false;
     boolean modifyControlDisable = true;
     String selectText = "";
+    String sql;
 
+    public List<Designation> getAllDesignations() {
+        sql = "select d from Designation d where d.retired = false order by d.name";
+        if (allDesignations==null){
+            allDesignations=getFacade().findBySQL(selectText);
+        }
+        return allDesignations;
+    }
+
+    public void setAllDesignations(List<Designation> allDesignations) {
+        this.allDesignations = allDesignations;
+    }
+
+    public List<Designation> getOfficialDesignations() {
+        sql = "select d from Designation d where d.retired = false and d.official = true order by d.name";
+        if (officialDesignations==null){
+            officialDesignations=getFacade().findBySQL(selectText);
+        }
+        return officialDesignations;
+    }
+
+    public void setOfficialDesignations(List<Designation> officialDesignations) {
+        this.officialDesignations = officialDesignations;
+    }
+
+    public List<Designation> getUnOfficialDesignations() {
+                sql = "select d from Designation d where d.retired = false and d.official = false order by d.name";
+        if (unOfficialDesignations==null){
+            unOfficialDesignations=getFacade().findBySQL(selectText);
+        }
+        return unOfficialDesignations;
+    }
+
+    public void setUnOfficialDesignations(List<Designation> unOfficialDesignations) {
+        this.unOfficialDesignations = unOfficialDesignations;
+    }
+
+    public Designation findDesignationByName(String name){
+        Designation temDes ;
+        sql="select d from Designation d where d.retired = false and d.name = '" +name + "'";
+        temDes = getFacade().findFirstBySQL(sql);
+        if (temDes==null){
+            sql="select d from Designation d where d.name = '" +name + "'";
+            temDes=getFacade().findFirstBySQL(sql);
+            if (temDes==null){
+                temDes=new Designation();
+                temDes.setName(name);
+                getFacade().create(temDes);
+            }else{
+                temDes.setRetired(false);
+                getFacade().edit(temDes);
+            }
+        }
+        return temDes;
+    }
+    
+    
     public DesignationController() {
     }
 
-    public DesignationFacade getEjbFacade() {
-        return ejbFacade;
+    public DesignationFacade getFacade() {
+        return facade;
     }
 
+    public void setFacade(DesignationFacade facade) {
+        this.facade = facade;
+    }
+
+
+    
+
     public void setEjbFacade(DesignationFacade ejbFacade) {
-        this.ejbFacade = ejbFacade;
+        this.facade = ejbFacade;
     }
 
     public SessionController getSessionController() {
@@ -72,7 +138,7 @@ public final class DesignationController  implements Serializable {
     }
 
     public void setLstItems(List<Designation> lstItems) {
-        this.lstItems = lstItems;
+        this.officialDesignations = lstItems;
     }
 
     public int getSelectedItemIndex() {
@@ -92,10 +158,6 @@ public final class DesignationController  implements Serializable {
 
     public void setCurrent(Designation current) {
         this.current = current;
-    }
-
-    private DesignationFacade getFacade() {
-        return ejbFacade;
     }
 
     public DataModel<Designation> getItems() {
@@ -185,6 +247,7 @@ public final class DesignationController  implements Serializable {
         } else {
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
+            current.setOfficial(true);
             getFacade().create(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
         }
@@ -277,7 +340,7 @@ public final class DesignationController  implements Serializable {
             }
             DesignationController controller = (DesignationController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "designationController");
-            return controller.ejbFacade.find(getKey(value));
+            return controller.facade.find(getKey(value));
         }
 
         java.lang.Long getKey(String value) {

@@ -3,6 +3,8 @@
   <persistence-unit name="HOPU" transaction-type="JTA">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>dsHr1</jta-data-source>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
     <properties>
       <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
     </properties>

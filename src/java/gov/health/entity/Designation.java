@@ -18,6 +18,7 @@ import javax.persistence.*;
  */
 @Entity
 public class Designation implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,15 +39,32 @@ public class Designation implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     Date retiredAt;
     String retireComments;
-
     //Designation Properties
     @ManyToOne
     DesignationCategory category;
     @ManyToOne
     DesignationLevel level;
+    Boolean official;
+    //
     @ManyToOne
-    
-    
+    Designation mappedToDesignation;
+
+    public Designation getMappedToDesignation() {
+        return mappedToDesignation;
+    }
+
+    public void setMappedToDesignation(Designation mappedToDesignation) {
+        this.mappedToDesignation = mappedToDesignation;
+    }
+
+    public Boolean getOfficial() {
+        return official;
+    }
+
+    public void setOfficial(Boolean official) {
+        this.official = official;
+    }
+
     public Long getId() {
         return id;
     }
@@ -166,5 +184,4 @@ public class Designation implements Serializable {
     public String toString() {
         return name;
     }
-    
 }

@@ -161,6 +161,7 @@ public final class InstitutionSetController implements Serializable {
             getCurrent().setCreater(sessionController.loggedUser);
             getFacade().create(getCurrent());
             setCurrent(new InstitutionSet());
+            newName="";
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
 
         } catch (Exception e) {
