@@ -4,7 +4,7 @@
  */
 package gov.health.facade;
 
-import gov.health.entity.Area;
+import gov.health.entity.InstitutionSet;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -14,7 +14,7 @@ import javax.persistence.PersistenceContext;
  * @author IT
  */
 @Stateless
-public class AreaFacade extends AbstractFacade<Area> {
+public class InstitutionSetFacade extends AbstractFacade<InstitutionSet> {
     @PersistenceContext(unitName = "HOPU")
     private EntityManager em;
 
@@ -23,8 +23,8 @@ public class AreaFacade extends AbstractFacade<Area> {
         return em;
     }
 
-    public AreaFacade() {
-        super(Area.class);
+    public InstitutionSetFacade() {
+        super(InstitutionSet.class);
     }
     
     

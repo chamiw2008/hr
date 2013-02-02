@@ -8,9 +8,11 @@
  */
 package gov.health.bean;
 
-import gov.health.facade.ContactTypeFacade;
-import gov.health.entity.ContactType;
+import gov.health.entity.Institution;
+import gov.health.facade.InstitutionSetFacade;
+import gov.health.entity.InstitutionSet;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import javax.ejb.EJB;
@@ -31,28 +33,36 @@ import javax.faces.model.ListDataModel;
  */
 @ManagedBean
 @SessionScoped
-public final class ContactTypeController  implements Serializable {
+public final class InstitutionSetController implements Serializable {
 
     @EJB
-    private ContactTypeFacade ejbFacade;
+    private InstitutionSetFacade ejbFacade;
     @ManagedProperty(value = "#{sessionController}")
     SessionController sessionController;
-    List<ContactType> lstItems;
-    private ContactType current;
-    private DataModel<ContactType> items = null;
-    private int selectedItemIndex;
-    boolean selectControlDisable = false;
-    boolean modifyControlDisable = true;
-    String selectText = "";
+    private InstitutionSet current;
+    private List<InstitutionSet> items = null;
+    private Institution institution;
 
-    public ContactTypeController() {
+    InstitutionSet toRemove;
+
+    public InstitutionSet getToRemove() {
+        return toRemove;
     }
 
-    public ContactTypeFacade getEjbFacade() {
+    public void setToRemove(InstitutionSet toRemove) {
+        this.toRemove = toRemove;
+    }
+    
+    
+    
+    public InstitutionSetController() {
+    }
+
+    public InstitutionSetFacade getEjbFacade() {
         return ejbFacade;
     }
 
-    public void setEjbFacade(ContactTypeFacade ejbFacade) {
+    public void setEjbFacade(InstitutionSetFacade ejbFacade) {
         this.ejbFacade = ejbFacade;
     }
 
@@ -64,42 +74,40 @@ public final class ContactTypeController  implements Serializable {
         this.sessionController = sessionController;
     }
 
-    
-    
-    
-    public List<ContactType> getLstItems() {
-        return getFacade().findBySQL("Select d From ContactType d");
-    }
-
-    public void setLstItems(List<ContactType> lstItems) {
-        this.lstItems = lstItems;
-    }
-
-    public int getSelectedItemIndex() {
-        return selectedItemIndex;
-    }
-
-    public void setSelectedItemIndex(int selectedItemIndex) {
-        this.selectedItemIndex = selectedItemIndex;
-    }
-
-    public ContactType getCurrent() {
+    public InstitutionSet getCurrent() {
+        // InstitutionSet
         if (current == null) {
-            current = new ContactType();
+            current = new InstitutionSet();
         }
         return current;
     }
 
-    public void setCurrent(ContactType current) {
+    public void setCurrent(InstitutionSet current) {
         this.current = current;
     }
 
-    private ContactTypeFacade getFacade() {
+    private InstitutionSetFacade getFacade() {
         return ejbFacade;
     }
 
-    public DataModel<ContactType> getItems() {
-        items = new ListDataModel(getFacade().findAll("name", true));
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
+    }
+
+    public List<InstitutionSet> getItems() {
+        Long insId = 0L;
+        if (getSessionController().getPrivilege().getRestrictedInstitution() != null) {
+            insId = getSessionController().getPrivilege().getRestrictedInstitution().getId();
+        } else if (getInstitution() != null && getInstitution().getId() != 0) {
+            insId = getInstitution().getId();
+        } else {
+            items = new ArrayList<InstitutionSet>();
+        }
+        items = getFacade().findBySQL("select s from InstitutionSet s where s.retired = false and s.institution.id = " + insId);
         return items;
     }
 
@@ -112,171 +120,60 @@ public final class ContactTypeController  implements Serializable {
         return valueInt;
     }
 
-    public DataModel searchItems() {
-        recreateModel();
-        if (items == null) {
-            if (selectText.equals("")) {
-                items = new ListDataModel(getFacade().findAll("name", true));
-            } else {
-                items = new ListDataModel(getFacade().findAll("name", "%" + selectText + "%",
-                        true));
-                if (items.getRowCount() > 0) {
-                    items.setRowIndex(0);
-                    current = (ContactType) items.getRowData();
-                    Long temLong = current.getId();
-                    selectedItemIndex = intValue(temLong);
-                } else {
-                    current = null;
-                    selectedItemIndex = -1;
-                }
-            }
-        }
-        return items;
-
-    }
-
-    public ContactType searchItem(String itemName, boolean createNewIfNotPresent) {
-        ContactType searchedItem = null;
-        items = new ListDataModel(getFacade().findAll("name", itemName, true));
-        if (items.getRowCount() > 0) {
-            items.setRowIndex(0);
-            searchedItem = (ContactType) items.getRowData();
-        } else if (createNewIfNotPresent) {
-            searchedItem = new ContactType();
-            searchedItem.setName(itemName);
-            searchedItem.setCreatedAt(Calendar.getInstance().getTime());
-            searchedItem.setCreater(sessionController.loggedUser);
-            getFacade().create(searchedItem);
-        }
-        return searchedItem;
-    }
-
     private void recreateModel() {
         items = null;
     }
 
-    public void prepareSelect() {
-        this.prepareModifyControlDisable();
-    }
-
-    public void prepareEdit() {
-        if (current != null) {
-            selectedItemIndex = intValue(current.getId());
-            this.prepareSelectControlDisable();
-        } else {
-            JsfUtil.addErrorMessage(new MessageProvider().getValue("nothingToEdit"));
-        }
-    }
-
-    public void prepareAdd() {
-        selectedItemIndex = -1;
-        current = new ContactType();
-        this.prepareSelectControlDisable();
-    }
-
-    public void saveSelected() {
-        if (sessionController.getPrivilege().isInstUser()==false){
-            JsfUtil.addErrorMessage("You are not autherized to make changes to any content");
-            return;
-        }            
-        if (selectedItemIndex > 0) {
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));
-        } else {
-            current.setCreatedAt(Calendar.getInstance().getTime());
-            current.setCreater(sessionController.loggedUser);
-            getFacade().create(current);
-            JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
-        }
-        this.prepareSelect();
-        recreateModel();
-        getItems();
-        selectText = "";
-        selectedItemIndex = intValue(current.getId());
-    }
-
     public void addDirectly() {
-        JsfUtil.addSuccessMessage("1");
         try {
-
-            current.setCreatedAt(Calendar.getInstance().getTime());
-            current.setCreater(sessionController.loggedUser);
-
-            getFacade().create(current);
+            if (getSessionController().getPrivilege().getRestrictedInstitution() != null) {
+                getCurrent().setInstitution(getSessionController().getPrivilege().getRestrictedInstitution());
+                System.out.println("1");
+            } else if (getInstitution() != null && getInstitution().getId() != 0) {
+                getCurrent().setInstitution(getInstitution());
+                System.out.println("2");
+                System.out.println(getInstitution().getName());
+            } else {
+                System.out.println("3");
+                JsfUtil.addErrorMessage("Please select an Institute");
+                return;
+            }
+            System.out.println("4");
+            getCurrent().setCreatedAt(Calendar.getInstance().getTime());
+            getCurrent().setCreater(sessionController.loggedUser);
+            getFacade().create(getCurrent());
+            setCurrent(new InstitutionSet());
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
-            current = new ContactType();
+
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, "Error");
         }
-
-    }
-
-    public void cancelSelect() {
-        this.prepareSelect();
     }
 
     public void delete() {
-        if (current != null) {
-            current.setRetired(true);
-            current.setRetiredAt(Calendar.getInstance().getTime());
-            current.setRetirer(sessionController.loggedUser);
-            getFacade().edit(current);
+        if (getToRemove() != null) {
+            getToRemove().setRetired(true);
+            getToRemove().setRetiredAt(Calendar.getInstance().getTime());
+            getToRemove().setRetirer(sessionController.loggedUser);
+            getFacade().edit(getToRemove());
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("deleteSuccessful"));
         } else {
             JsfUtil.addErrorMessage(new MessageProvider().getValue("nothingToDelete"));
         }
         recreateModel();
         getItems();
-        selectText = "";
-        selectedItemIndex = -1;
         current = null;
-        this.prepareSelect();
     }
 
-    public boolean isModifyControlDisable() {
-        return modifyControlDisable;
-    }
-
-    public void setModifyControlDisable(boolean modifyControlDisable) {
-        this.modifyControlDisable = modifyControlDisable;
-    }
-
-    public boolean isSelectControlDisable() {
-        return selectControlDisable;
-    }
-
-    public void setSelectControlDisable(boolean selectControlDisable) {
-        this.selectControlDisable = selectControlDisable;
-    }
-
-    public String getSelectText() {
-        return selectText;
-    }
-
-    public void setSelectText(String selectText) {
-        this.selectText = selectText;
-        searchItems();
-    }
-
-    public void prepareSelectControlDisable() {
-        selectControlDisable = true;
-        modifyControlDisable = false;
-    }
-
-    public void prepareModifyControlDisable() {
-        selectControlDisable = false;
-        modifyControlDisable = true;
-    }
-
-    @FacesConverter(forClass = ContactType.class)
-    public static class ContactTypeControllerConverter implements Converter {
+    @FacesConverter(forClass = InstitutionSet.class)
+    public static class InstitutionSetControllerConverter implements Converter {
 
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            ContactTypeController controller = (ContactTypeController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "contactTypeController");
+            InstitutionSetController controller = (InstitutionSetController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "institutionSetController");
             return controller.ejbFacade.find(getKey(value));
         }
 
@@ -296,12 +193,12 @@ public final class ContactTypeController  implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof ContactType) {
-                ContactType o = (ContactType) object;
+            if (object instanceof InstitutionSet) {
+                InstitutionSet o = (InstitutionSet) object;
                 return getStringKey(o.getId());
             } else {
                 throw new IllegalArgumentException("object " + object + " is of type "
-                        + object.getClass().getName() + "; expected type: " + ContactTypeController.class.getName());
+                        + object.getClass().getName() + "; expected type: " + InstitutionSetController.class.getName());
             }
         }
     }

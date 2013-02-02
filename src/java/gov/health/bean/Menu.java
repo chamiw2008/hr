@@ -108,6 +108,11 @@ public class Menu implements Serializable {
             item.setValue("Institutions");
             item.setUrl("institutions.xhtml");
             submenu.getChildren().add(item);
+            
+             item = new MenuItem();
+            item.setValue("Institution Sets");
+            item.setUrl("institution_set.xhtml");
+            submenu.getChildren().add(item);
 
             item = new MenuItem();
             item.setValue("Designations");
@@ -197,11 +202,11 @@ public class Menu implements Serializable {
         submenu = new Submenu();
         submenu.setLabel("Admin");
 
-       item = new MenuItem();
+        item = new MenuItem();
         item.setValue("Add Account");
         item.setUrl("register_user.xhtml");
         submenu.getChildren().add(item);
-        
+
         item = new MenuItem();
         item.setValue("Manage Accounts");
         item.setUrl("manage_users.xhtml");
