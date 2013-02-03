@@ -31,7 +31,7 @@ import javax.faces.model.ListDataModel;
  */
 @ManagedBean
 @SessionScoped
-public final class DesignationController  implements Serializable {
+public final class DesignationController implements Serializable {
 
     @EJB
     private DesignationFacade facade;
@@ -40,6 +40,11 @@ public final class DesignationController  implements Serializable {
     List<Designation> officialDesignations;
     List<Designation> unOfficialDesignations;
     List<Designation> allDesignations;
+    List<Designation> mappedDesignationsToOfficial;
+    List<Designation> unmappedDesignations;
+    Designation officialDesignation;
+    Designation mappedDesignation;
+    Designation unmappedDesignation;
     private Designation current;
     private DataModel<Designation> items = null;
     private int selectedItemIndex;
@@ -48,10 +53,82 @@ public final class DesignationController  implements Serializable {
     String selectText = "";
     String sql;
 
+    public Designation getMappedDesignation() {
+        return mappedDesignation;
+    }
+
+    public void setMappedDesignation(Designation mappedDesignation) {
+        this.mappedDesignation = mappedDesignation;
+    }
+
+    public Designation getUnmappedDesignation() {
+        return unmappedDesignation;
+    }
+
+    public void setUnmappedDesignation(Designation unmappedDesignation) {
+        this.unmappedDesignation = unmappedDesignation;
+    }
+
+    public List<Designation> getUnmappedDesignations() {
+        sql = "select d from Designation d where d.mappedDesignation is null order by d.name";
+        unmappedDesignations = getFacade().findBySQL(sql);
+        return unmappedDesignations;
+    }
+
+    public void setUnmappedDesignations(List<Designation> unmappedDesignations) {
+        this.unmappedDesignations = unmappedDesignations;
+    }
+
+    public void removeMapped() {
+        if (mappedDesignation == null) {
+            JsfUtil.addErrorMessage("Please select a designation to mapped to");
+            return;
+        }
+        mappedDesignation.setMappedToDesignation(null);
+        JsfUtil.addSuccessMessage("Mapping Removed");
+    }
+
+    public void addMappedDesignation() {
+        if (unmappedDesignation == null) {
+            JsfUtil.addErrorMessage("Please select a designation to mapped to");
+            return;
+        }
+        unmappedDesignation.setMappedToDesignation(mappedDesignation);
+    }
+
+    public List<Designation> getMappedDesignationsToOfficial() {
+        if (officialDesignation == null) {
+            return null;
+        } else {
+            sql = "select d from Designation d where d.mappedDesignation.id = " + getOfficialDesignation().getId();
+            return getFacade().findBySQL(sql);
+        }
+    }
+
+    public void setMappedDesignationsToOfficial(List<Designation> mappedDesignationsToOfficial) {
+        this.mappedDesignationsToOfficial = mappedDesignationsToOfficial;
+    }
+
+    public Designation getOfficialDesignation() {
+        return officialDesignation;
+    }
+
+    public void setOfficialDesignation(Designation officialDesignation) {
+        this.officialDesignation = officialDesignation;
+    }
+
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
     public List<Designation> getAllDesignations() {
         sql = "select d from Designation d where d.retired = false order by d.name";
-        if (allDesignations==null){
-            allDesignations=getFacade().findBySQL(selectText);
+        if (allDesignations == null) {
+            allDesignations = getFacade().findBySQL(sql);
         }
         return allDesignations;
     }
@@ -62,8 +139,8 @@ public final class DesignationController  implements Serializable {
 
     public List<Designation> getOfficialDesignations() {
         sql = "select d from Designation d where d.retired = false and d.official = true order by d.name";
-        if (officialDesignations==null){
-            officialDesignations=getFacade().findBySQL(selectText);
+        if (officialDesignations == null) {
+            officialDesignations = getFacade().findBySQL(sql);
         }
         return officialDesignations;
     }
@@ -73,9 +150,9 @@ public final class DesignationController  implements Serializable {
     }
 
     public List<Designation> getUnOfficialDesignations() {
-                sql = "select d from Designation d where d.retired = false and d.official = false order by d.name";
-        if (unOfficialDesignations==null){
-            unOfficialDesignations=getFacade().findBySQL(selectText);
+        sql = "select d from Designation d where d.retired = false and d.official = false order by d.name";
+        if (unOfficialDesignations == null) {
+            unOfficialDesignations = getFacade().findBySQL(sql);
         }
         return unOfficialDesignations;
     }
@@ -84,42 +161,30 @@ public final class DesignationController  implements Serializable {
         this.unOfficialDesignations = unOfficialDesignations;
     }
 
-    public Designation findDesignationByName(String name){
-        Designation temDes ;
-        sql="select d from Designation d where d.retired = false and d.name = '" +name + "'";
+    public Designation findDesignationByName(String name) {
+        Designation temDes;
+        sql = "select d from Designation d where d.retired = false and d.name = '" + name + "'";
         temDes = getFacade().findFirstBySQL(sql);
-        if (temDes==null){
-            sql="select d from Designation d where d.name = '" +name + "'";
-            temDes=getFacade().findFirstBySQL(sql);
-            if (temDes==null){
-                temDes=new Designation();
+        if (temDes == null) {
+            sql = "select d from Designation d where d.name = '" + name + "'";
+            temDes = getFacade().findFirstBySQL(sql);
+            if (temDes == null) {
+                temDes = new Designation();
                 temDes.setName(name);
                 getFacade().create(temDes);
-            }else{
+            } else {
                 temDes.setRetired(false);
                 getFacade().edit(temDes);
             }
         }
         return temDes;
     }
-    
-    
+
     public DesignationController() {
     }
 
     public DesignationFacade getFacade() {
         return facade;
-    }
-
-    public void setFacade(DesignationFacade facade) {
-        this.facade = facade;
-    }
-
-
-    
-
-    public void setEjbFacade(DesignationFacade ejbFacade) {
-        this.facade = ejbFacade;
     }
 
     public SessionController getSessionController() {
@@ -130,9 +195,6 @@ public final class DesignationController  implements Serializable {
         this.sessionController = sessionController;
     }
 
-    
-    
-    
     public List<Designation> getLstItems() {
         return getFacade().findBySQL("Select d From Designation d");
     }
@@ -215,6 +277,8 @@ public final class DesignationController  implements Serializable {
 
     private void recreateModel() {
         items = null;
+        setOfficialDesignations(null);
+        setUnOfficialDesignations(null);
     }
 
     public void prepareSelect() {
@@ -237,10 +301,10 @@ public final class DesignationController  implements Serializable {
     }
 
     public void saveSelected() {
-        if (sessionController.getPrivilege().isInstUser()==false){
+        if (sessionController.getPrivilege().isInstUser() == false) {
             JsfUtil.addErrorMessage("You are not autherized to make changes to any content");
             return;
-        }            
+        }
         if (selectedItemIndex > 0) {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));
