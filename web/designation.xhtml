@@ -13,11 +13,11 @@
 
 
 
-        <h:form   enctype="multipart/form-data">
+        <h:form  rendered="#{sessionController.privilege.instUser}">
             <p:growl autoUpdate="true" />
             <p:focus id="selectFocus" context="gpSelect" />
             <p:focus id="detailFocus" context="gpDetail" />
-            <p:panel header="Manage Designationa" >
+            <p:panel header="#{labels.ManageDesignations}" >
                 <h:panelGrid id ="gpVeda" columns="2" >
 
                     <h:panelGrid id="gpSelect" columns="1"  >
@@ -25,18 +25,8 @@
 
                             <h:panelGrid id="gpSelectText" columns="2" >
 
-                                <h:outputText id="lblSelect" value="Designation" >
+                                <h:outputText id="lblSelect" value="#{labels.Designations}" >
                                 </h:outputText>
-
-                                <h:inputText id="txtSelect" value="#{designationController.selectText}" disabled="#{designationController.selectControlDisable}"  style="min-width: 200px" >
-                                    <f:ajax  event="keyup" render="lstSelect txtName" >
-                                    </f:ajax>
-                                </h:inputText>
-
-                                <h:outputLabel value="&#160;">
-                                </h:outputLabel>
-
-
 
                                 <h:selectOneListbox id="lstSelect"  disabled="#{designationController.selectControlDisable}" size="10" value="#{designationController.current}" style="min-width: 223px">
                                     <f:selectItems value="#{designationController.items}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
@@ -48,11 +38,11 @@
 
                             <h:panelGrid id="gpSelectButtons" columns="3"  >
                                 <h:commandButton id="btnAdd" value="#{labels.add}" disabled="#{designationController.selectControlDisable}" action="#{designationController.prepareAdd()}" styleClass="buttons" >
-                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect txtName detailFocus" execute="btnEdit" >                                
+                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel  lstSelect txtName detailFocus" execute="btnEdit" >                                
                                     </f:ajax>
                                 </h:commandButton>
                                 <h:commandButton id ="btnEdit" value="#{labels.edit}" disabled="#{designationController.selectControlDisable}" action="#{designationController.prepareEdit()}"  styleClass="buttons">
-                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect txtName detailFocus" execute="lstSelect" >
+                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel  lstSelect txtName detailFocus" execute="lstSelect" >
                                     </f:ajax>
                                 </h:commandButton>
                                 <h:commandButton id="btnDelete" onclick="confirmation.show()" value="#{labels.delete}" disabled="#{designationController.selectControlDisable}" styleClass="buttons">
@@ -68,7 +58,7 @@
                     <p:panel>
                         <h:panelGrid id="gpDetail" columns="1">
                             <h:panelGrid id="gpDetailText" columns="2">
-                                <h:outputText id="lblName" value="Designation" ></h:outputText>
+                                <h:outputText id="lblName" value="#{labels.Designation}" ></h:outputText>
                                 <h:inputText id="txtName" value="#{designationController.current.name}" disabled="#{designationController.modifyControlDisable}" ></h:inputText>
                                 <h:outputText id="lblCatName" value="Service Type" ></h:outputText>
 
@@ -79,11 +69,11 @@
                             </h:panelGrid>
                             <h:panelGrid id="gpDetailButtons" columns="2">
                                 <h:commandButton id="btnSave" value="#{labels.save}" disabled="#{designationController.modifyControlDisable}" action="#{designationController.saveSelected()}" styleClass="buttons">
-                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect txtName selectFocus"  execute="txtName    " >
+                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel  lstSelect txtName selectFocus"  execute="txtName    " >
                                     </f:ajax>
                                 </h:commandButton>
                                 <h:commandButton id ="btnCancel" value="#{labels.cancel}" disabled="#{designationController.modifyControlDisable}" action="#{designationController.cancelSelect()}" styleClass="buttons">
-                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect txtName selectFocus" execute=" txtName    " >                                
+                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel  lstSelect txtName selectFocus" execute=" txtName    " >                                
                                     </f:ajax>
                                 </h:commandButton>
                             </h:panelGrid>
@@ -91,24 +81,8 @@
                     </p:panel>
                 </h:panelGrid>
             </p:panel>
+        </h:form>        
 
-            <h:outputLabel value="------ Upload File ------" ></h:outputLabel>
-            <h:panelGroup>
-                <br/>
-                <br/>
-                This is to bulk load the designation and designation service types from file. <br/>
-                <br/>
-                Please choose an appropriate Excel file and upload (Sheet1: Column 1;Service Type , Column 2; Designation). <br/>
-                <br/>
-            </h:panelGroup>
-            <h:panelGrid columns="2" >
-
-            </h:panelGrid>
-            <h:panelGrid columns="2" >
-                <p:fileUpload value="#{designationController.designationFile}" mode="simple"/>
-                <h:commandButton value="Upload" action="#{designationController.extractDesignationData}"/>
-            </h:panelGrid>
-        </h:form>
 
 
     </ui:define>

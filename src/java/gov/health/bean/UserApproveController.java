@@ -207,8 +207,13 @@ public class UserApproveController  implements Serializable {
 
         userFacade.edit(selectedUser);
 
-        privilege.setWebUser(selectedUser);
-        priFacade.edit(privilege);
+        getPrivilege().setWebUser(selectedUser);
+        if (getPrivilege().getId()==null || getPrivilege().getId()==0){
+            priFacade.create(getPrivilege());
+        }else{
+            priFacade.edit(getPrivilege());
+        }
+        
 
         selectedUser = null;
         privilege = null;

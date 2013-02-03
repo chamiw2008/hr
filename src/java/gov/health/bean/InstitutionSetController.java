@@ -40,7 +40,19 @@ public final class InstitutionSetController implements Serializable {
     private InstitutionSet current;
     private List<InstitutionSet> items = null;
     private Institution institution;
+    String newName;
 
+    public String getNewName() {
+        return newName;
+    }
+
+    public void setNewName(String newName) {
+        this.newName = newName;
+    }
+    
+    
+    
+    
     InstitutionSet toRemove;
 
     public InstitutionSet getToRemove() {
@@ -124,6 +136,12 @@ public final class InstitutionSetController implements Serializable {
 
     public void addDirectly() {
         try {
+            if(getNewName().trim().equals("")){
+                JsfUtil.addErrorMessage("Please enter a name");
+                return;
+            }
+            setCurrent(new InstitutionSet());
+            getCurrent().setName(newName);
             if (getSessionController().getPrivilege().getRestrictedInstitution() != null) {
                 getCurrent().setInstitution(getSessionController().getPrivilege().getRestrictedInstitution());
                 System.out.println("1");
@@ -141,6 +159,7 @@ public final class InstitutionSetController implements Serializable {
             getCurrent().setCreater(sessionController.loggedUser);
             getFacade().create(getCurrent());
             setCurrent(new InstitutionSet());
+            newName="";
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
 
         } catch (Exception e) {

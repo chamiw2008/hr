@@ -8,19 +8,12 @@
  */
 package gov.health.bean;
 
-import gov.health.entity.Designation;
 import gov.health.facade.DesignationFacade;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import gov.health.entity.Designation;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
@@ -30,7 +23,6 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
-import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -42,32 +34,157 @@ import org.primefaces.model.UploadedFile;
 public final class DesignationController implements Serializable {
 
     @EJB
-    private DesignationFacade ejbFacade;
+    private DesignationFacade facade;
     @ManagedProperty(value = "#{sessionController}")
     SessionController sessionController;
-    List<Designation> lstItems;
+    List<Designation> officialDesignations;
+    List<Designation> unOfficialDesignations;
+    List<Designation> allDesignations;
+    List<Designation> mappedDesignationsToOfficial;
+    List<Designation> unmappedDesignations;
+    Designation officialDesignation;
+    Designation mappedDesignation;
+    Designation unmappedDesignation;
     private Designation current;
     private DataModel<Designation> items = null;
     private int selectedItemIndex;
     boolean selectControlDisable = false;
     boolean modifyControlDisable = true;
     String selectText = "";
-    private UploadedFile designationFile;
+    String sql;
 
-    
-    
-    
-    
-    
+    public Designation getMappedDesignation() {
+        return mappedDesignation;
+    }
+
+    public void setMappedDesignation(Designation mappedDesignation) {
+        this.mappedDesignation = mappedDesignation;
+    }
+
+    public Designation getUnmappedDesignation() {
+        return unmappedDesignation;
+    }
+
+    public void setUnmappedDesignation(Designation unmappedDesignation) {
+        this.unmappedDesignation = unmappedDesignation;
+    }
+
+    public List<Designation> getUnmappedDesignations() {
+        sql = "select d from Designation d where d.mappedDesignation is null order by d.name";
+        unmappedDesignations = getFacade().findBySQL(sql);
+        return unmappedDesignations;
+    }
+
+    public void setUnmappedDesignations(List<Designation> unmappedDesignations) {
+        this.unmappedDesignations = unmappedDesignations;
+    }
+
+    public void removeMapped() {
+        if (mappedDesignation == null) {
+            JsfUtil.addErrorMessage("Please select a designation to mapped to");
+            return;
+        }
+        mappedDesignation.setMappedToDesignation(null);
+        JsfUtil.addSuccessMessage("Mapping Removed");
+    }
+
+    public void addMappedDesignation() {
+        if (unmappedDesignation == null) {
+            JsfUtil.addErrorMessage("Please select a designation to mapped to");
+            return;
+        }
+        unmappedDesignation.setMappedToDesignation(mappedDesignation);
+    }
+
+    public List<Designation> getMappedDesignationsToOfficial() {
+        if (officialDesignation == null) {
+            return null;
+        } else {
+            sql = "select d from Designation d where d.mappedDesignation.id = " + getOfficialDesignation().getId();
+            return getFacade().findBySQL(sql);
+        }
+    }
+
+    public void setMappedDesignationsToOfficial(List<Designation> mappedDesignationsToOfficial) {
+        this.mappedDesignationsToOfficial = mappedDesignationsToOfficial;
+    }
+
+    public Designation getOfficialDesignation() {
+        return officialDesignation;
+    }
+
+    public void setOfficialDesignation(Designation officialDesignation) {
+        this.officialDesignation = officialDesignation;
+    }
+
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    public List<Designation> getAllDesignations() {
+        sql = "select d from Designation d where d.retired = false order by d.name";
+        if (allDesignations == null) {
+            allDesignations = getFacade().findBySQL(sql);
+        }
+        return allDesignations;
+    }
+
+    public void setAllDesignations(List<Designation> allDesignations) {
+        this.allDesignations = allDesignations;
+    }
+
+    public List<Designation> getOfficialDesignations() {
+        sql = "select d from Designation d where d.retired = false and d.official = true order by d.name";
+        if (officialDesignations == null) {
+            officialDesignations = getFacade().findBySQL(sql);
+        }
+        return officialDesignations;
+    }
+
+    public void setOfficialDesignations(List<Designation> officialDesignations) {
+        this.officialDesignations = officialDesignations;
+    }
+
+    public List<Designation> getUnOfficialDesignations() {
+        sql = "select d from Designation d where d.retired = false and d.official = false order by d.name";
+        if (unOfficialDesignations == null) {
+            unOfficialDesignations = getFacade().findBySQL(sql);
+        }
+        return unOfficialDesignations;
+    }
+
+    public void setUnOfficialDesignations(List<Designation> unOfficialDesignations) {
+        this.unOfficialDesignations = unOfficialDesignations;
+    }
+
+    public Designation findDesignationByName(String name) {
+        Designation temDes;
+        sql = "select d from Designation d where d.retired = false and d.name = '" + name + "'";
+        temDes = getFacade().findFirstBySQL(sql);
+        if (temDes == null) {
+            sql = "select d from Designation d where d.name = '" + name + "'";
+            temDes = getFacade().findFirstBySQL(sql);
+            if (temDes == null) {
+                temDes = new Designation();
+                temDes.setName(name);
+                getFacade().create(temDes);
+            } else {
+                temDes.setRetired(false);
+                getFacade().edit(temDes);
+            }
+        }
+        return temDes;
+    }
+
     public DesignationController() {
     }
 
-    public DesignationFacade getEjbFacade() {
-        return ejbFacade;
-    }
-
-    public void setEjbFacade(DesignationFacade ejbFacade) {
-        this.ejbFacade = ejbFacade;
+    public DesignationFacade getFacade() {
+        return facade;
     }
 
     public SessionController getSessionController() {
@@ -83,7 +200,7 @@ public final class DesignationController implements Serializable {
     }
 
     public void setLstItems(List<Designation> lstItems) {
-        this.lstItems = lstItems;
+        this.officialDesignations = lstItems;
     }
 
     public int getSelectedItemIndex() {
@@ -103,10 +220,6 @@ public final class DesignationController implements Serializable {
 
     public void setCurrent(Designation current) {
         this.current = current;
-    }
-
-    private DesignationFacade getFacade() {
-        return ejbFacade;
     }
 
     public DataModel<Designation> getItems() {
@@ -164,6 +277,8 @@ public final class DesignationController implements Serializable {
 
     private void recreateModel() {
         items = null;
+        setOfficialDesignations(null);
+        setUnOfficialDesignations(null);
     }
 
     public void prepareSelect() {
@@ -196,6 +311,7 @@ public final class DesignationController implements Serializable {
         } else {
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
+            current.setOfficial(true);
             getFacade().create(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
         }
@@ -279,59 +395,6 @@ public final class DesignationController implements Serializable {
         modifyControlDisable = true;
     }
 
-    /**
-     * @return the designationFile
-     */
-    public UploadedFile getDesignationFile() {
-        return designationFile;
-    }
-
-    /**
-     * @param designationFile the designationFile to set
-     */
-    public void setDesignationFile(UploadedFile designationFile) {
-        this.designationFile = designationFile;
-    }
-
-    public String extractDesignationData() {
-        InputStream in = null;
-
-        if (designationFile == null) {
-            JsfUtil.addErrorMessage("Please select the Excel file to upload" + designationFile);
-            return "";
-        }
-       
-        JsfUtil.addSuccessMessage(designationFile.getFileName() + " was uploaded successfully.");
-
-        try {
-            //            FacesMessage msg = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
-            FacesMessage msg = new FacesMessage("Succesful", designationFile.getContents().toString());
-            in = designationFile.getInputstream();
-            File f = new File("C:\\Tem", designationFile.getFileName());
-            FileOutputStream out = new FileOutputStream(f);
-            //            OutputStream out = new FileOutputStream(new File(fileName));
-            int read;
-            byte[] bytes = new byte[1024];
-            while ((read = in.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
-            in.close();
-            out.flush();
-            out.close();
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            
-        } catch (IOException ex) {
-            Logger.getLogger(FileUploadController.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                in.close();
-            } catch (IOException ex) {
-                Logger.getLogger(FileUploadController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return "";
-    }
-
     @FacesConverter(forClass = Designation.class)
     public static class DesignationControllerConverter implements Converter {
 
@@ -341,7 +404,7 @@ public final class DesignationController implements Serializable {
             }
             DesignationController controller = (DesignationController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "designationController");
-            return controller.ejbFacade.find(getKey(value));
+            return controller.facade.find(getKey(value));
         }
 
         java.lang.Long getKey(String value) {

@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pou="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="./resources/template/template_1.xhtml">
+
+
+            <ui:define name="content">
+                <pou:panelGrid>
+                    <h:form>
+                        <pou:row>
+                            <pou:column >
+                                <h:outputLabel value="Officil Designation"></h:outputLabel>
+                            </pou:column>
+                            <pou:column >
+                                <h:outputLabel value="&nbsp;"></h:outputLabel>
+                            </pou:column>
+
+                            <pou:column >
+                                <h:outputLabel value="Unmapped Designation"></h:outputLabel>
+                            </pou:column>
+
+                        </pou:row>
+                        <pou:row>
+                            <pou:column >
+                                <h:selectManyListbox id="cmbOffDes" value="#{designationController.officialDesignation}" >
+                                    <f:selectItems value="#{designationController.officialDesignations}" var="offdes" itemValue="#{offdes}" itemLabel="#{offdes.name}" />
+                                    <f:ajax event="change" execute="cmbOffDes" render="cmbMappedDes" />
+                                </h:selectManyListbox>
+                                <h:selectManyListbox id="cmbMappedDes" value="#{designationController.mappedDesignation}" >
+                                    <f:selectItems value="#{designationController.mappedDesignationsToOfficial}" var="mapdes" itemValue="#{mapdes}" itemLabel="#{mapdes.name}" />
+                                </h:selectManyListbox>
+                            </pou:column>
+                            <pou:column >
+                                <h:commandButton value="Remove Mapping" action="#{designationController.removeMapped()}" />
+                                <h:commandButton value="Add Mapping" action="#{designationController.addMappedDesignation() } " />
+                            </pou:column>
+                            <pou:column >
+                                <h:selectManyListbox id="cmbUnMappedDes" value="#{designationController.unmappedDesignation}" >
+                                    <f:selectItems value="#{designationController.unmappedDesignations}" var="unmapdes" itemValue="#{unmapdes}" itemLabel="#{unmapdes.name}" />
+                                </h:selectManyListbox>
+                            </pou:column>
+                        </pou:row>
+                    </h:form>
+
+
+                </pou:panelGrid>
+            </ui:define>
+
+
+        </ui:composition>
+
+    </body>
+</html>
