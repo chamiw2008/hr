@@ -7,16 +7,15 @@ package gov.health.bean;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import jxl.Cell;
 import jxl.CellType;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
-
 import org.primefaces.model.UploadedFile;
 
 /**
@@ -25,7 +24,7 @@ import org.primefaces.model.UploadedFile;
  */
 @ManagedBean
 @RequestScoped
-public class FileUploadController  implements Serializable {
+public class FileUploadController implements Serializable {
 
     /**
      * Creates a new instance of FileUploadController
@@ -33,12 +32,13 @@ public class FileUploadController  implements Serializable {
     public FileUploadController() {
     }
     private UploadedFile file;
+    private UploadedFile designationFile;
 
-    public UploadedFile getFile() {
+    public UploadedFile getMasterPayrollFile() {
         return file;
     }
 
-    public void setFile(UploadedFile file) {
+    public void setMasterPayrollFile(UploadedFile file) {
         this.file = file;
     }
 
@@ -60,10 +60,10 @@ public class FileUploadController  implements Serializable {
             in.close();
             out.flush();
             out.close();
-            
+
             inputWorkbook = new File(f.getAbsolutePath());
-            
-            
+
+
             w = Workbook.getWorkbook(inputWorkbook);
             // Get the first sheet
             Sheet sheet = w.getSheet(0);
