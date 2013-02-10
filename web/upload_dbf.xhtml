@@ -27,7 +27,7 @@
                 <h:outputText value="Institution"/>
                 <h:selectOneListbox id="cmbLoc" value="#{dbfController.institution}" >
                     <f:selectItems value="#{institutionController.items}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
-                    <f:ajax event="change" execute="cmbLoc" render="cmbSet" />
+                    <f:ajax event="change" execute="cmbLoc" render="cmbSet tblEx tblNew" />
                 </h:selectOneListbox>
                 <h:outputText value="Set"/>
                 <h:selectOneListbox id="cmbSet" value="#{dbfController.insSet}" >
@@ -46,26 +46,30 @@
                 <pou:fileUpload value="#{dbfController.file}" mode="simple"/>
                 <h:commandButton value="Upload" action="#{dbfController.extractData}"/>
             </h:panelGrid>
-        </h:form>
-        <h:form>
+
             <pou:panel header="Existing Data">
-                <pou:dataTable value="#{dbfController.existingPersonInstitutions}" var="exPi">
+                <pou:dataTable id="tblEx" value="#{dbfController.existingPersonInstitutions}" var="exPi">
                     <pou:column>
                         <f:facet name="header">Employee Id</f:facet>
                         <h:outputLabel value="#{exPi.empNo}"/>
                     </pou:column>
                     <pou:column>
                         <f:facet name="header">Name</f:facet>
-                        <h:outputLabel value="#{exPi.person.name}"/>
+                        <h:outputLabel value="#{exPi.name}"/>
                     </pou:column> 
                     <pou:column>
                         <f:facet name="header">Designation</f:facet>
                         <h:outputLabel value="#{exPi.designation.name}"/>
-                    </pou:column>                 
+                    </pou:column>  
+                    <pou:column>
+                        <f:facet name="header">NIC</f:facet>
+                        <h:outputLabel value="#{exPi.nic}"/>
+                    </pou:column>           
+                    
                 </pou:dataTable>
             </pou:panel>
             <pou:panel header="New Data">
-                <pou:dataTable value="#{dbfController.newPersonInstitutions}" var="newPi">
+                <pou:dataTable id="tblNew" value="#{dbfController.newPersonInstitutions}" var="newPi">
                     <pou:column>
                         <f:facet name="header">Employee Id</f:facet>
                         <h:outputLabel value="#{newPi.empNo}"/>

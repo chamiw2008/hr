@@ -423,7 +423,7 @@ public class DbfController implements Serializable {
             getPiFacade().edit(pi);
         }
         for (PersonInstitution pi : newPersonInstitutions) {
-            getPerFacade().create(pi.getPerson());
+//            getPerFacade().create(pi.getPerson());
             getPiFacade().create(pi);
         }
         getExistingPersonInstitutions();
