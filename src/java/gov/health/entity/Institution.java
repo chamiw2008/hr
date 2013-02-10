@@ -54,6 +54,28 @@ public class Institution implements Serializable {
     @ManyToOne
     Province province;
     
+    Boolean official;
+    
+    @ManyToOne
+    Institution mappedToInstitution;
+
+    public Institution getMappedToInstitution() {
+        return mappedToInstitution;
+    }
+
+    public void setMappedToInstitution(Institution mappedToInstitution) {
+        this.mappedToInstitution = mappedToInstitution;
+    }
+
+    public Boolean getOfficial() {
+        return official;
+    }
+
+    public void setOfficial(Boolean official) {
+        this.official = official;
+    }
+    
+    
        
     boolean outSide;
     

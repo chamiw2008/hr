@@ -27,6 +27,19 @@
                 <h:outputText value="Institution"/>
                 <h:selectOneListbox id="cmbLoc" value="#{dbfController.institution}" >
                     <f:selectItems value="#{institutionController.items}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
+                    <f:ajax event="change" execute="cmbLoc" render="cmbSet" />
+                </h:selectOneListbox>
+                <h:outputText value="Set"/>
+                <h:selectOneListbox id="cmbSet" value="#{dbfController.insSet}" >
+                    <f:selectItems value="#{dbfController.insSets}" var="insset" itemValue="#{insset}" itemLabel="#{insset.name}" />
+                </h:selectOneListbox>
+                <h:outputText value="Year"/>
+                <h:selectOneListbox id="cmbYear" value="#{dbfController.payYear}" >
+                    <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
+                </h:selectOneListbox>
+                <h:outputText value="Month"/>
+                <h:selectOneListbox id="cmbMonth" value="#{dbfController.payMonth}" >
+                    <f:selectItems value="#{dbfController.payMonths}" var="pm" itemValue="#{pm}" itemLabel="#{ins.pm}" />
                 </h:selectOneListbox>
             </h:panelGrid>
             <h:panelGrid columns="2" >
@@ -59,7 +72,7 @@
                     </pou:column>
                     <pou:column>
                         <f:facet name="header">Name</f:facet>
-                        <h:outputLabel value="#{newPi.person.name}"/>
+                        <h:outputLabel value="#{newPi.name}"/>
                     </pou:column> 
                     <pou:column>
                         <f:facet name="header">Designation</f:facet>

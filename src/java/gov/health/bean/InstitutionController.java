@@ -126,7 +126,7 @@ public final class InstitutionController  implements Serializable {
         if (getSelectText().equals("")) {
             items = new ListDataModel<Institution>(getFacade().findAll("name", true));    
         }else{
-            temSql = "SELECT i FROM Institution i where i.retired=false and LOWER(i.name) like '%" + getSelectText().toLowerCase() + "%' order by i.name";
+            temSql = "SELECT i FROM Institution i where i.retired=false and i.official = true and LOWER(i.name) like '%" + getSelectText().toLowerCase() + "%' order by i.name";
             items= new ListDataModel<Institution>(getFacade().findBySQL(temSql));
             System.out.println(temSql);
         }
@@ -215,6 +215,7 @@ public final class InstitutionController  implements Serializable {
         } else {
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
+            current.setOfficial(Boolean.TRUE);
             getFacade().create(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
         }
@@ -231,7 +232,8 @@ public final class InstitutionController  implements Serializable {
 
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
-
+            current.setOfficial(Boolean.FALSE);
+            
             getFacade().create(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
             current = new Institution();
