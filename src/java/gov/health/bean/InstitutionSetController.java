@@ -9,8 +9,8 @@
 package gov.health.bean;
 
 import gov.health.entity.Institution;
-import gov.health.facade.InstitutionSetFacade;
 import gov.health.entity.InstitutionSet;
+import gov.health.facade.InstitutionSetFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,8 +23,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 
 /**
  *

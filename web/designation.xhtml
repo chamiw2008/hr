@@ -10,10 +10,12 @@
 
     <ui:define name="content">
 
-
-
-
-        <h:form  rendered="#{sessionController.privilege.instUser}">
+        
+        <h:outputLabel value="New Branch" />
+        
+        
+        
+       <h:form  > <!-- removed this part : rendered="#{sessionController.privilege.instUser}" -->
             <p:growl autoUpdate="true" />
             <p:focus id="selectFocus" context="gpSelect" />
             <p:focus id="detailFocus" context="gpDetail" />
