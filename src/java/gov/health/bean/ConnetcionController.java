@@ -10,13 +10,16 @@ package gov.health.bean;
 import gov.health.entity.*;
 import gov.health.facade.*;
 import java.io.Serializable;
+import java.util.Enumeration;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
+import javax.servlet.http.HttpServletRequest;
 import org.primefaces.event.CaptureEvent;
 
 /**
@@ -136,6 +139,20 @@ public class ConnetcionController implements Serializable {
     }
 
     public String loginAction() {
+
+        HttpServletRequest request;
+        request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        Enumeration headerIter = request.getHeaderNames();
+        String userAgent = request.getHeader("User-Agent");
+        while (headerIter.hasMoreElements()) {
+            String headername = (String) headerIter.nextElement();
+            System.out.println("headername + : " + request.getHeader(headername));
+
+        }
+        String clientAddr = request.getRemoteAddr();
+        String clientPc = request.getRemoteHost();
+        System.out.println("Clinet : " + clientPc + " & clinet address : " + clientAddr + " & Browser : " + userAgent);
+
         if (login()) {
             menu.createMenu();
             return "";
@@ -155,7 +172,7 @@ public class ConnetcionController implements Serializable {
             prepareFirstVisit();
             return true;
         } else {
-        //JsfUtil.addSuccessMessage("Checking Old Users");
+            //JsfUtil.addSuccessMessage("Checking Old Users");
             return checkUsers();
         }
     }
@@ -219,7 +236,7 @@ public class ConnetcionController implements Serializable {
         if (telNo.trim().length() == 10) {
             // check if the length of the String is 10 chars
             //System.out.println("length OK !");
-            
+
             try {
                 temp = Integer.parseInt(telNo);
                 //check if this is a number
