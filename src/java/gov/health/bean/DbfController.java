@@ -192,10 +192,10 @@ public class DbfController implements Serializable {
     }
 
     public List<PersonInstitution> getExistingPersonInstitutions() {
-        if (institution == null) {
-            return null;
+        if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear()==null) {
+            return new ArrayList<PersonInstitution>();
         }
-        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + payYear + " and pi.payMonth = " + payMonth + " and pi.paySet.id = " + insSet.getId() + " and  pi.payCentre.id = " + getInstitution().getId());
+        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId());
         return existingPersonInstitutions;
     }
 
@@ -323,7 +323,11 @@ public class DbfController implements Serializable {
     }
 
     public Institution getInstitution() {
-        return institution;
+        if (getSessionController().getPrivilege().getRestrictedInstitution() == null) {
+            return institution;
+        } else {
+            return getSessionController().getPrivilege().getRestrictedInstitution();
+        }
     }
 
     public void setInstitution(Institution institution) {
@@ -430,10 +434,9 @@ public class DbfController implements Serializable {
         JsfUtil.addSuccessMessage("Data Replaced Successfully");
     }
 
-    public void markTransfer(Person p, Institution fromIns, Institution toIns){
-        
+    public void markTransfer(Person p, Institution fromIns, Institution toIns) {
     }
-    
+
     public String extractData() {
         InputStream in;
         String temNic;
@@ -486,19 +489,19 @@ public class DbfController implements Serializable {
 
             while ((rowObjects = reader.nextRecord()) != null) {
 
-                Person p=null;
+                Person p = null;
                 PersonInstitution pi = new PersonInstitution();
-                Institution attachedIns ;
-                
-                String insName ;
-                insName = rowObjects[21].toString() + " " + rowObjects[22].toString() + " " + rowObjects[23].toString(); 
-                
-                if (insName.trim().equals("")){
+                Institution attachedIns;
+
+                String insName;
+                insName = rowObjects[21].toString() + " " + rowObjects[22].toString() + " " + rowObjects[23].toString();
+
+                if (insName.trim().equals("")) {
                     attachedIns = getInstitution();
-                }else{
+                } else {
                     attachedIns = findInstitution(insName);
                 }
-                
+
                 temNic = rowObjects[48].toString();
 
                 if ("".equals(temNic.trim())) {
@@ -522,8 +525,8 @@ public class DbfController implements Serializable {
                         p.setNic(rowObjects[48].toString());
                         p.setName(p.getTitle() + " " + p.getInitials() + " " + p.getSurname());
                         getPerFacade().create(p);
-                    }else{
-                        if (p.getInstitution()!=getInstitution()){
+                    } else {
+                        if (p.getInstitution() != getInstitution()) {
                             markTransfer(p, p.getInstitution(), institution);
                         }
                     }
@@ -550,24 +553,22 @@ public class DbfController implements Serializable {
                 pi.setPayMonth(payMonth);
                 pi.setPayYear(payYear);
                 pi.setPaySet(insSet);
-                
-                
-                if (rowObjects[4].toString().equals("")||rowObjects[50].toString().equals("")){
+
+
+                if (rowObjects[4].toString().equals("") || rowObjects[50].toString().equals("")) {
                     pi.setPermanent(Boolean.FALSE);
-                }else{
+                } else {
                     pi.setPermanent(Boolean.TRUE);
                 }
-                 try{
-                     if ( Integer.valueOf(rowObjects[4].toString())==0 ){
-                         pi.setNopay(Boolean.TRUE);
-                     }else{
-                         
-                     }
-                 }catch (Exception e){
-                     
-                 }
-                
-                
+                try {
+                    if (Integer.valueOf(rowObjects[4].toString()) == 0) {
+                        pi.setNopay(Boolean.TRUE);
+                    } else {
+                    }
+                } catch (Exception e) {
+                }
+
+
                 try {
                     pi.setActiveState((Boolean) rowObjects[40]);
                 } catch (Exception e) {
@@ -596,16 +597,16 @@ public class DbfController implements Serializable {
             des.setCreater(sessionController.loggedUser);
             des.setOfficial(Boolean.FALSE);
             getDesFacade().create(des);
-        }else{
-            if (des.getOfficial().equals(Boolean.FALSE)){
-                if (des.getMappedToDesignation()!=null){
+        } else {
+            if (des.getOfficial().equals(Boolean.FALSE)) {
+                if (des.getMappedToDesignation() != null) {
                     return des.getMappedToDesignation();
                 }
             }
         }
         return des;
     }
-    
+
     private Institution findInstitution(String insName) {
         Institution ins = getInsFacade().findFirstBySQL("select d from Institution d where d.retired = false and lower(d.name) = '" + insName.toLowerCase() + "'");
         if (ins == null) {
@@ -615,12 +616,12 @@ public class DbfController implements Serializable {
             ins.setCreater(sessionController.loggedUser);
             ins.setOfficial(Boolean.FALSE);
             getInsFacade().create(ins);
-        }else{
-           if (ins.getOfficial().equals(Boolean.FALSE)){
-               if (ins.getMappedToInstitution()!=null){
-                   return ins.getMappedToInstitution();
-               }
-           }
+        } else {
+            if (ins.getOfficial().equals(Boolean.FALSE)) {
+                if (ins.getMappedToInstitution() != null) {
+                    return ins.getMappedToInstitution();
+                }
+            }
         }
         return ins;
     }
