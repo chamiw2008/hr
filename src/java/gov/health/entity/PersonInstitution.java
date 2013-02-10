@@ -40,6 +40,8 @@ public class PersonInstitution implements Serializable {
     @ManyToOne
     Institution institution;
     @ManyToOne
+    Institution payCentre;    
+    @ManyToOne
     Person person;
     String empNo;
     Double conSal;
@@ -66,7 +68,62 @@ public class PersonInstitution implements Serializable {
     Date appDate;
     Boolean nopay;
     Boolean activeState;
+    Boolean permanent ;
 
+
+    Integer payYear;
+    Integer payMonth;
+    InstitutionSet paySet;
+
+    public InstitutionSet getPaySet() {
+        return paySet;
+    }
+
+    public void setPaySet(InstitutionSet paySet) {
+        this.paySet = paySet;
+    }
+    
+    
+
+
+    public Institution getPayCentre() {
+        return payCentre;
+    }
+
+    public void setPayCentre(Institution payCentre) {
+        this.payCentre = payCentre;
+    }
+
+    
+    
+    public Boolean getPermanent() {
+        return permanent;
+    }
+
+    public void setPermanent(Boolean permanent) {
+        this.permanent = permanent;
+    }
+
+    
+    
+    public Integer getPayMonth() {
+        return payMonth;
+    }
+
+    public void setPayMonth(Integer payMonth) {
+        this.payMonth = payMonth;
+    }
+
+    public Integer getPayYear() {
+        return payYear;
+    }
+
+    public void setPayYear(Integer payYear) {
+        this.payYear = payYear;
+    }
+    
+    
+    
     public Boolean getActiveState() {
         return activeState;
     }

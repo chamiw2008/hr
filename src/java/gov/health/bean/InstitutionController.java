@@ -33,7 +33,7 @@ import javax.faces.model.ListDataModel;
  */
 @ManagedBean
 @SessionScoped
-public final class InstitutionController  implements Serializable {
+public final class InstitutionController implements Serializable {
 
     @EJB
     private InstitutionFacade ejbFacade;
@@ -41,14 +41,24 @@ public final class InstitutionController  implements Serializable {
     InstitutionTypeFacade institutionTypeFacade;
     @ManagedProperty(value = "#{sessionController}")
     SessionController sessionController;
-    List<Institution> lstItems;
+    List<Institution> offItems;
     private Institution current;
-    private DataModel<Institution> items = null;
+    private List<Institution> items = null;
     DataModel<InstitutionType> institutionTypes;
     private int selectedItemIndex;
     boolean selectControlDisable = false;
     boolean modifyControlDisable = true;
     String selectText = "";
+    Integer offSel = 0;
+
+    public Integer getOffSel() {
+        return offSel;
+    }
+
+    public void setOffSel(Integer offSel) {
+        recreateModel();
+        this.offSel = offSel;
+    }
 
     public InstitutionController() {
     }
@@ -87,15 +97,17 @@ public final class InstitutionController  implements Serializable {
         this.institutionTypes = institutionTypes;
     }
 
-    
-    
-    
-    public List<Institution> getLstItems() {
-        return getFacade().findBySQL("Select d From Institution d");
+    public List<Institution> getOffItems() {
+        if (offItems != null) {
+            return offItems;
+        }
+        String sql = "SELECT i FROM Institution i where i.retired=false and i.official = true order by i.name";
+        offItems = getFacade().findBySQL(sql);
+        return offItems;
     }
 
-    public void setLstItems(List<Institution> lstItems) {
-        this.lstItems = lstItems;
+    public void setOffItems(List<Institution> offItems) {
+        this.offItems = offItems;
     }
 
     public int getSelectedItemIndex() {
@@ -121,15 +133,39 @@ public final class InstitutionController  implements Serializable {
         return ejbFacade;
     }
 
-    public DataModel<Institution> getItems() {
+    public List<Institution> getItems() {
         String temSql;
-        if (getSelectText().equals("")) {
-            items = new ListDataModel<Institution>(getFacade().findAll("name", true));    
-        }else{
-            temSql = "SELECT i FROM Institution i where i.retired=false and LOWER(i.name) like '%" + getSelectText().toLowerCase() + "%' order by i.name";
-            items= new ListDataModel<Institution>(getFacade().findBySQL(temSql));
-            System.out.println(temSql);
+        if (items != null) {
+            return items;
         }
+        if (getSelectText().equals("")) {
+            if (getOffSel() == 0) {
+                temSql = "SELECT i FROM Institution i where i.retired=false order by i.name";
+            } else if (getOffSel() == 1) {
+                temSql = "SELECT i FROM Institution i where i.retired=false and i.official = true order by i.name";
+            } else if (getOffSel() == 2) {
+                temSql = "SELECT i FROM Institution i where i.retired=false and i.official = false order by i.name";
+            } else if (getOffSel() == 3) {
+                temSql = "SELECT i FROM Institution i where i.retired=false and i.official = false and i.mappedToInstitution is null order by i.name";
+            } else {
+                temSql = "SELECT i FROM Institution i where i.retired=false order by i.name";
+            }
+        } else {
+            if (getOffSel() == 0) {
+                temSql = "SELECT i FROM Institution i where i.retired=false and LOWER(i.name) like '%" + getSelectText().toLowerCase() + "%' order by i.name";
+            } else if (getOffSel() == 1) {
+                temSql = "SELECT i FROM Institution i where i.retired=false and i.official = true and LOWER(i.name) like '%" + getSelectText().toLowerCase() + "%' order by i.name";
+            } else if (getOffSel() == 2) {
+                temSql = "SELECT i FROM Institution i where i.retired=false and i.official = false and LOWER(i.name) like '%" + getSelectText().toLowerCase() + "%' order by i.name";
+            } else if (getOffSel() == 3) {
+                temSql = "SELECT i FROM Institution i where i.retired=false and LOWER(i.name) like '%" + getSelectText().toLowerCase() + "%' and i.mappedToInstitution is null order by i.name";
+            } else {
+                temSql = "SELECT i FROM Institution i where i.retired=false and LOWER(i.name) like '%" + getSelectText().toLowerCase() + "%' order by i.name";
+            }
+        }
+        items = getFacade().findBySQL(temSql);
+        System.out.println(temSql);
+
         return items;
     }
 
@@ -142,45 +178,40 @@ public final class InstitutionController  implements Serializable {
         return valueInt;
     }
 
-    public DataModel searchItems() {
-        recreateModel();
-        if (items == null) {
-            if (selectText.equals("")) {
-                items = new ListDataModel(getFacade().findAll("name", true));
-            } else {
-                items = new ListDataModel(getFacade().findAll("name", "%" + selectText + "%",
-                        true));
-                if (items.getRowCount() > 0) {
-                    items.setRowIndex(0);
-                    current = (Institution) items.getRowData();
-                    Long temLong = current.getId();
-                    selectedItemIndex = intValue(temLong);
-                } else {
-                    current = null;
-                    selectedItemIndex = -1;
-                }
-            }
-        }
-        return items;
-
-    }
-
-    public Institution searchItem(String itemName, boolean createNewIfNotPresent) {
-        Institution searchedItem = null;
-        items = new ListDataModel(getFacade().findAll("name", itemName, true));
-        if (items.getRowCount() > 0) {
-            items.setRowIndex(0);
-            searchedItem = (Institution) items.getRowData();
-        } else if (createNewIfNotPresent) {
-            searchedItem = new Institution();
-            searchedItem.setName(itemName);
-            searchedItem.setCreatedAt(Calendar.getInstance().getTime());
-            searchedItem.setCreater(sessionController.loggedUser);
-            getFacade().create(searchedItem);
-        }
-        return searchedItem;
-    }
-
+//    public List<Institution> searchItems() {
+//        recreateModel();
+//        if (items == null) {
+//            if (selectText.equals("")) {
+//                items = getFacade().findAll("name", true);
+//            } else {
+//                items = getFacade().findAll("name", "%" + selectText + "%", true);
+//                if (items.size() > 0) {
+//                    current = (Institution) items.get(0);
+//                    Long temLong = current.getId();
+//                    selectedItemIndex = intValue(temLong);
+//                } else {
+//                    current = null;
+//                    selectedItemIndex = -1;
+//                }
+//            }
+//        }
+//        return items;
+//
+//    }
+//    public Institution searchItem(String itemName, boolean createNewIfNotPresent) {
+//        Institution searchedItem = null;
+//        items = getFacade().findAll("name", itemName, true);
+//        if (items.size() > 0) {
+//            searchedItem = (Institution) items.get(0);
+//        } else if (createNewIfNotPresent) {
+//            searchedItem = new Institution();
+//            searchedItem.setName(itemName);
+//            searchedItem.setCreatedAt(Calendar.getInstance().getTime());
+//            searchedItem.setCreater(sessionController.loggedUser);
+//            getFacade().create(searchedItem);
+//        }
+//        return searchedItem;
+//    }
     private void recreateModel() {
         items = null;
     }
@@ -205,16 +236,17 @@ public final class InstitutionController  implements Serializable {
     }
 
     public void saveSelected() {
-        if (sessionController.getPrivilege().isInstUser()==false){
+        if (sessionController.getPrivilege().isInstUser() == false) {
             JsfUtil.addErrorMessage("You are not autherized to make changes to any content");
             return;
-        }            
+        }
         if (selectedItemIndex > 0) {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));
         } else {
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
+            current.setOfficial(Boolean.TRUE);
             getFacade().create(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
         }
@@ -231,6 +263,7 @@ public final class InstitutionController  implements Serializable {
 
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
+            current.setOfficial(Boolean.FALSE);
 
             getFacade().create(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
@@ -246,7 +279,7 @@ public final class InstitutionController  implements Serializable {
     }
 
     public void delete() {
-        if (sessionController.getPrivilege().isInstUser()==false){
+        if (sessionController.getPrivilege().isInstUser() == false) {
             JsfUtil.addErrorMessage("You are not autherized to delete any content");
             return;
         }
@@ -289,7 +322,8 @@ public final class InstitutionController  implements Serializable {
 
     public void setSelectText(String selectText) {
         this.selectText = selectText;
-        searchItems();
+        recreateModel();
+
     }
 
     public void prepareSelectControlDisable() {
