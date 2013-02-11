@@ -10,12 +10,12 @@
 
     <ui:define name="content">
 
-        
+
         <h:outputLabel value="New Branch" />
-        
-        
-        
-       <h:form  > <!-- removed this part : rendered="#{sessionController.privilege.instUser}" -->
+
+
+
+<h:form  > <!-- removed this part : rendered="#{sessionController.privilege.instUser}" -->
             <p:growl autoUpdate="true" />
             <p:focus id="selectFocus" context="gpSelect" />
             <p:focus id="detailFocus" context="gpDetail" />
@@ -30,24 +30,29 @@
                                 <h:outputText id="lblSelect" value="#{labels.Designations}" >
                                 </h:outputText>
 
-                                <h:selectOneListbox id="lstSelect"  disabled="#{designationController.selectControlDisable}" size="10" value="#{designationController.current}" style="min-width: 223px">
+                                <h:selectOneListbox id="lstSelect"  size="10" value="#{designationController.current}" style="min-width: 223px">
                                     <f:selectItems value="#{designationController.items}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
-                                    <f:ajax render="txtName" execute="lstSelect" >                                
+                                    <f:ajax render="txtName  lstMapped lstCatSelect" execute="lstSelect" >                                
                                     </f:ajax>
                                 </h:selectOneListbox>
 
                             </h:panelGrid>
-
+                            <p:panel>
+                                <h:selectOneRadio id="optOffSel" value="#{designationController.offSel}" >
+                                    <f:selectItem itemLabel="All" itemValue="0"/>
+                                    <f:selectItem itemLabel="Official" itemValue="1"/>
+                                    <f:selectItem itemLabel="Unofficial" itemValue="2"/>
+                                    <f:selectItem itemLabel="Unmapped" itemValue="3"/>
+                                    <f:ajax event="click" execute="optOffSel" render="lstSelect"/>
+                                </h:selectOneRadio> 
+                            </p:panel>
                             <h:panelGrid id="gpSelectButtons" columns="3"  >
-                                <h:commandButton id="btnAdd" value="#{labels.add}" disabled="#{designationController.selectControlDisable}" action="#{designationController.prepareAdd()}" styleClass="buttons" >
-                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel  lstSelect txtName detailFocus" execute="btnEdit" >                                
+                                <h:commandButton id="btnAdd" value="#{labels.add}" action="#{designationController.prepareAdd()}" styleClass="buttons" >
+                                    <f:ajax render="btnAdd  btnDelete btnSave   lstSelect txtName detailFocus" execute="" >                                
                                     </f:ajax>
                                 </h:commandButton>
-                                <h:commandButton id ="btnEdit" value="#{labels.edit}" disabled="#{designationController.selectControlDisable}" action="#{designationController.prepareEdit()}"  styleClass="buttons">
-                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel  lstSelect txtName detailFocus" execute="lstSelect" >
-                                    </f:ajax>
-                                </h:commandButton>
-                                <h:commandButton id="btnDelete" onclick="confirmation.show()" value="#{labels.delete}" disabled="#{designationController.selectControlDisable}" styleClass="buttons">
+                                
+                                <h:commandButton id="btnDelete" onclick="confirmation.show()" value="#{labels.delete}" styleClass="buttons">
                                 </h:commandButton>
                             </h:panelGrid>
                             <p:confirmDialog appendToBody="true" message="#{labels.areYouSureYouWantToDelete}" header="#{labels.initiatingDestroyProcess}" severity="alert" widgetVar="confirmation">  
@@ -61,23 +66,31 @@
                         <h:panelGrid id="gpDetail" columns="1">
                             <h:panelGrid id="gpDetailText" columns="2">
                                 <h:outputText id="lblName" value="#{labels.Designation}" ></h:outputText>
-                                <h:inputText id="txtName" value="#{designationController.current.name}" disabled="#{designationController.modifyControlDisable}" ></h:inputText>
+                                <h:inputText id="txtName" value="#{designationController.current.name}"  ></h:inputText>
+                               
+                                <h:outputText id="lblMapped" value="Mapped Designation" ></h:outputText>
+
+                                <h:selectOneListbox id="lstMapped"  size="5" value="#{designationController.current.mappedToDesignation}" style="min-width: 223px">
+                                    <f:selectItems value="#{designationController.officialDesignations}" var="offi" itemValue="#{offi}" itemLabel="#{offi.name}" ></f:selectItems>
+                                    <f:ajax event="click" execute="lstMapped" render="txtMapped" />
+                                </h:selectOneListbox>
+                                
+                                <h:outputLabel value="Mapped to " />
+                                <h:outputLabel id="txtMapped" value="#{designationController.current.mappedToDesignation.name}" />
+                                
                                 <h:outputText id="lblCatName" value="Service Type" ></h:outputText>
 
-                                <h:selectOneListbox id="lstCatSelect"  disabled="#{designationController.selectControlDisable}" size="1" value="#{designationController.current.category}" style="min-width: 223px">
+                                <h:selectOneListbox id="lstCatSelect"  size="1" value="#{designationController.current.category}" style="min-width: 223px">
                                     <f:selectItems value="#{designationCategoryController.items}" var="myCatItem" itemValue="#{myCatItem}" itemLabel="#{myCatItem.name}" ></f:selectItems>
                                 </h:selectOneListbox>
 
                             </h:panelGrid>
                             <h:panelGrid id="gpDetailButtons" columns="2">
-                                <h:commandButton id="btnSave" value="#{labels.save}" disabled="#{designationController.modifyControlDisable}" action="#{designationController.saveSelected()}" styleClass="buttons">
-                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel  lstSelect txtName selectFocus"  execute="txtName    " >
+                                <h:commandButton id="btnSave" value="#{labels.save}"  action="#{designationController.saveSelected()}" styleClass="buttons">
+                                    <f:ajax render="btnAdd  btnDelete lstSelect btnSave    lstMapped lstCatSelect txtName selectFocus"  execute="btnSave  lstMapped lstCatSelect txtName selectFocus" >
                                     </f:ajax>
                                 </h:commandButton>
-                                <h:commandButton id ="btnCancel" value="#{labels.cancel}" disabled="#{designationController.modifyControlDisable}" action="#{designationController.cancelSelect()}" styleClass="buttons">
-                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel  lstSelect txtName selectFocus" execute=" txtName    " >                                
-                                    </f:ajax>
-                                </h:commandButton>
+                               
                             </h:panelGrid>
                         </h:panelGrid>
                     </p:panel>
@@ -90,3 +103,5 @@
     </ui:define>
 
 </ui:composition>
+
+

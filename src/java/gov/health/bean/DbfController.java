@@ -27,6 +27,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -192,7 +193,7 @@ public class DbfController implements Serializable {
     }
 
     public List<PersonInstitution> getExistingPersonInstitutions() {
-        if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear()==null) {
+        if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear() == null) {
             return new ArrayList<PersonInstitution>();
         }
         existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId());
@@ -431,6 +432,8 @@ public class DbfController implements Serializable {
             getPiFacade().create(pi);
         }
         getExistingPersonInstitutions();
+        existingPersonInstitutions = newPersonInstitutions;
+        newPersonInstitutions = new ArrayList<PersonInstitution>();
         JsfUtil.addSuccessMessage("Data Replaced Successfully");
     }
 
@@ -589,6 +592,10 @@ public class DbfController implements Serializable {
     }
 
     private Designation findDesignation(String designationName) {
+        designationName = designationName.trim();
+        if (designationName.equals("")) {
+            return null;
+        }
         Designation des = getDesFacade().findFirstBySQL("select d from Designation d where lower(d.name) = '" + designationName.toLowerCase() + "'");
         if (des == null) {
             des = new Designation();
@@ -608,6 +615,10 @@ public class DbfController implements Serializable {
     }
 
     private Institution findInstitution(String insName) {
+        insName = insName.trim();
+        if (insName.equals("")) {
+            return null;
+        }
         Institution ins = getInsFacade().findFirstBySQL("select d from Institution d where d.retired = false and lower(d.name) = '" + insName.toLowerCase() + "'");
         if (ins == null) {
             ins = new Institution();
