@@ -11,6 +11,7 @@ import gov.health.entity.Person;
 import gov.health.entity.Category;
 import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFReader;
+import gov.health.data.DesignationSummeryRecord;
 import gov.health.entity.Designation;
 import gov.health.entity.InstitutionSet;
 import gov.health.facade.CategoryFacade;
@@ -30,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedProperty;
@@ -80,6 +82,31 @@ public class DbfController implements Serializable {
     List<Integer> payMonths;
     List<InstitutionSet> insSets;
     InstitutionSet insSet;
+    List<DesignationSummeryRecord> designationSummery;
+
+    public List<DesignationSummeryRecord> getDesignationSummery() {
+        if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear() == null) {
+            return new ArrayList<DesignationSummeryRecord>();
+        }
+        String sql = "select pi.designation.name, count(pi) from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " group by pi.designation.name";
+        List lst = getPiFacade().findGroupingBySql(sql);
+        List<DesignationSummeryRecord> sums = new ArrayList<DesignationSummeryRecord>();
+        Iterator<Object[]> itr = lst.iterator();
+        while (itr.hasNext()) {
+            Object[] o = itr.next();
+            DesignationSummeryRecord s = new DesignationSummeryRecord();
+            s.setDesignationName(o[0].toString());
+            s.setCount(Long.valueOf(o[1].toString()));
+            sums.add(s);
+        }
+//        PersonInstitution pi = new PersonInstitution();
+//        pi.getDesignation();
+        return sums;
+    }
+
+    public void setDesignationSummery(List<DesignationSummeryRecord> designationSummery) {
+        this.designationSummery = designationSummery;
+    }
 
     public InstitutionSetFacade getInsetFacade() {
         return insetFacade;

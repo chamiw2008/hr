@@ -9,29 +9,62 @@
     <ui:define name="content">
 
         <h:form  rendered="#{sessionController.privilege.systemAdmin}">
-            
-            <pou:growl ></pou:growl>
-            <h:panelGrid columns="2" >
-                <h:outputText value="Institution"/>
-                <h:selectOneListbox id="cmbLoc" value="#{dbfController.institution}" >
-                    <f:selectItems value="#{institutionController.items}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
-                </h:selectOneListbox>
-                <h:commandButton value="Display" />
-            </h:panelGrid>
+
+            <pou:panel header="Uploading Payment Cycle Details" >
+                <pou:panelGrid columns="4" >
+                    <h:outputText value="Institution"/>
+                    <h:outputText value="Set"/>
+                    <h:outputText value="Year"/>
+                    <h:outputText value="Month"/>
+
+                    <pou:panel id="cmbLoc" style="border: 0px;margin: 0px;padding: 0px;">
+                        <h:selectOneListbox rendered="#{sessionController.privilege.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}" size="1" >
+                            <f:selectItems value="#{institutionController.offItems}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
+                            <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls" />
+                        </h:selectOneListbox>
+                        <h:outputLabel rendered="#{sessionController.privilege.restrictedInstitution != null}"  value="#{sessionController.privilege.restrictedInstitution.name}"/>
+                    </pou:panel>
+
+
+                    <h:selectOneListbox id="cmbSet" value="#{dbfController.insSet}" size="1">
+                        <f:selectItems value="#{dbfController.insSets}" var="insset" itemValue="#{insset}" itemLabel="#{insset.name}" />
+                        <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls " />
+                    </h:selectOneListbox>
+
+                    <h:selectOneListbox id="cmbYear" value="#{dbfController.payYear}" size="1">
+                        <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
+                        <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls " />
+                    </h:selectOneListbox>
+
+                    <h:selectOneListbox id="cmbMonth" value="#{dbfController.payMonth}" size="1" >
+                        <f:selectItem itemValue="1" itemLabel="January" />
+                        <f:selectItem itemValue="2" itemLabel="February" />
+                        <f:selectItem itemValue="3" itemLabel="March" />
+                        <f:selectItem itemValue="4" itemLabel="April" />
+                        <f:selectItem itemValue="5" itemLabel="May" />
+                        <f:selectItem itemValue="6" itemLabel="June" />
+                        <f:selectItem itemValue="7" itemLabel="July" />
+                        <f:selectItem itemValue="8" itemLabel="August" />
+                        <f:selectItem itemValue="9" itemLabel="September" />
+                        <f:selectItem itemValue="10" itemLabel="October" />
+                        <f:selectItem itemValue="11" itemLabel="November" />
+                        <f:selectItem itemValue="12" itemLabel="December" />
+                        <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls " />
+                    </h:selectOneListbox>
+                </pou:panelGrid>
+            </pou:panel>
+
+
             <pou:panel header="Employee Data">
-                <pou:dataTable value="#{dbfController.existingPersonInstitutions}" var="exPi">
-                    <pou:column>
-                        <f:facet name="header">Employee Id</f:facet>
-                        <h:outputLabel value="#{exPi.empNo}"/>
-                    </pou:column>
-                    <pou:column>
-                        <f:facet name="header">Name</f:facet>
-                        <h:outputLabel value="#{exPi.person.name}"/>
-                    </pou:column> 
+                <pou:dataTable id="tabTbls" value="#{dbfController.designationSummery}" var="exPi">
                     <pou:column>
                         <f:facet name="header">Designation</f:facet>
-                        <h:outputLabel value="#{exPi.designation.name}"/>
-                    </pou:column>                 
+                        <h:outputLabel value="#{exPi.designationName}"/>
+                    </pou:column>
+                    <pou:column>
+                        <f:facet name="header">Count</f:facet>
+                        <h:outputLabel value="#{exPi.count}"/>
+                    </pou:column> 
                 </pou:dataTable>
             </pou:panel>
         </h:form>
