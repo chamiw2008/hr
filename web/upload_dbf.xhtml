@@ -65,50 +65,19 @@
                     </h:selectOneListbox>
                 </pou:panelGrid>
             </pou:panel>
-            
+
             <pou:panel  header="Uploading File"   >
                 <pou:fileUpload value="#{dbfController.file}" mode="simple"/>
                 <h:commandButton value="Upload" action="#{dbfController.extractData}"/>
             </pou:panel>
 
-            
+
             <pou:panel rendered="#{dbfController.newPersonInstitutions.size()>0}" header="Replace Existing Data With new Data">
                 <h:commandButton value="Replace" action="#{dbfController.replaceData}"/>
             </pou:panel>
-            
-            <pou:tabView id="tabTbls" >
-                
-                
-                
-                
-                
-                <pou:tab  title="New Data">
-                    <pou:panel header="New Data">
-                        <pou:dataTable id="tblNew" value="#{dbfController.newPersonInstitutions}" var="newPi">
-                            <pou:column>
-                                <f:facet name="header">Employee Id</f:facet>
-                                <h:outputLabel value="#{newPi.empNo}"/>
-                            </pou:column>
-                            <pou:column>
-                                <f:facet name="header">Name</f:facet>
-                                <h:outputLabel value="#{newPi.name}"/>
-                            </pou:column> 
-                            <pou:column>
-                                <f:facet name="header">Designation</f:facet>
-                                <h:outputLabel value="#{newPi.designation.name}"/>
-                            </pou:column>                 
-                        </pou:dataTable>
-                    </pou:panel>     
-                </pou:tab>
-                
-                
-                
-                
-                
-                
-                
-                
-                
+
+            <pou:tabView id="tabTbls"  dynamic="true" activeIndex="#{dbfController.activeTab}">
+
                 <pou:tab title="Existing Data">
                     <pou:panel header="Existing Data">
                         <pou:dataTable id="tblEx" value="#{dbfController.existingPersonInstitutions}" var="exPi">
@@ -133,7 +102,10 @@
                     </pou:panel>
 
                 </pou:tab>
-                
+
+
+
+
             </pou:tabView>
 
 
