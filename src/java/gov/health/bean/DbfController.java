@@ -497,7 +497,7 @@ public class DbfController implements Serializable {
 
     public void markTransfer(Person p, Institution fromIns, Institution toIns, PersonInstitution pi) {
         TransferHistory hx = new TransferHistory();
-        hx.setPersonInstitution(pi);
+//        hx.setPersonInstitution(pi);
         hx.setFromInstitution(fromIns);
         hx.setToInstitution(toIns);
         hx.setPerson(person);
