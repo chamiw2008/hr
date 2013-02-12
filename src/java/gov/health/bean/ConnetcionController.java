@@ -144,14 +144,16 @@ public class ConnetcionController implements Serializable {
         request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         Enumeration headerIter = request.getHeaderNames();
         String userAgent = request.getHeader("User-Agent");
+        
         while (headerIter.hasMoreElements()) {
             String headername = (String) headerIter.nextElement();
             System.out.println("headername + : " + request.getHeader(headername));
-
         }
+
         String clientAddr = request.getRemoteAddr();
         String clientPc = request.getRemoteHost();
-        System.out.println("Clinet : " + clientPc + " & clinet address : " + clientAddr + " & Browser : " + userAgent);
+        System.out.println("Client : " + clientPc + " & client address : " + clientAddr + " & Browser : " + userAgent);
+
 
         if (login()) {
             menu.createMenu();
