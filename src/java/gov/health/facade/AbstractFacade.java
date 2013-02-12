@@ -61,6 +61,11 @@ public abstract class AbstractFacade<T> {
         return findAll(fieldName, fieldValue, false);
     }
 
+    public List findGroupingBySql(String sql){
+        Query qry = getEntityManager().createQuery(sql);
+        return qry.getResultList();
+    }
+    
     public List<T> findBySQL(String temSQL) {
         TypedQuery<T> qry = getEntityManager().createQuery(temSQL, entityClass);
         return qry.getResultList();

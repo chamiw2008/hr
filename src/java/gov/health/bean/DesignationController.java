@@ -46,12 +46,21 @@ public final class DesignationController implements Serializable {
     Designation mappedDesignation;
     Designation unmappedDesignation;
     private Designation current;
-    private DataModel<Designation> items = null;
+    private List<Designation> items = null;
     private int selectedItemIndex;
-    boolean selectControlDisable = false;
-    boolean modifyControlDisable = true;
+   
     String selectText = "";
     String sql;
+    Integer offSel = 0;
+
+    public Integer getOffSel() {
+        return offSel;
+    }
+
+    public void setOffSel(Integer offSel) {
+        recreateModel();
+        this.offSel = offSel;
+    }
 
     public Designation getMappedDesignation() {
         return mappedDesignation;
@@ -70,7 +79,7 @@ public final class DesignationController implements Serializable {
     }
 
     public List<Designation> getUnmappedDesignations() {
-        sql = "select d from Designation d where d.mappedDesignation is null order by d.name";
+        sql = "select d from Designation d where d.retired = false and d.official = false and d.mappedToDesignation is null order by d.name";
         unmappedDesignations = getFacade().findBySQL(sql);
         return unmappedDesignations;
     }
@@ -222,8 +231,25 @@ public final class DesignationController implements Serializable {
         this.current = current;
     }
 
-    public DataModel<Designation> getItems() {
-        items = new ListDataModel(getFacade().findAll("name", true));
+    public List<Designation> getItems() {
+//        items = getFacade().findAll("name", true);
+        if (items == null) {
+            if (getOffSel() == 0) {
+                sql = "SELECT i FROM Designation i where i.retired=false order by i.name";
+                items = getAllDesignations();
+            } else if (getOffSel() == 1) {
+                items = getOfficialDesignations();
+                sql = "SELECT i FROM Designation i where i.retired=false and i.official = true order by i.name";
+            } else if (getOffSel() == 2) {
+                items = getUnOfficialDesignations();
+                sql = "SELECT i FROM Designation i where i.retired=false and i.official = false order by i.name";
+            } else if (getOffSel() == 3) {
+                items = getUnmappedDesignations();
+                sql = "SELECT i FROM Designation i where i.retired=false and i.official = false and i.mappedToDesignation is null order by i.name";
+            } else {
+                sql = "SELECT i FROM Designation i where i.retired=false order by i.name";
+            }
+        }
         return items;
     }
 
@@ -236,36 +262,43 @@ public final class DesignationController implements Serializable {
         return valueInt;
     }
 
-    public DataModel searchItems() {
+    public List<Designation> searchItems() {
         recreateModel();
-        if (items == null) {
-            if (selectText.equals("")) {
-                items = new ListDataModel(getFacade().findAll("name", true));
+        if (selectText.equals("")) {
+            items = getItems();
+        } else {
+            if (getOffSel() == 0) {
+                sql = "SELECT i FROM Designation i where i.retired=false and lower(i.name) like '%" + selectText.toLowerCase() + "%' order by i.name";
+                items = getAllDesignations();
+            } else if (getOffSel() == 1) {
+                items = getOfficialDesignations();
+                sql = "SELECT i FROM Designation i where i.retired=false and i.official = true and lower(i.name) like '%" + selectText.toLowerCase() + "%' order by i.name";
+            } else if (getOffSel() == 2) {
+                items = getUnOfficialDesignations();
+                sql = "SELECT i FROM Designation i where i.retired=false and i.official = false and lower(i.name) like '%" + selectText.toLowerCase() + "%' order by i.name";
+            } else if (getOffSel() == 3) {
+                items = getUnmappedDesignations();
+                sql = "SELECT i FROM Designation i where i.retired=false and i.official = false and i.mappedToDesignation is null and lower(i.name) like '%" + selectText.toLowerCase() + "%' order by i.name";
             } else {
-                items = new ListDataModel(getFacade().findAll("name", "%" + selectText + "%",
-                        true));
-                if (items.getRowCount() > 0) {
-                    items.setRowIndex(0);
-                    current = (Designation) items.getRowData();
-                    Long temLong = current.getId();
-                    selectedItemIndex = intValue(temLong);
-                } else {
-                    current = null;
-                    selectedItemIndex = -1;
-                }
+                sql = "SELECT i FROM Designation i where i.retired=false and lower(i.name) like '%" + selectText.toLowerCase() + "%' order by i.name";
             }
+            items = getFacade().findBySQL(sql);
+            if (items.size() > 0) {
+                current = items.get(0);
+                Long temLong = current.getId();
+                selectedItemIndex = intValue(temLong);
+            } else {
+                current = null;
+                selectedItemIndex = -1;
+            }
+
         }
         return items;
-
     }
 
     public Designation searchItem(String itemName, boolean createNewIfNotPresent) {
-        Designation searchedItem = null;
-        items = new ListDataModel(getFacade().findAll("name", itemName, true));
-        if (items.getRowCount() > 0) {
-            items.setRowIndex(0);
-            searchedItem = (Designation) items.getRowData();
-        } else if (createNewIfNotPresent) {
+        Designation searchedItem = getFacade().findFirstBySQL("select d from Designation d where d.retired=false and lower(d.name)= '" + itemName.toLowerCase() + "'");
+        if (createNewIfNotPresent) {
             searchedItem = new Designation();
             searchedItem.setName(itemName);
             searchedItem.setCreatedAt(Calendar.getInstance().getTime());
@@ -279,25 +312,16 @@ public final class DesignationController implements Serializable {
         items = null;
         setOfficialDesignations(null);
         setUnOfficialDesignations(null);
+        setMappedDesignation(null);
+        setUnmappedDesignations(null);
     }
 
-    public void prepareSelect() {
-        this.prepareModifyControlDisable();
-    }
+   
 
-    public void prepareEdit() {
-        if (current != null) {
-            selectedItemIndex = intValue(current.getId());
-            this.prepareSelectControlDisable();
-        } else {
-            JsfUtil.addErrorMessage(new MessageProvider().getValue("nothingToEdit"));
-        }
-    }
 
     public void prepareAdd() {
         selectedItemIndex = -1;
         current = new Designation();
-        this.prepareSelectControlDisable();
     }
 
     public void saveSelected() {
@@ -315,7 +339,6 @@ public final class DesignationController implements Serializable {
             getFacade().create(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
         }
-        this.prepareSelect();
         recreateModel();
         getItems();
         selectText = "";
@@ -338,9 +361,7 @@ public final class DesignationController implements Serializable {
 
     }
 
-    public void cancelSelect() {
-        this.prepareSelect();
-    }
+ 
 
     public void delete() {
         if (current != null) {
@@ -357,42 +378,15 @@ public final class DesignationController implements Serializable {
         selectText = "";
         selectedItemIndex = -1;
         current = null;
-        this.prepareSelect();
     }
 
-    public boolean isModifyControlDisable() {
-        return modifyControlDisable;
-    }
-
-    public void setModifyControlDisable(boolean modifyControlDisable) {
-        this.modifyControlDisable = modifyControlDisable;
-    }
-
-    public boolean isSelectControlDisable() {
-        return selectControlDisable;
-    }
-
-    public void setSelectControlDisable(boolean selectControlDisable) {
-        this.selectControlDisable = selectControlDisable;
-    }
-
-    public String getSelectText() {
+       public String getSelectText() {
         return selectText;
     }
 
     public void setSelectText(String selectText) {
         this.selectText = selectText;
         searchItems();
-    }
-
-    public void prepareSelectControlDisable() {
-        selectControlDisable = true;
-        modifyControlDisable = false;
-    }
-
-    public void prepareModifyControlDisable() {
-        selectControlDisable = false;
-        modifyControlDisable = true;
     }
 
     @FacesConverter(forClass = Designation.class)
