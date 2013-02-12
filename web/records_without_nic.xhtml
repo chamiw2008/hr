@@ -2,14 +2,15 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 template="./resources/template/template_1.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:pou="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="content">
 
-        <h:form  rendered="#{sessionController.privilege.systemAdmin}">
-
+        <h:form enctype="multipart/form-data">
+            <pou:growl ></pou:growl>
             <pou:panel header="Uploading Payment Cycle Details" >
                 <pou:panelGrid columns="4" >
                     <h:outputText value="Institution"/>
@@ -49,26 +50,31 @@
                         <f:selectItem itemValue="10" itemLabel="October" />
                         <f:selectItem itemValue="11" itemLabel="November" />
                         <f:selectItem itemValue="12" itemLabel="December" />
-                        <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls" />
+                        <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="tabTbls" />
                     </h:selectOneListbox>
                 </pou:panelGrid>
             </pou:panel>
-
-
-
-            <pou:dataTable id="tabTbls" value="#{dbfController.designationSummery}" var="exPi">
+            <pou:dataTable id="tabTbls" value="#{dbfController.personInstitutionsWithoutNic}" var="exPi">
                 <pou:column>
-                    <f:facet name="header">Designation</f:facet>
-                    <h:outputLabel rendered="#{exPi.designationName.trim()!=''}" value="#{exPi.designationName}"/>
-                    <h:outputLabel rendered="#{exPi.designationName.trim()==''}" value="No Designation Entered"/>
+                    <f:facet name="header">Employee Id</f:facet>
+                    <h:outputLabel value="#{exPi.empNo}"/>
                 </pou:column>
                 <pou:column>
-                    <f:facet name="header">Count</f:facet>
-                    <h:outputLabel value="#{exPi.count}"/>
+                    <f:facet name="header">Name</f:facet>
+                    <h:outputLabel value="#{exPi.name}"/>
                 </pou:column> 
-
-
+                <pou:column>
+                    <f:facet name="header">Designation</f:facet>
+                    <h:outputLabel value="#{exPi.designation.name}"/>
+                </pou:column>  
+                <pou:column>
+                    <f:facet name="header">NIC</f:facet>
+                    <h:outputLabel value="#{exPi.nic}"/>
+                </pou:column>           
             </pou:dataTable>
+
+
+
 
         </h:form>
     </ui:define>

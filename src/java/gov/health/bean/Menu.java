@@ -140,12 +140,12 @@ public class Menu implements Serializable {
         submenu.setLabel("View Data");
 
         // for Super user & System admins
-        if (sessionController.privilege.isSystemAdmin() || sessionController.privilege.isSuperUser()) {
-            item = new MenuItem();
-            item.setValue("Full Summary");
-            item.setUrl("full_summary.xhtml");
-            submenu.getChildren().add(item);
-        }
+//        if (sessionController.privilege.isSystemAdmin() || sessionController.privilege.isSuperUser()) {
+//            item = new MenuItem();
+//            item.setValue("Full Summary");
+//            item.setUrl("full_summary.xhtml");
+//            submenu.getChildren().add(item);
+//        }
 
         // for all 4 categories
         if (sessionController.privilege.isSystemAdmin() || sessionController.privilege.isSuperUser() || sessionController.privilege.isInstAdmin() || sessionController.privilege.isInstUser()) {
@@ -155,6 +155,21 @@ public class Menu implements Serializable {
             submenu.getChildren().add(item);
         }
 
+        if (sessionController.privilege.isSystemAdmin() || sessionController.privilege.isSuperUser() || sessionController.privilege.isInstAdmin() || sessionController.privilege.isInstUser()) {
+            item = new MenuItem();
+            item.setValue("Records wihout NIC");
+            item.setUrl("records_without_nic.xhtml");
+            submenu.getChildren().add(item);
+        }
+
+        if (sessionController.privilege.isSystemAdmin() || sessionController.privilege.isSuperUser() || sessionController.privilege.isInstAdmin() || sessionController.privilege.isInstUser()) {
+            item = new MenuItem();
+            item.setValue("Records wihout Designations");
+            item.setUrl("records_without_designation.xhtml");
+            submenu.getChildren().add(item);
+        }
+        
+        
         return submenu;
     }
 

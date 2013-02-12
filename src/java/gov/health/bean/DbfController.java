@@ -21,6 +21,8 @@ import gov.health.facade.InstitutionFacade;
 import gov.health.facade.InstitutionSetFacade;
 import gov.health.facade.PersonFacade;
 import gov.health.facade.PersonInstitutionFacade;
+import gov.health.entity.TransferHistory;
+import gov.health.facade.TransferHistoryFacade;
 import java.io.ByteArrayInputStream;
 import javax.faces.bean.ManagedBean;
 import org.primefaces.model.UploadedFile;
@@ -50,6 +52,8 @@ public class DbfController implements Serializable {
     StreamedContent scImage;
     StreamedContent scImageById;
     private UploadedFile file;
+    @EJB
+    TransferHistoryFacade thFacade;
     @EJB
     DbfFileFacade dbfFileFacade;
     @EJB
@@ -104,6 +108,16 @@ public class DbfController implements Serializable {
         return sums;
     }
 
+    public TransferHistoryFacade getThFacade() {
+        return thFacade;
+    }
+
+    public void setThFacade(TransferHistoryFacade thFacade) {
+        this.thFacade = thFacade;
+    }
+
+    
+    
     public void setDesignationSummery(List<DesignationSummeryRecord> designationSummery) {
         this.designationSummery = designationSummery;
     }
@@ -227,6 +241,23 @@ public class DbfController implements Serializable {
         return existingPersonInstitutions;
     }
 
+      public List<PersonInstitution> getPersonInstitutionsWithoutNic() {
+        if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear() == null) {
+            return new ArrayList<PersonInstitution>();
+        }
+        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " and pi.person is null order by pi.name"  );
+        return existingPersonInstitutions;
+    }
+    
+      
+      public List<PersonInstitution> getPersonInstitutionsWithoutDesignations() {
+        if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear() == null) {
+            return new ArrayList<PersonInstitution>();
+        }
+        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " and pi.designation is null order by pi.name"  );
+        return existingPersonInstitutions;
+    }
+      
     public void setExistingPersonInstitutions(List<PersonInstitution> existingPersonInstitutions) {
         this.existingPersonInstitutions = existingPersonInstitutions;
     }
@@ -464,7 +495,13 @@ public class DbfController implements Serializable {
         JsfUtil.addSuccessMessage("Data Replaced Successfully");
     }
 
-    public void markTransfer(Person p, Institution fromIns, Institution toIns) {
+    public void markTransfer(Person p, Institution fromIns, Institution toIns, PersonInstitution pi) {
+        TransferHistory hx = new TransferHistory();
+        hx.setPersonInstitution(pi);
+        hx.setFromInstitution(fromIns);
+        hx.setToInstitution(toIns);
+        hx.setPerson(person);
+        thFacade.create(hx);
     }
 
     public String extractData() {
@@ -557,7 +594,7 @@ public class DbfController implements Serializable {
                         getPerFacade().create(p);
                     } else {
                         if (p.getInstitution() != getInstitution()) {
-                            markTransfer(p, p.getInstitution(), institution);
+                            markTransfer(p, p.getInstitution(), institution,pi);
                         }
                     }
 
