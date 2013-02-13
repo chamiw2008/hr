@@ -77,6 +77,7 @@ public class DbfController implements Serializable {
     DbfFile defFile;
     List<DbfFile> dbfFiles;
     List<PersonInstitution> existingPersonInstitutions;
+    List<PersonInstitution> previousPersonInstitutions;
     List<PersonInstitution> newPersonInstitutions;
     @ManagedProperty(value = "#{sessionController}")
     SessionController sessionController;
@@ -91,13 +92,68 @@ public class DbfController implements Serializable {
     int activeTab = 0;
     Long withoutNicCount;
     Long withoutDesignationCount;
-    Long wihoutMappedDesignationCount;
+    Long withoutMappedDesignationCount;
     Long withoutInstitutionCount;
     Long withoutMappedInstitutionCount;
     Long activeCount;
     Long temporaryCount;
+//
+    Boolean toGetRecordsagain = Boolean.TRUE;
+
+    public Boolean getToGetRecordsagain() {
+        return toGetRecordsagain;
+    }
+
+    public void setToGetRecordsagain(Boolean toGetRecordsagain) {
+        this.toGetRecordsagain = toGetRecordsagain;
+    }
+
+    public List<PersonInstitution> getPreviousPersonInstitutions() {
+        return previousPersonInstitutions;
+    }
+
+    public void setPreviousPersonInstitutions(List<PersonInstitution> previousPersonInstitutions) {
+        this.previousPersonInstitutions = previousPersonInstitutions;
+    }
+
+    public void getSummeryCounts(List<PersonInstitution> pis) {
+        withoutNicCount = 0L;
+        withoutDesignationCount = 0L;
+        withoutMappedDesignationCount = 0L;
+        withoutInstitutionCount = 0L;
+        withoutMappedInstitutionCount = 0L;
+        activeCount = 0L;
+        temporaryCount = 0L;
+        for (PersonInstitution pi : pis) {
+            if (pi.getNic().trim().equals("")) {
+                withoutNicCount++;
+            }
+            if (pi.getDesignation() == null) {
+                withoutDesignationCount++;
+            } else {
+                if (pi.getDesignation().getOfficial() == Boolean.FALSE && pi.getDesignation().getMappedToDesignation() == null) {
+                    withoutMappedInstitutionCount++;
+                }
+            }
+            if (pi.getInstitution() == null) {
+                withoutInstitutionCount++;
+            } else {
+                if (pi.getInstitution().getOfficial() == Boolean.FALSE && pi.getInstitution().getMappedToInstitution() == null) {
+                    withoutMappedInstitutionCount++;
+                }
+            }
+            if (pi.getActiveState() == Boolean.TRUE) {
+                activeCount++;
+            }
+            if (pi.getPermanent() == Boolean.FALSE) {
+                temporaryCount++;
+            }
+        }
+
+    }
 
     public Long getWithoutNicCount() {
+        getExistingPersonInstitutions();
         return withoutNicCount;
     }
 
@@ -106,6 +162,7 @@ public class DbfController implements Serializable {
     }
 
     public Long getWithoutDesignationCount() {
+        getExistingPersonInstitutions();
         return withoutDesignationCount;
     }
 
@@ -113,15 +170,18 @@ public class DbfController implements Serializable {
         this.withoutDesignationCount = withoutDesignationCount;
     }
 
-    public Long getWihoutMappedDesignationCount() {
-        return wihoutMappedDesignationCount;
+    public Long getWithoutMappedDesignationCount() {
+        getExistingPersonInstitutions();
+        return withoutMappedDesignationCount;
     }
 
-    public void setWihoutMappedDesignationCount(Long wihoutMappedDesignationCount) {
-        this.wihoutMappedDesignationCount = wihoutMappedDesignationCount;
+    public void setWithoutMappedDesignationCount(Long withoutMappedDesignationCount) {
+        
+        this.withoutMappedDesignationCount = withoutMappedDesignationCount;
     }
 
     public Long getWithoutInstitutionCount() {
+        getExistingPersonInstitutions();
         return withoutInstitutionCount;
     }
 
@@ -130,6 +190,7 @@ public class DbfController implements Serializable {
     }
 
     public Long getWithoutMappedInstitutionCount() {
+        getExistingPersonInstitutions();
         return withoutMappedInstitutionCount;
     }
 
@@ -138,6 +199,7 @@ public class DbfController implements Serializable {
     }
 
     public Long getActiveCount() {
+        getExistingPersonInstitutions();
         return activeCount;
     }
 
@@ -146,16 +208,14 @@ public class DbfController implements Serializable {
     }
 
     public Long getTemporaryCount() {
+        getExistingPersonInstitutions();
         return temporaryCount;
     }
 
     public void setTemporaryCount(Long temporaryCount) {
         this.temporaryCount = temporaryCount;
     }
-    
 
-    
-    
     public int getActiveTab() {
         if (getNewPersonInstitutions().size() > 0) {
             activeTab = 1;
@@ -170,10 +230,10 @@ public class DbfController implements Serializable {
     }
 
     public List<DesignationSummeryRecord> getDesignationSummery() {
-        if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear() == null) {
+        if (getInstitution() == null || getPayMonth() == null || getPayYear() == null) {
             return new ArrayList<DesignationSummeryRecord>();
         }
-        String sql = "select pi.designation.name, count(pi) from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " group by pi.designation.name";
+        String sql = "select pi.designation.name, count(pi) from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.payCentre.id = " + getInstitution().getId() + " group by pi.designation.name";
         List lst = getPiFacade().findGroupingBySql(sql);
         List<DesignationSummeryRecord> sums = new ArrayList<DesignationSummeryRecord>();
         Iterator<Object[]> itr = lst.iterator();
@@ -214,6 +274,9 @@ public class DbfController implements Serializable {
     }
 
     public void setInsSet(InstitutionSet insSet) {
+        if (this.insSet != insSet) {
+            setToGetRecordsagain(Boolean.TRUE);
+        }
         this.insSet = insSet;
     }
 
@@ -277,6 +340,9 @@ public class DbfController implements Serializable {
     }
 
     public void setPayMonth(Integer payMonth) {
+        if (this.payMonth != payMonth) {
+            setToGetRecordsagain(Boolean.TRUE);
+        }
         this.payMonth = payMonth;
     }
 
@@ -285,6 +351,9 @@ public class DbfController implements Serializable {
     }
 
     public void setPayYear(Integer payYear) {
+        if (this.payYear != payYear) {
+            setToGetRecordsagain(Boolean.TRUE);
+        }
         this.payYear = payYear;
     }
 
@@ -316,7 +385,12 @@ public class DbfController implements Serializable {
         if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear() == null) {
             return new ArrayList<PersonInstitution>();
         }
-        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId());
+        if (getToGetRecordsagain()) {
+            existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId());
+            getSummeryCounts(existingPersonInstitutions);
+            setToGetRecordsagain(Boolean.FALSE);
+        } else {
+        }
         return existingPersonInstitutions;
     }
 
@@ -424,6 +498,7 @@ public class DbfController implements Serializable {
 
     public void setFile(UploadedFile file) {
         this.file = file;
+        setToGetRecordsagain(Boolean.TRUE);
     }
 
     private void prepareImages(String sql) {
@@ -469,6 +544,9 @@ public class DbfController implements Serializable {
 
     public void setInstitution(Institution institution) {
         this.institution = institution;
+        if (this.institution != institution) {
+            setToGetRecordsagain(Boolean.TRUE);
+        }
         if (institution == null && institution.getId() != null) {
             prepareImages("Select ai from AppImage ai Where ai.institution.id = " + institution.getId());
         } else {
@@ -739,6 +817,7 @@ public class DbfController implements Serializable {
             if (newEntries) {
                 JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " recorded successfully. ");
                 newPersonInstitutions = new ArrayList<PersonInstitution>();
+                getSummeryCounts(newPersonInstitutions);
             } else {
                 JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " is listed successfully. If you are satisfied, please click the Save button to permanantly save the new set of data Replacing the old ones under " + institution.getName() + ".");
             }

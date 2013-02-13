@@ -10,6 +10,9 @@ package gov.health.bean;
 
 import gov.health.facade.DesignationFacade;
 import gov.health.entity.Designation;
+import gov.health.entity.PersonInstitution;
+import gov.health.facade.InstitutionTypeFacade;
+import gov.health.facade.PersonInstitutionFacade;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
@@ -35,6 +38,8 @@ public final class DesignationController implements Serializable {
 
     @EJB
     private DesignationFacade facade;
+    @EJB
+    PersonInstitutionFacade piFacade;
     @ManagedProperty(value = "#{sessionController}")
     SessionController sessionController;
     List<Designation> officialDesignations;
@@ -45,13 +50,39 @@ public final class DesignationController implements Serializable {
     Designation officialDesignation;
     Designation mappedDesignation;
     Designation unmappedDesignation;
+    Designation oldDesignation;
     private Designation current;
     private List<Designation> items = null;
     private int selectedItemIndex;
-   
     String selectText = "";
     String sql;
     Integer offSel = 0;
+
+    public Designation getOldDesignation() {
+        return oldDesignation;
+    }
+
+    public void setOldDesignation(Designation oldDesignation) {
+        this.oldDesignation = oldDesignation;
+    }
+
+    public PersonInstitutionFacade getPiFacade() {
+        return piFacade;
+    }
+
+    public void setPiFacade(PersonInstitutionFacade piFacade) {
+        this.piFacade = piFacade;
+    }
+
+    public int replaceDesignations(Designation going, Designation comming) {
+        sql = "select pi from PersonInstitution pi where pi.designation.id = " + going.getId() ;
+        List<PersonInstitution> pis= getPiFacade().findBySQL(sql);
+        for (PersonInstitution pi:pis){
+            pi.setDesignation(comming);
+            getPiFacade().edit(pi);
+        }
+        return pis.size();
+    }
 
     public Integer getOffSel() {
         return offSel;
@@ -228,6 +259,7 @@ public final class DesignationController implements Serializable {
     }
 
     public void setCurrent(Designation current) {
+        oldDesignation = current.getMappedToDesignation();
         this.current = current;
     }
 
@@ -316,29 +348,32 @@ public final class DesignationController implements Serializable {
         setUnmappedDesignations(null);
     }
 
-   
-
-
     public void prepareAdd() {
         selectedItemIndex = -1;
         current = new Designation();
     }
 
     public void saveSelected() {
+        String msg;
         if (sessionController.getPrivilege().isInstUser() == false) {
+
             JsfUtil.addErrorMessage("You are not autherized to make changes to any content");
             return;
         }
         if (selectedItemIndex > 0) {
             getFacade().edit(current);
-            JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));
+            msg = new MessageProvider().getValue("savedOldSuccessfully");
         } else {
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
             current.setOfficial(true);
             getFacade().create(current);
-            JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
+            msg = new MessageProvider().getValue("savedNewSuccessfully");
         }
+        if (oldDesignation != current.getMappedToDesignation()) {
+            msg = msg + " " + replaceDesignations(oldDesignation, current.getMappedToDesignation()) + " records updated.";
+        }
+        JsfUtil.addSuccessMessage(msg);
         recreateModel();
         getItems();
         selectText = "";
@@ -361,8 +396,6 @@ public final class DesignationController implements Serializable {
 
     }
 
- 
-
     public void delete() {
         if (current != null) {
             current.setRetired(true);
@@ -380,7 +413,7 @@ public final class DesignationController implements Serializable {
         current = null;
     }
 
-       public String getSelectText() {
+    public String getSelectText() {
         return selectText;
     }
 
