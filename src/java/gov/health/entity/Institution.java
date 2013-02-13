@@ -56,8 +56,18 @@ public class Institution implements Serializable {
     
     Boolean official;
     
+    Boolean payCentre;
+    
     @ManyToOne
     Institution mappedToInstitution;
+
+    public Boolean getPayCentre() {
+        return payCentre;
+    }
+
+    public void setPayCentre(Boolean payCentre) {
+        this.payCentre = payCentre;
+    }
 
     public Institution getMappedToInstitution() {
         return mappedToInstitution;

@@ -248,6 +248,7 @@ public final class DesignationController implements Serializable {
       public Designation getCurrent() {
         if (current == null) {
             current = new Designation();
+            current.setOfficial(Boolean.TRUE);
         }
         return current;
     }
@@ -313,7 +314,7 @@ public final class DesignationController implements Serializable {
                 current = items.get(0);
                 Long temLong = current.getId();
             } else {
-                current = null;
+                
             }
 
         }
@@ -342,6 +343,7 @@ public final class DesignationController implements Serializable {
 
     public void prepareAdd() {
         current = new Designation();
+        current.setOfficial(Boolean.TRUE);
     }
 
     public void saveSelected() {
@@ -350,13 +352,13 @@ public final class DesignationController implements Serializable {
             JsfUtil.addErrorMessage("You are not autherized to make changes to any content");
             return;
         }
-        if (current.getId()!=0) {
+        
+        if (current.getId()!=null || current.getId()!=0) {
             getFacade().edit(current);
             msg = new MessageProvider().getValue("savedOldSuccessfully");
         } else {
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
-            current.setOfficial(Boolean.TRUE);
             getFacade().create(current);
             msg = new MessageProvider().getValue("savedNewSuccessfully");
         }
@@ -398,7 +400,7 @@ public final class DesignationController implements Serializable {
         recreateModel();
         getItems();
         selectText = "";
-        current = null;
+        current = new Designation();
     }
 
     public String getSelectText() {

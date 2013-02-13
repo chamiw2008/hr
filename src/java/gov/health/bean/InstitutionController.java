@@ -46,6 +46,7 @@ public final class InstitutionController implements Serializable {
     @ManagedProperty(value = "#{sessionController}")
     SessionController sessionController;
     List<Institution> offItems;
+    List<Institution> payCentres;
     private Institution current;
     private List<Institution> items = null;
     DataModel<InstitutionType> institutionTypes;
@@ -55,6 +56,21 @@ public final class InstitutionController implements Serializable {
     String selectText = "";
     Integer offSel = 0;
 
+    public List<Institution> getPayCentres() {
+         if (payCentres != null) {
+            return payCentres;
+        }
+        String sql = "SELECT i FROM Institution i where i.retired=false and i.payCentre = true order by i.name";
+        payCentres = getFacade().findBySQL(sql);
+        return payCentres;
+    }
+
+    public void setPayCentres(List<Institution> payCentres) {
+        this.payCentres = payCentres;
+    }
+
+    
+    
     public PersonInstitutionFacade getPiFacade() {
         return piFacade;
     }
@@ -112,9 +128,6 @@ public final class InstitutionController implements Serializable {
     }
 
     public List<Institution> getOffItems() {
-        if (offItems != null) {
-            return offItems;
-        }
         String sql = "SELECT i FROM Institution i where i.retired=false and i.official = true order by i.name";
         offItems = getFacade().findBySQL(sql);
         return offItems;
@@ -135,6 +148,7 @@ public final class InstitutionController implements Serializable {
     public Institution getCurrent() {
         if (current == null) {
             current = new Institution();
+            current.setOfficial(Boolean.TRUE);
         }
         return current;
     }
@@ -246,6 +260,7 @@ public final class InstitutionController implements Serializable {
     public void prepareAdd() {
         selectedItemIndex = -1;
         current = new Institution();
+        current.setOfficial(Boolean.TRUE);
         this.prepareSelectControlDisable();
     }
 
@@ -260,7 +275,6 @@ public final class InstitutionController implements Serializable {
         } else {
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
-            current.setOfficial(Boolean.TRUE);
             getFacade().create(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
         }
