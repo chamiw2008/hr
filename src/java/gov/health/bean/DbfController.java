@@ -826,6 +826,7 @@ public class DbfController implements Serializable {
                 getSummeryCounts(newPersonInstitutions);
             } else {
                 JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " is listed successfully. If you are satisfied, please click the Save button to permanantly save the new set of data Replacing the old ones under " + institution.getName() + ".");
+                toGetRecordsagain = Boolean.TRUE;
             }
 
         } catch (Exception e) {

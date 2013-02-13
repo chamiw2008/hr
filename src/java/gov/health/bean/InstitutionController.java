@@ -128,9 +128,6 @@ public final class InstitutionController implements Serializable {
     }
 
     public List<Institution> getOffItems() {
-        if (offItems != null) {
-            return offItems;
-        }
         String sql = "SELECT i FROM Institution i where i.retired=false and i.official = true order by i.name";
         offItems = getFacade().findBySQL(sql);
         return offItems;
