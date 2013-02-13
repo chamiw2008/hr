@@ -8,6 +8,7 @@
  */
 package gov.health.bean;
 
+import gov.health.entity.Person;
 import gov.health.facade.PrivilegeFacade;
 import gov.health.facade.WebUserFacade;
 import gov.health.facade.WebUserRoleFacade;
@@ -33,6 +34,8 @@ import javax.faces.model.ListDataModel;
 @ManagedBean
 @SessionScoped
 public final class WebUserController implements Serializable {
+    @EJB
+    private SessionController sessionController;
 
     @EJB
     private WebUserFacade ejbFacade;
@@ -40,8 +43,6 @@ public final class WebUserController implements Serializable {
     WebUserRoleFacade roleFacade;
     @EJB
     PrivilegeFacade preFacade;
-    
-    SessionController sessionController = new SessionController();
     List<WebUser> lstItems;
     private WebUser current;
     private DataModel<WebUser>  items = null;
@@ -72,6 +73,10 @@ public final class WebUserController implements Serializable {
     public WebUser getCurrent() {
         if (current == null) {
             current = new WebUser();
+        }
+        if (current.getWebUserPerson()==null){
+            Person p = new Person();
+            current.setWebUserPerson(p);
         }
         return current;
     }

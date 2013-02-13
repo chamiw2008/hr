@@ -59,6 +59,19 @@ public class WebUser implements Serializable {
     
     String telNo;
     String email;
+    @ManyToOne
+    Institution restrictedInstitution;
+
+    public Institution getRestrictedInstitution() {
+        return restrictedInstitution;
+    }
+
+    public void setRestrictedInstitution(Institution restrictedInstitution) {
+        this.restrictedInstitution = restrictedInstitution;
+    }
+
+    
+    
 
     public String getTelNo() {
         return telNo;

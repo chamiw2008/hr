@@ -5,15 +5,31 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:pou="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui">
 
 
     <ui:define name="content">
-        <pou:growl autoUpdate="true"/>
-        
-        <span class="pdHeading1">Dashboard</span>    
-        
-        
+        <p:growl autoUpdate="true"/>
+
+        <p:panel header="Dashboard" >
+            <p:panel header="Designation Summery" rendered='#{sessionController.loggedUser.role.name == "insUser"}' >
+                Designation Summery
+                <p:dataTable value="#{dbfController.designationSummery}" var="ds" >
+                    <p:column >
+                        <f:facet name="header" >Designation</f:facet>
+                        <h:outputLabel value="#{ds.designationName}" />
+                    </p:column>
+                    <p:column >
+                        <f:facet name="header" >Count</f:facet>
+                        <h:outputLabel value="#{ds.count}" />
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+
+        </p:panel> 
+
+
     </ui:define>
 
 </ui:composition>

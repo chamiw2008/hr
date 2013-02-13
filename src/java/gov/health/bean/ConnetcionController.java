@@ -144,7 +144,7 @@ public class ConnetcionController implements Serializable {
         request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         Enumeration headerIter = request.getHeaderNames();
         String userAgent = request.getHeader("User-Agent");
-        
+
         while (headerIter.hasMoreElements()) {
             String headername = (String) headerIter.nextElement();
             System.out.println("headername + : " + request.getHeader(headername));
@@ -186,7 +186,20 @@ public class ConnetcionController implements Serializable {
         pFacade.create(person);
 
         WebUserRole role = new WebUserRole();
-        role.setName("Administrator");
+        role.setName("superUser");
+        rFacade.create(role);
+
+        role = new WebUserRole();
+        role.setName("insUser");
+        rFacade.create(role);
+
+        role = new WebUserRole();
+        role.setName("insAdmin");
+        rFacade.create(role);
+
+
+        role = new WebUserRole();
+        role.setName("sysAdmin");
         rFacade.create(role);
 
         user.setName(HOSecurity.encrypt(userName));
@@ -260,10 +273,10 @@ public class ConnetcionController implements Serializable {
     }
 
     public String registeUser() {
-        if (!telNoOk()) {
-            JsfUtil.addErrorMessage("Telephone number in correct, Please enter a valid phone number");
-            return "";
-        }
+//        if (!telNoOk()) {
+//            JsfUtil.addErrorMessage("Telephone number in correct, Please enter a valid phone number");
+//            return "";
+//        }
 
         if (!userNameAvailable(newUserName)) {
             JsfUtil.addErrorMessage("User name already exists. Plese enter another user name");
@@ -279,6 +292,7 @@ public class ConnetcionController implements Serializable {
 
         person.setName(newPersonName);
         person.setInstitution(institution);
+
         person.setArea(area);
         pFacade.create(person);
         user.setName(HOSecurity.encrypt(newUserName));
@@ -286,7 +300,14 @@ public class ConnetcionController implements Serializable {
         user.setWebUserPerson(person);
         user.setTelNo(telNo);
         user.setEmail(email);
-        user.setActivated(false);
+        user.setActivated(Boolean.TRUE);
+        if (user.getRole() == null && "sysAdmin".equals(user.getRole().getName())) {
+            user.setRestrictedInstitution(null);
+        } else if (user.getRole() != null && "superUser".equals(user.getRole().getName())) {
+            user.setRestrictedInstitution(null);
+        } else {
+            user.setRestrictedInstitution(institution);
+        }
         uFacade.create(user);
         //
         //
@@ -298,10 +319,10 @@ public class ConnetcionController implements Serializable {
 //        imageFacade.create(perImage);
         //
         //
-        JsfUtil.addSuccessMessage("New User Registered. You will be able to access the system when the administrater activate your account.");
-        sessionController.setLoggedUser(user);
-        sessionController.setLogged(Boolean.TRUE);
-        sessionController.setActivated(false);
+        JsfUtil.addSuccessMessage("New User Registered.");
+//        sessionController.setLoggedUser(user);
+//        sessionController.setLogged(Boolean.TRUE);
+//        sessionController.setActivated(false);
         return "index";
     }
 
