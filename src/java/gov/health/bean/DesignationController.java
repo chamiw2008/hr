@@ -53,7 +53,6 @@ public final class DesignationController implements Serializable {
     Designation oldDesignation;
     private Designation current;
     private List<Designation> items = null;
-    private int selectedItemIndex;
     String selectText = "";
     String sql;
     Integer offSel = 0;
@@ -75,6 +74,9 @@ public final class DesignationController implements Serializable {
     }
 
     public int replaceDesignations(Designation going, Designation comming) {
+        if (going==null){
+            return 0;
+        }
         sql = "select pi from PersonInstitution pi where pi.designation.id = " + going.getId() ;
         List<PersonInstitution> pis= getPiFacade().findBySQL(sql);
         for (PersonInstitution pi:pis){
@@ -243,15 +245,7 @@ public final class DesignationController implements Serializable {
         this.officialDesignations = lstItems;
     }
 
-    public int getSelectedItemIndex() {
-        return selectedItemIndex;
-    }
-
-    public void setSelectedItemIndex(int selectedItemIndex) {
-        this.selectedItemIndex = selectedItemIndex;
-    }
-
-    public Designation getCurrent() {
+      public Designation getCurrent() {
         if (current == null) {
             current = new Designation();
         }
@@ -318,10 +312,8 @@ public final class DesignationController implements Serializable {
             if (items.size() > 0) {
                 current = items.get(0);
                 Long temLong = current.getId();
-                selectedItemIndex = intValue(temLong);
             } else {
                 current = null;
-                selectedItemIndex = -1;
             }
 
         }
@@ -349,24 +341,22 @@ public final class DesignationController implements Serializable {
     }
 
     public void prepareAdd() {
-        selectedItemIndex = -1;
         current = new Designation();
     }
 
     public void saveSelected() {
         String msg;
         if (sessionController.getPrivilege().isInstUser() == false) {
-
             JsfUtil.addErrorMessage("You are not autherized to make changes to any content");
             return;
         }
-        if (selectedItemIndex > 0) {
+        if (current.getId()!=0) {
             getFacade().edit(current);
             msg = new MessageProvider().getValue("savedOldSuccessfully");
         } else {
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
-            current.setOfficial(true);
+            current.setOfficial(Boolean.TRUE);
             getFacade().create(current);
             msg = new MessageProvider().getValue("savedNewSuccessfully");
         }
@@ -377,7 +367,6 @@ public final class DesignationController implements Serializable {
         recreateModel();
         getItems();
         selectText = "";
-        selectedItemIndex = intValue(current.getId());
     }
 
     public void addDirectly() {
@@ -409,7 +398,6 @@ public final class DesignationController implements Serializable {
         recreateModel();
         getItems();
         selectText = "";
-        selectedItemIndex = -1;
         current = null;
     }
 

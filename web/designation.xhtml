@@ -72,14 +72,9 @@
 
                                 <h:selectOneListbox id="lstMapped"  size="5" value="#{designationController.current.mappedToDesignation}" style="min-width: 223px">
                                     <f:selectItems value="#{designationController.officialDesignations}" var="offi" itemValue="#{offi}" itemLabel="#{offi.name}" ></f:selectItems>
-                                    <f:ajax event="click" execute="lstMapped" render="txtMapped" />
                                 </h:selectOneListbox>
                                 
-                                <h:outputLabel value="Mapped to " />
-                                <h:outputLabel id="txtMapped" value="#{designationController.current.mappedToDesignation.name}" />
-                                
                                 <h:outputText id="lblCatName" value="Service Type" ></h:outputText>
-
                                 <h:selectOneListbox id="lstCatSelect"  size="1" value="#{designationController.current.category}" style="min-width: 223px">
                                     <f:selectItems value="#{designationCategoryController.items}" var="myCatItem" itemValue="#{myCatItem}" itemLabel="#{myCatItem.name}" ></f:selectItems>
                                 </h:selectOneListbox>
