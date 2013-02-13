@@ -86,8 +86,10 @@
                                     <h:selectOneListbox id="cmbOffIns" value="#{institutionController.current.mappedToInstitution}" size="1">
                                         <f:selectItems value="#{institutionController.offItems}" var="offi" itemLabel="#{offi.name}" itemValue="#{offi}"/>
                                     </h:selectOneListbox>
-                                     <h:outputText id="lblOffi" value="Official" ></h:outputText>
-                                     <h:selectBooleanCheckbox id="chkOfficial" value="#{institutionController.current.official}" />
+                                    <h:outputText id="lblOffi" value="Official" ></h:outputText>
+                                    <h:selectBooleanCheckbox id="chkOfficial" value="#{institutionController.current.official}" />
+                                    <h:outputText id="lblPayCentre" value="Pay Centre" ></h:outputText>
+                                    <h:selectBooleanCheckbox id="chkPayCentre" value="#{institutionController.current.payCentre}" />
                                     <h:outputText id="lblAddress" value="Address" ></h:outputText>
                                     <h:inputText id="txtAddress"  class="pdInputText" value="#{institutionController.current.address}" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
                                     <h:outputText id="lblTelephone" value="Telephone" ></h:outputText>

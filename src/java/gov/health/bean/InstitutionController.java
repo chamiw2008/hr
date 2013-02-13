@@ -46,6 +46,7 @@ public final class InstitutionController implements Serializable {
     @ManagedProperty(value = "#{sessionController}")
     SessionController sessionController;
     List<Institution> offItems;
+    List<Institution> payCentres;
     private Institution current;
     private List<Institution> items = null;
     DataModel<InstitutionType> institutionTypes;
@@ -55,6 +56,21 @@ public final class InstitutionController implements Serializable {
     String selectText = "";
     Integer offSel = 0;
 
+    public List<Institution> getPayCentres() {
+         if (payCentres != null) {
+            return payCentres;
+        }
+        String sql = "SELECT i FROM Institution i where i.retired=false and i.payCentre = true order by i.name";
+        payCentres = getFacade().findBySQL(sql);
+        return payCentres;
+    }
+
+    public void setPayCentres(List<Institution> payCentres) {
+        this.payCentres = payCentres;
+    }
+
+    
+    
     public PersonInstitutionFacade getPiFacade() {
         return piFacade;
     }
