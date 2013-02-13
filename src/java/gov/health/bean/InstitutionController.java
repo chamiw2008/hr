@@ -151,6 +151,7 @@ public final class InstitutionController implements Serializable {
     public Institution getCurrent() {
         if (current == null) {
             current = new Institution();
+            current.setOfficial(Boolean.TRUE);
         }
         return current;
     }
@@ -262,6 +263,7 @@ public final class InstitutionController implements Serializable {
     public void prepareAdd() {
         selectedItemIndex = -1;
         current = new Institution();
+        current.setOfficial(Boolean.TRUE);
         this.prepareSelectControlDisable();
     }
 
@@ -276,7 +278,6 @@ public final class InstitutionController implements Serializable {
         } else {
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
-            current.setOfficial(Boolean.TRUE);
             getFacade().create(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
         }

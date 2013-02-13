@@ -81,8 +81,8 @@ public class DbfController implements Serializable {
     List<PersonInstitution> newPersonInstitutions;
     @ManagedProperty(value = "#{sessionController}")
     SessionController sessionController;
-    Integer payYear;
-    Integer payMonth;
+    Integer payYear = 0;
+    Integer payMonth = 0;
     List<Integer> payYears;
     List<Integer> payMonths;
     List<InstitutionSet> insSets;
@@ -176,7 +176,7 @@ public class DbfController implements Serializable {
     }
 
     public void setWithoutMappedDesignationCount(Long withoutMappedDesignationCount) {
-        
+
         this.withoutMappedDesignationCount = withoutMappedDesignationCount;
     }
 
@@ -336,6 +336,9 @@ public class DbfController implements Serializable {
     }
 
     public Integer getPayMonth() {
+        if (payMonth == 0) {
+            return Calendar.getInstance().get(Calendar.MONTH);
+        }
         return payMonth;
     }
 
@@ -347,6 +350,9 @@ public class DbfController implements Serializable {
     }
 
     public Integer getPayYear() {
+        if (payYear == 0) {
+            return Calendar.getInstance().get(Calendar.YEAR);
+        }
         return payYear;
     }
 

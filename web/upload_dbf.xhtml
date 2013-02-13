@@ -25,14 +25,14 @@
             <pou:panel header="Uploading Payment Cycle Details" >
                 <pou:panelGrid columns="6" >
                     <h:outputText value="Institution"/>
-                    <h:outputText value="Set"/>
                     <h:outputText value="Year"/>
                     <h:outputText value="Month"/>
-                    <h:outputText value="&nbsp;"/>
+                    <h:outputText value="Set"/>
+                    <h:outputText value="Select the file and Upload"/>
                     <h:outputText value="&nbsp;"/>
 
-                    <pou:panel id="cmbLoc" style="border: 0px;margin: 0px;padding: 0px;">
-                        <h:selectOneListbox rendered="#{sessionController.privilege.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}" size="1" >
+                    <pou:panel id="cmbLoc"  style="border: 0px;margin: 0px;padding: 0px;">
+                        <h:selectOneListbox size="5" rendered="#{sessionController.privilege.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}" >
                             <f:selectItems value="#{institutionController.payCentres}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
                             <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls gridSummery" />
                         </h:selectOneListbox>
@@ -40,12 +40,12 @@
                     </pou:panel>
 
 
-                    <h:selectOneListbox id="cmbYear" value="#{dbfController.payYear}" size="1">
+                    <h:selectOneListbox  size="5"  id="cmbYear" value="#{dbfController.payYear}" >
                         <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
                         <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls gridSummery" />
                     </h:selectOneListbox>
 
-                    <h:selectOneListbox id="cmbMonth" value="#{dbfController.payMonth}" size="1" >
+                    <h:selectOneListbox  size="5"  id="cmbMonth" value="#{dbfController.payMonth}"  >
                         <f:selectItem itemValue="1" itemLabel="January" />
                         <f:selectItem itemValue="2" itemLabel="February" />
                         <f:selectItem itemValue="3" itemLabel="March" />
@@ -62,7 +62,7 @@
                     </h:selectOneListbox>
 
 
-                    <h:selectOneListbox id="cmbSet" value="#{dbfController.insSet}" size="1">
+                    <h:selectOneListbox  size="5"  id="cmbSet" value="#{dbfController.insSet}"      >
                         <f:selectItems value="#{dbfController.insSets}" var="insset" itemValue="#{insset}" itemLabel="#{insset.name}" />
                         <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls gridSummery" />
                     </h:selectOneListbox>
@@ -79,25 +79,25 @@
                 <pou:panelGrid columns="2" >
                     <h:outputLabel value="Records without NIC"/>
                     <h:outputLabel   value="#{dbfController.withoutNicCount}" />
-                    
-                   <h:outputLabel value="Records without Designations"/>
-                   <h:outputLabel   value="#{dbfController.withoutDesignationCount}" />
-                   
-                   <h:outputLabel value="Records without Identifiable Designations"/>
-                   <h:outputLabel   value="#{dbfController.withoutMappedDesignationCount}" />
-                    
-                   <h:outputLabel value="Records without Institutions"/>
-                   <h:outputLabel   value="#{dbfController.withoutInstitutionCount}" />
-                    
-                   <h:outputLabel value="Records without Identifiable Institutions"/>
-                   <h:outputLabel   value="#{dbfController.withoutMappedInstitutionCount}" />
-                   
-                   <h:outputLabel value="Active Records"/>
-                   <h:outputLabel   value="#{dbfController.activeCount}" />
-                    
-                   <h:outputLabel value="Temporary Person Records"/>
-                   <h:outputLabel   value="#{dbfController.temporaryCount}" />
-                   
+
+                    <h:outputLabel value="Records without Designations"/>
+                    <h:outputLabel   value="#{dbfController.withoutDesignationCount}" />
+
+                    <h:outputLabel value="Records without Identifiable Designations"/>
+                    <h:outputLabel   value="#{dbfController.withoutMappedDesignationCount}" />
+
+                    <h:outputLabel value="Records without Institutions"/>
+                    <h:outputLabel   value="#{dbfController.withoutInstitutionCount}" />
+
+                    <h:outputLabel value="Records without Identifiable Institutions"/>
+                    <h:outputLabel   value="#{dbfController.withoutMappedInstitutionCount}" />
+
+                    <h:outputLabel value="Active Records"/>
+                    <h:outputLabel   value="#{dbfController.activeCount}" />
+
+                    <h:outputLabel value="Temporary Person Records"/>
+                    <h:outputLabel   value="#{dbfController.temporaryCount}" />
+
                 </pou:panelGrid>
 
             </pou:panel>

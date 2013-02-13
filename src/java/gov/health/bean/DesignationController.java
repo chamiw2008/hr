@@ -248,6 +248,7 @@ public final class DesignationController implements Serializable {
       public Designation getCurrent() {
         if (current == null) {
             current = new Designation();
+            current.setOfficial(Boolean.TRUE);
         }
         return current;
     }
@@ -342,6 +343,7 @@ public final class DesignationController implements Serializable {
 
     public void prepareAdd() {
         current = new Designation();
+        current.setOfficial(Boolean.TRUE);
     }
 
     public void saveSelected() {
@@ -356,7 +358,6 @@ public final class DesignationController implements Serializable {
         } else {
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
-            current.setOfficial(Boolean.TRUE);
             getFacade().create(current);
             msg = new MessageProvider().getValue("savedNewSuccessfully");
         }
