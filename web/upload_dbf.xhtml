@@ -23,29 +23,26 @@
                 <br/>
             </pou:panel>
             <pou:panel header="Uploading Payment Cycle Details" >
-                <pou:panelGrid columns="4" >
+                <pou:panelGrid columns="6" >
                     <h:outputText value="Institution"/>
                     <h:outputText value="Set"/>
                     <h:outputText value="Year"/>
                     <h:outputText value="Month"/>
+                    <h:outputText value="&nbsp;"/>
+                    <h:outputText value="&nbsp;"/>
 
                     <pou:panel id="cmbLoc" style="border: 0px;margin: 0px;padding: 0px;">
                         <h:selectOneListbox rendered="#{sessionController.privilege.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}" size="1" >
                             <f:selectItems value="#{institutionController.offItems}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
-                            <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls" />
+                            <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls gridSummery" />
                         </h:selectOneListbox>
                         <h:outputLabel rendered="#{sessionController.privilege.restrictedInstitution != null}"  value="#{sessionController.privilege.restrictedInstitution.name}"/>
                     </pou:panel>
 
 
-                    <h:selectOneListbox id="cmbSet" value="#{dbfController.insSet}" size="1">
-                        <f:selectItems value="#{dbfController.insSets}" var="insset" itemValue="#{insset}" itemLabel="#{insset.name}" />
-                        <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls " />
-                    </h:selectOneListbox>
-
                     <h:selectOneListbox id="cmbYear" value="#{dbfController.payYear}" size="1">
                         <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
-                        <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls " />
+                        <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls gridSummery" />
                     </h:selectOneListbox>
 
                     <h:selectOneListbox id="cmbMonth" value="#{dbfController.payMonth}" size="1" >
@@ -61,22 +58,57 @@
                         <f:selectItem itemValue="10" itemLabel="October" />
                         <f:selectItem itemValue="11" itemLabel="November" />
                         <f:selectItem itemValue="12" itemLabel="December" />
-                        <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls " />
+                        <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls gridSummery" />
                     </h:selectOneListbox>
+
+
+                    <h:selectOneListbox id="cmbSet" value="#{dbfController.insSet}" size="1">
+                        <f:selectItems value="#{dbfController.insSets}" var="insset" itemValue="#{insset}" itemLabel="#{insset.name}" />
+                        <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls gridSummery" />
+                    </h:selectOneListbox>
+
+
+                    <pou:fileUpload value="#{dbfController.file}" mode="simple"/>
+                    <h:commandButton value="Upload" action="#{dbfController.extractData}"/>
+
+
                 </pou:panelGrid>
             </pou:panel>
-            
-            <pou:panel  header="Uploading File"   >
-                <pou:fileUpload value="#{dbfController.file}" mode="simple"/>
-                <h:commandButton value="Upload" action="#{dbfController.extractData}"/>
+
+            <pou:panel id="gridSummery" header="Summery" >
+                <pou:panelGrid columns="2" >
+                    <h:outputLabel value="Records without NIC"/>
+                    <h:outputLabel   value="#{dbfController.withoutNicCount}" />
+                    
+                   <h:outputLabel value="Records without Designations"/>
+                   <h:outputLabel   value="#{dbfController.withoutDesignationCount}" />
+                   
+                   <h:outputLabel value="Records without Identifiable Designations"/>
+                   <h:outputLabel   value="#{dbfController.withoutMappedDesignationCount}" />
+                    
+                   <h:outputLabel value="Records without Institutions"/>
+                   <h:outputLabel   value="#{dbfController.withoutInstitutionCount}" />
+                    
+                   <h:outputLabel value="Records without Identifiable Institutions"/>
+                   <h:outputLabel   value="#{dbfController.withoutMappedInstitutionCount}" />
+                   
+                   <h:outputLabel value="Active Records"/>
+                   <h:outputLabel   value="#{dbfController.activeCount}" />
+                    
+                   <h:outputLabel value="Temporary Person Records"/>
+                   <h:outputLabel   value="#{dbfController.temporaryCount}" />
+                   
+                </pou:panelGrid>
+
             </pou:panel>
 
-            
+
             <pou:panel rendered="#{dbfController.newPersonInstitutions.size()>0}" header="Replace Existing Data With new Data">
                 <h:commandButton value="Replace" action="#{dbfController.replaceData}"/>
             </pou:panel>
-            
-            <pou:tabView id="tabTbls" >
+
+            <pou:tabView id="tabTbls"  dynamic="true" activeIndex="#{dbfController.activeTab}">
+
                 <pou:tab title="Existing Data">
                     <pou:panel header="Existing Data">
                         <pou:dataTable id="tblEx" value="#{dbfController.existingPersonInstitutions}" var="exPi">
@@ -101,24 +133,10 @@
                     </pou:panel>
 
                 </pou:tab>
-                <pou:tab  title="New Data">
-                    <pou:panel header="New Data">
-                        <pou:dataTable id="tblNew" value="#{dbfController.newPersonInstitutions}" var="newPi">
-                            <pou:column>
-                                <f:facet name="header">Employee Id</f:facet>
-                                <h:outputLabel value="#{newPi.empNo}"/>
-                            </pou:column>
-                            <pou:column>
-                                <f:facet name="header">Name</f:facet>
-                                <h:outputLabel value="#{newPi.name}"/>
-                            </pou:column> 
-                            <pou:column>
-                                <f:facet name="header">Designation</f:facet>
-                                <h:outputLabel value="#{newPi.designation.name}"/>
-                            </pou:column>                 
-                        </pou:dataTable>
-                    </pou:panel>     
-                </pou:tab>
+
+
+
+
             </pou:tabView>
 
 

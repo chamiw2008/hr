@@ -77,6 +77,7 @@ public class DbfController implements Serializable {
     DbfFile defFile;
     List<DbfFile> dbfFiles;
     List<PersonInstitution> existingPersonInstitutions;
+    List<PersonInstitution> previousPersonInstitutions;
     List<PersonInstitution> newPersonInstitutions;
     @ManagedProperty(value = "#{sessionController}")
     SessionController sessionController;
@@ -87,12 +88,152 @@ public class DbfController implements Serializable {
     List<InstitutionSet> insSets;
     InstitutionSet insSet;
     List<DesignationSummeryRecord> designationSummery;
+    //
+    int activeTab = 0;
+    Long withoutNicCount;
+    Long withoutDesignationCount;
+    Long withoutMappedDesignationCount;
+    Long withoutInstitutionCount;
+    Long withoutMappedInstitutionCount;
+    Long activeCount;
+    Long temporaryCount;
+//
+    Boolean toGetRecordsagain = Boolean.TRUE;
+
+    public Boolean getToGetRecordsagain() {
+        return toGetRecordsagain;
+    }
+
+    public void setToGetRecordsagain(Boolean toGetRecordsagain) {
+        this.toGetRecordsagain = toGetRecordsagain;
+    }
+
+    public List<PersonInstitution> getPreviousPersonInstitutions() {
+        return previousPersonInstitutions;
+    }
+
+    public void setPreviousPersonInstitutions(List<PersonInstitution> previousPersonInstitutions) {
+        this.previousPersonInstitutions = previousPersonInstitutions;
+    }
+
+    public void getSummeryCounts(List<PersonInstitution> pis) {
+        withoutNicCount = 0L;
+        withoutDesignationCount = 0L;
+        withoutMappedDesignationCount = 0L;
+        withoutInstitutionCount = 0L;
+        withoutMappedInstitutionCount = 0L;
+        activeCount = 0L;
+        temporaryCount = 0L;
+        for (PersonInstitution pi : pis) {
+            if (pi.getNic().trim().equals("")) {
+                withoutNicCount++;
+            }
+            if (pi.getDesignation() == null) {
+                withoutDesignationCount++;
+            } else {
+                if (pi.getDesignation().getOfficial() == Boolean.FALSE && pi.getDesignation().getMappedToDesignation() == null) {
+                    withoutMappedInstitutionCount++;
+                }
+            }
+            if (pi.getInstitution() == null) {
+                withoutInstitutionCount++;
+            } else {
+                if (pi.getInstitution().getOfficial() == Boolean.FALSE && pi.getInstitution().getMappedToInstitution() == null) {
+                    withoutMappedInstitutionCount++;
+                }
+            }
+            if (pi.getActiveState() == Boolean.TRUE) {
+                activeCount++;
+            }
+            if (pi.getPermanent() == Boolean.FALSE) {
+                temporaryCount++;
+            }
+        }
+
+    }
+
+    public Long getWithoutNicCount() {
+        getExistingPersonInstitutions();
+        return withoutNicCount;
+    }
+
+    public void setWithoutNicCount(Long withoutNicCount) {
+        this.withoutNicCount = withoutNicCount;
+    }
+
+    public Long getWithoutDesignationCount() {
+        getExistingPersonInstitutions();
+        return withoutDesignationCount;
+    }
+
+    public void setWithoutDesignationCount(Long withoutDesignationCount) {
+        this.withoutDesignationCount = withoutDesignationCount;
+    }
+
+    public Long getWithoutMappedDesignationCount() {
+        getExistingPersonInstitutions();
+        return withoutMappedDesignationCount;
+    }
+
+    public void setWithoutMappedDesignationCount(Long withoutMappedDesignationCount) {
+        
+        this.withoutMappedDesignationCount = withoutMappedDesignationCount;
+    }
+
+    public Long getWithoutInstitutionCount() {
+        getExistingPersonInstitutions();
+        return withoutInstitutionCount;
+    }
+
+    public void setWithoutInstitutionCount(Long withoutInstitutionCount) {
+        this.withoutInstitutionCount = withoutInstitutionCount;
+    }
+
+    public Long getWithoutMappedInstitutionCount() {
+        getExistingPersonInstitutions();
+        return withoutMappedInstitutionCount;
+    }
+
+    public void setWithoutMappedInstitutionCount(Long withoutMappedInstitutionCount) {
+        this.withoutMappedInstitutionCount = withoutMappedInstitutionCount;
+    }
+
+    public Long getActiveCount() {
+        getExistingPersonInstitutions();
+        return activeCount;
+    }
+
+    public void setActiveCount(Long activeCount) {
+        this.activeCount = activeCount;
+    }
+
+    public Long getTemporaryCount() {
+        getExistingPersonInstitutions();
+        return temporaryCount;
+    }
+
+    public void setTemporaryCount(Long temporaryCount) {
+        this.temporaryCount = temporaryCount;
+    }
+
+    public int getActiveTab() {
+        if (getNewPersonInstitutions().size() > 0) {
+            activeTab = 1;
+        } else {
+            activeTab = 0;
+        }
+        return activeTab;
+    }
+
+    public void setActiveTab(int activeTab) {
+        this.activeTab = activeTab;
+    }
 
     public List<DesignationSummeryRecord> getDesignationSummery() {
-        if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear() == null) {
+        if (getInstitution() == null || getPayMonth() == null || getPayYear() == null) {
             return new ArrayList<DesignationSummeryRecord>();
         }
-        String sql = "select pi.designation.name, count(pi) from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " group by pi.designation.name";
+        String sql = "select pi.designation.name, count(pi) from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.payCentre.id = " + getInstitution().getId() + " group by pi.designation.name";
         List lst = getPiFacade().findGroupingBySql(sql);
         List<DesignationSummeryRecord> sums = new ArrayList<DesignationSummeryRecord>();
         Iterator<Object[]> itr = lst.iterator();
@@ -116,8 +257,6 @@ public class DbfController implements Serializable {
         this.thFacade = thFacade;
     }
 
-    
-    
     public void setDesignationSummery(List<DesignationSummeryRecord> designationSummery) {
         this.designationSummery = designationSummery;
     }
@@ -135,6 +274,9 @@ public class DbfController implements Serializable {
     }
 
     public void setInsSet(InstitutionSet insSet) {
+        if (this.insSet != insSet) {
+            setToGetRecordsagain(Boolean.TRUE);
+        }
         this.insSet = insSet;
     }
 
@@ -198,6 +340,9 @@ public class DbfController implements Serializable {
     }
 
     public void setPayMonth(Integer payMonth) {
+        if (this.payMonth != payMonth) {
+            setToGetRecordsagain(Boolean.TRUE);
+        }
         this.payMonth = payMonth;
     }
 
@@ -206,6 +351,9 @@ public class DbfController implements Serializable {
     }
 
     public void setPayYear(Integer payYear) {
+        if (this.payYear != payYear) {
+            setToGetRecordsagain(Boolean.TRUE);
+        }
         this.payYear = payYear;
     }
 
@@ -237,27 +385,31 @@ public class DbfController implements Serializable {
         if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear() == null) {
             return new ArrayList<PersonInstitution>();
         }
-        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId());
+        if (getToGetRecordsagain()) {
+            existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId());
+            getSummeryCounts(existingPersonInstitutions);
+            setToGetRecordsagain(Boolean.FALSE);
+        } else {
+        }
         return existingPersonInstitutions;
     }
 
-      public List<PersonInstitution> getPersonInstitutionsWithoutNic() {
+    public List<PersonInstitution> getPersonInstitutionsWithoutNic() {
         if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear() == null) {
             return new ArrayList<PersonInstitution>();
         }
-        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " and pi.person is null order by pi.name"  );
+        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " and pi.person is null order by pi.name");
         return existingPersonInstitutions;
     }
-    
-      
-      public List<PersonInstitution> getPersonInstitutionsWithoutDesignations() {
+
+    public List<PersonInstitution> getPersonInstitutionsWithoutDesignations() {
         if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear() == null) {
             return new ArrayList<PersonInstitution>();
         }
-        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " and pi.designation is null order by pi.name"  );
+        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " and pi.designation is null order by pi.name");
         return existingPersonInstitutions;
     }
-      
+
     public void setExistingPersonInstitutions(List<PersonInstitution> existingPersonInstitutions) {
         this.existingPersonInstitutions = existingPersonInstitutions;
     }
@@ -346,6 +498,7 @@ public class DbfController implements Serializable {
 
     public void setFile(UploadedFile file) {
         this.file = file;
+        setToGetRecordsagain(Boolean.TRUE);
     }
 
     private void prepareImages(String sql) {
@@ -391,6 +544,9 @@ public class DbfController implements Serializable {
 
     public void setInstitution(Institution institution) {
         this.institution = institution;
+        if (this.institution != institution) {
+            setToGetRecordsagain(Boolean.TRUE);
+        }
         if (institution == null && institution.getId() != null) {
             prepareImages("Select ai from AppImage ai Where ai.institution.id = " + institution.getId());
         } else {
@@ -497,7 +653,7 @@ public class DbfController implements Serializable {
 
     public void markTransfer(Person p, Institution fromIns, Institution toIns, PersonInstitution pi) {
         TransferHistory hx = new TransferHistory();
-        hx.setPersonInstitution(pi);
+//        hx.setPersonInstitution(pi);
         hx.setFromInstitution(fromIns);
         hx.setToInstitution(toIns);
         hx.setPerson(person);
@@ -507,6 +663,7 @@ public class DbfController implements Serializable {
     public String extractData() {
         InputStream in;
         String temNic;
+        Boolean newEntries = false;
         if (sessionController.privilege.getRestrictedInstitution() != null) {
             setInstitution(sessionController.getPrivilege().getRestrictedInstitution());
         }
@@ -529,6 +686,12 @@ public class DbfController implements Serializable {
         if (insSet == null) {
             JsfUtil.addErrorMessage("Please select a Set");
             return "";
+        }
+
+        if (getExistingPersonInstitutions().size() > 0) {
+            newEntries = false;
+        } else {
+            newEntries = true;
         }
 
         try {
@@ -594,7 +757,7 @@ public class DbfController implements Serializable {
                         getPerFacade().create(p);
                     } else {
                         if (p.getInstitution() != getInstitution()) {
-                            markTransfer(p, p.getInstitution(), institution,pi);
+                            markTransfer(p, p.getInstitution(), institution, pi);
                         }
                     }
 
@@ -646,9 +809,19 @@ public class DbfController implements Serializable {
                 } catch (Exception e) {
                     pi.setNopay(false);
                 }
+                if (newEntries) {
+                    getPiFacade().create(pi);
+                }
                 newPersonInstitutions.add(pi);
             }
-            JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " is listed successfully. If you are satisfied, please click the Save button to permanantly save the new set of data Replacing the old ones under " + institution.getName() + ".");
+            if (newEntries) {
+                JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " recorded successfully. ");
+                newPersonInstitutions = new ArrayList<PersonInstitution>();
+                getSummeryCounts(newPersonInstitutions);
+            } else {
+                JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " is listed successfully. If you are satisfied, please click the Save button to permanantly save the new set of data Replacing the old ones under " + institution.getName() + ".");
+            }
+
         } catch (Exception e) {
             System.out.println("Error " + e.getMessage());
         }

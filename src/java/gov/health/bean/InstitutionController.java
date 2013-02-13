@@ -11,7 +11,9 @@ package gov.health.bean;
 import gov.health.facade.InstitutionFacade;
 import gov.health.entity.Institution;
 import gov.health.entity.InstitutionType;
+import gov.health.entity.PersonInstitution;
 import gov.health.facade.InstitutionTypeFacade;
+import gov.health.facade.PersonInstitutionFacade;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
@@ -39,6 +41,8 @@ public final class InstitutionController implements Serializable {
     private InstitutionFacade ejbFacade;
     @EJB
     InstitutionTypeFacade institutionTypeFacade;
+    @EJB
+    PersonInstitutionFacade piFacade;
     @ManagedProperty(value = "#{sessionController}")
     SessionController sessionController;
     List<Institution> offItems;
@@ -50,6 +54,16 @@ public final class InstitutionController implements Serializable {
     boolean modifyControlDisable = true;
     String selectText = "";
     Integer offSel = 0;
+
+    public PersonInstitutionFacade getPiFacade() {
+        return piFacade;
+    }
+
+    public void setPiFacade(PersonInstitutionFacade piFacade) {
+        this.piFacade = piFacade;
+    }
+    
+    
 
     public Integer getOffSel() {
         return offSel;
@@ -257,6 +271,7 @@ public final class InstitutionController implements Serializable {
         selectedItemIndex = intValue(current.getId());
     }
 
+    
     public void addDirectly() {
         JsfUtil.addSuccessMessage("1");
         try {

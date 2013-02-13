@@ -65,13 +65,9 @@
                                         <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail detailFocus" execute="lstSelect" >
                                         </f:ajax>
                                     </h:commandButton>
-                                    <h:commandButton id="btnDelete" onclick="confirmation.show()" value="#{labels.delete}" disabled="#{institutionController.selectControlDisable}" styleClass="buttons">
+                                    <h:commandButton id="btnDelete" onclick="if (!confirm('Are you sure you want to delete this record?')) return false" action="#{institutionController.delete()}"  value="#{labels.delete}" disabled="#{institutionController.selectControlDisable}" styleClass="buttons">
                                     </h:commandButton>
                                 </h:panelGrid>
-                                <p:confirmDialog appendToBody="true" message="#{labels.areYouSureYouWantToDelete}" header="#{labels.initiatingDestroyProcess}" severity="alert" widgetVar="confirmation">  
-                                    <p:commandButton value="#{labels.yes}" oncomplete="confirmation.hide()" action="#{institutionController.delete()}" update="lstSelect gpDetail"  />  
-                                    <p:commandButton value="#{labels.No}" onclick="confirmation.hide()" type="button" />   
-                                </p:confirmDialog>
                             </p:panel>
                         </h:panelGrid  >
 
@@ -83,18 +79,20 @@
                                     <h:outputText id="lblCode" value="Code" ></h:outputText>
                                     <h:inputText id="txtCode"  class="pdInputText" value="#{institutionController.current.code }" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
                                     <h:outputText id="lblCat" value="#{labels.InstitutionType}" ></h:outputText>
-                                    <h:selectOneListbox class="pdListAll" id="cmbCat1" value="#{institutionController.current.institutionType}"  disabled="#{institutionController.modifyControlDisable}" >
+                                    <h:selectOneListbox id="cmbCat1" value="#{institutionController.current.institutionType}"  disabled="#{institutionController.modifyControlDisable}" size="1">
                                         <f:selectItems value="#{institutionController.institutionTypes}" />
                                     </h:selectOneListbox>
                                     <h:outputText id="lblOff" value="Official Name" ></h:outputText>
-                                    <h:selectOneListbox id="cmbOffIns" value="#{institutionController.current.mappedToInstitution}" >
+                                    <h:selectOneListbox id="cmbOffIns" value="#{institutionController.current.mappedToInstitution}" size="1">
                                         <f:selectItems value="#{institutionController.offItems}" var="offi" itemLabel="#{offi.name}" itemValue="#{offi}"/>
                                     </h:selectOneListbox>
+                                     <h:outputText id="lblOffi" value="Official" ></h:outputText>
+                                     <h:selectBooleanCheckbox id="chkOfficial" value="#{institutionController.current.official}" />
                                     <h:outputText id="lblAddress" value="Address" ></h:outputText>
                                     <h:inputText id="txtAddress"  class="pdInputText" value="#{institutionController.current.address}" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
                                     <h:outputText id="lblTelephone" value="Telephone" ></h:outputText>
                                     <h:inputText id="txtTelephone"  class="pdInputText" value="#{institutionController.current.telephone }" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
-                                    <h:outputText id="lblMobile" value="Telephone" ></h:outputText>
+                                    <h:outputText id="lblMobile" value="Mobile" ></h:outputText>
                                     <h:inputText id="txtMobile"  class="pdInputText" value="#{institutionController.current.mobile }" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
                                     <h:outputText id="lblFax" value="Fax" ></h:outputText>
                                     <h:inputText id="txtFax"  class="pdInputText" value="#{institutionController.current.fax}" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>

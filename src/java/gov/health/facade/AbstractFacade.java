@@ -219,4 +219,9 @@ public abstract class AbstractFacade<T> {
             return 0.0;
         }
     }
+    
+    public long excuteSql(String sql){
+        Query q=getEntityManager().createQuery(sql);
+        return q.executeUpdate();
+    }
 }

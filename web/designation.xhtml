@@ -32,7 +32,7 @@
 
                                 <h:selectOneListbox id="lstSelect"  size="10" value="#{designationController.current}" style="min-width: 223px">
                                     <f:selectItems value="#{designationController.items}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
-                                    <f:ajax render="txtName  lstMapped lstCatSelect" execute="lstSelect" >                                
+                                    <f:ajax render="txtName  lstMapped lstCatSelect chkOfficial" execute="lstSelect" >                                
                                     </f:ajax>
                                 </h:selectOneListbox>
 
@@ -48,17 +48,14 @@
                             </p:panel>
                             <h:panelGrid id="gpSelectButtons" columns="3"  >
                                 <h:commandButton id="btnAdd" value="#{labels.add}" action="#{designationController.prepareAdd()}" styleClass="buttons" >
-                                    <f:ajax render="btnAdd  btnDelete btnSave   lstSelect txtName detailFocus" execute="" >                                
+                                    <f:ajax render="btnAdd  btnDelete btnSave   lstSelect txtName detailFocus chkOfficial" execute="" >                                
                                     </f:ajax>
                                 </h:commandButton>
-                                
-                                <h:commandButton id="btnDelete" onclick="confirmation.show()" value="#{labels.delete}" styleClass="buttons">
+
+                                <h:commandButton id="btnDelete" onclick="if (!confirm('Are you sure you want to delete this record?')) return false"  value="#{labels.delete}" action="#{designationController.delete()}" styleClass="buttons">
                                 </h:commandButton>
                             </h:panelGrid>
-                            <p:confirmDialog appendToBody="true" message="#{labels.areYouSureYouWantToDelete}" header="#{labels.initiatingDestroyProcess}" severity="alert" widgetVar="confirmation">  
-                                <p:commandButton value="#{labels.yes}" oncomplete="confirmation.hide()" action="#{designationController.delete()}" update="lstSelect txtName"  />  
-                                <p:commandButton value="#{labels.No}" onclick="confirmation.hide()" type="button" />   
-                            </p:confirmDialog>
+
                         </p:panel>
                     </h:panelGrid  >
 
@@ -67,19 +64,17 @@
                             <h:panelGrid id="gpDetailText" columns="2">
                                 <h:outputText id="lblName" value="#{labels.Designation}" ></h:outputText>
                                 <h:inputText id="txtName" value="#{designationController.current.name}"  ></h:inputText>
-                               
+
                                 <h:outputText id="lblMapped" value="Mapped Designation" ></h:outputText>
 
-                                <h:selectOneListbox id="lstMapped"  size="5" value="#{designationController.current.mappedToDesignation}" style="min-width: 223px">
+                                <h:selectOneListbox id="lstMapped"  size="1" value="#{designationController.current.mappedToDesignation}" style="min-width: 223px">
                                     <f:selectItems value="#{designationController.officialDesignations}" var="offi" itemValue="#{offi}" itemLabel="#{offi.name}" ></f:selectItems>
-                                    <f:ajax event="click" execute="lstMapped" render="txtMapped" />
                                 </h:selectOneListbox>
                                 
-                                <h:outputLabel value="Mapped to " />
-                                <h:outputLabel id="txtMapped" value="#{designationController.current.mappedToDesignation.name}" />
-                                
-                                <h:outputText id="lblCatName" value="Service Type" ></h:outputText>
+                                <h:outputText id="lblOff" value="Official" ></h:outputText>
+                                <h:selectBooleanCheckbox id="chkOfficial" value="#{designationController.current.official}"/>
 
+                                <h:outputText id="lblCatName" value="Service Type" ></h:outputText>
                                 <h:selectOneListbox id="lstCatSelect"  size="1" value="#{designationController.current.category}" style="min-width: 223px">
                                     <f:selectItems value="#{designationCategoryController.items}" var="myCatItem" itemValue="#{myCatItem}" itemLabel="#{myCatItem.name}" ></f:selectItems>
                                 </h:selectOneListbox>
@@ -87,10 +82,10 @@
                             </h:panelGrid>
                             <h:panelGrid id="gpDetailButtons" columns="2">
                                 <h:commandButton id="btnSave" value="#{labels.save}"  action="#{designationController.saveSelected()}" styleClass="buttons">
-                                    <f:ajax render="btnAdd  btnDelete lstSelect btnSave    lstMapped lstCatSelect txtName selectFocus"  execute="btnSave  lstMapped lstCatSelect txtName selectFocus" >
+                                    <f:ajax render="btnAdd  btnDelete lstSelect btnSave chkOfficial   lstMapped lstCatSelect txtName selectFocus"  execute="btnSave  lstMapped lstCatSelect txtName chkOfficial selectFocus" >
                                     </f:ajax>
                                 </h:commandButton>
-                               
+
                             </h:panelGrid>
                         </h:panelGrid>
                     </p:panel>
