@@ -33,7 +33,7 @@
                         <h:panelGrid  columns="2" rendered="#{userApproveController.selectedUser!=null}">
                             <h:outputText value="Institution"/>
                             <h:selectOneListbox id="cmbPerIns" value="#{userApproveController.selectedUser.webUserPerson.institution}" >
-                                <f:selectItems value="#{userApproveController.institutions}" var="perIns" itemValue="#{perIns}" itemLabel="#{perIns.name}"/>
+                                <f:selectItems value="#{institutionController.payCentres}" var="perIns" itemValue="#{perIns}" itemLabel="#{perIns.name}"/>
                             </h:selectOneListbox>
                             <h:outputText value="Tel No"/>
                             <h:outputText value="#{userApproveController.selectedUser.telNo}"/>

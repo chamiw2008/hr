@@ -54,7 +54,7 @@
 
                         <h:outputLabel rendered="#{sessionController.privilege.restrictedInstitution==null}"  value="Previleges Restricted to" />
                         <h:selectOneListbox id="cmbIns" rendered="#{sessionController.privilege.restrictedInstitution==null}" value="#{userApproveController.privilege.restrictedInstitution}"  size="5">
-                            <f:selectItems value="#{userApproveController.institutions}" var="ri" itemValue="#{ri}" itemLabel="#{ri.name}" />
+                            <f:selectItems value="#{insti.institutions}" var="ri" itemValue="#{ri}" itemLabel="#{ri.name}" />
                         </h:selectOneListbox>
 
 
