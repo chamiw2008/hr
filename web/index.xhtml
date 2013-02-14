@@ -10,56 +10,80 @@
 
     <ui:define name="content">
         <p:growl autoUpdate="true"/>
+        <h:form>
+            <p:panel header="Dashboard" >
 
-        <p:panel header="Dashboard" >
-            <p:panel header="Designation Summery" rendered='#{sessionController.loggedUser.role.name == "insUser"}' >
-                Designation Summery
+                <p:panelGrid columns="2" >
 
-                <p:panel id="cmbLoc" style="border: 0px;margin: 0px;padding: 0px;">
-                    <h:selectOneListbox rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}" size="1" >
-                        <f:selectItems value="#{institutionController.offItems}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
-                        <f:ajax event="change" execute="cmbLoc  cmbYear cmbMonth" render=" tabTbls" />
-                    </h:selectOneListbox>
-                    <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
-                </p:panel>
+                    <p:panel header="Designation Summery" rendered='#{sessionController.loggedUser.role.name == "insUser"}' >
+                        Designation Summery
 
-
-                <h:selectOneListbox id="cmbYear" value="#{dbfController.payYear}" size="1">
-                    <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
-                    <f:ajax event="change" execute="cmbLoc  cmbYear cmbMonth" render="tabTbls" />
-                </h:selectOneListbox>
-
-                <h:selectOneListbox id="cmbMonth" value="#{dbfController.payMonth}" size="1" >
-                    <f:selectItem itemValue="1" itemLabel="January" />
-                    <f:selectItem itemValue="2" itemLabel="February" />
-                    <f:selectItem itemValue="3" itemLabel="March" />
-                    <f:selectItem itemValue="4" itemLabel="April" />
-                    <f:selectItem itemValue="5" itemLabel="May" />
-                    <f:selectItem itemValue="6" itemLabel="June" />
-                    <f:selectItem itemValue="7" itemLabel="July" />
-                    <f:selectItem itemValue="8" itemLabel="August" />
-                    <f:selectItem itemValue="9" itemLabel="September" />
-                    <f:selectItem itemValue="10" itemLabel="October" />
-                    <f:selectItem itemValue="11" itemLabel="November" />
-                    <f:selectItem itemValue="12" itemLabel="December" />
-                    <f:ajax event="change" execute="cmbLoc  cmbYear cmbMonth" render="tabTbls" />
-                </h:selectOneListbox>
-
-                <p:dataTable id="tabTbls" value="#{dbfController.designationSummery}" var="ds" >
-                    <p:column >
-                        <f:facet name="header" >Designation</f:facet>
-                        <h:outputLabel value="#{ds.designationName}" />
-                    </p:column>
-                    <p:column >
-                        <f:facet name="header" >Count</f:facet>
-                        <h:outputLabel value="#{ds.count}" />
-                    </p:column>
-                </p:dataTable>
-            </p:panel>
-
-        </p:panel> 
+                        <p:panel id="cmbLoc" style="border: 0px;margin: 0px;padding: 0px;">
+                            <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
+                        </p:panel>
 
 
+                        <h:selectOneListbox id="cmbYear" value="#{dbfController.payYear}" size="1">
+                            <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
+                            <f:ajax event="change" execute="cmbYear cmbMonth" render="tabTbls" />
+                        </h:selectOneListbox>
+
+                        <h:selectOneListbox id="cmbMonth" value="#{dbfController.payMonth}" size="1" >
+                            <f:selectItem itemValue="1" itemLabel="January" />
+                            <f:selectItem itemValue="2" itemLabel="February" />
+                            <f:selectItem itemValue="3" itemLabel="March" />
+                            <f:selectItem itemValue="4" itemLabel="April" />
+                            <f:selectItem itemValue="5" itemLabel="May" />
+                            <f:selectItem itemValue="6" itemLabel="June" />
+                            <f:selectItem itemValue="7" itemLabel="July" />
+                            <f:selectItem itemValue="8" itemLabel="August" />
+                            <f:selectItem itemValue="9" itemLabel="September" />
+                            <f:selectItem itemValue="10" itemLabel="October" />
+                            <f:selectItem itemValue="11" itemLabel="November" />
+                            <f:selectItem itemValue="12" itemLabel="December" />
+                            <f:ajax event="change" execute="cmbLoc  cmbYear cmbMonth" render="tabTbls" />
+                        </h:selectOneListbox>
+
+                        <p:dataTable id="tabTbls" value="#{dbfController.designationSummery}" var="ds" >
+                            <p:column >
+                                <f:facet name="header" >Designation</f:facet>
+                                <h:outputLabel value="#{ds.designationName}" />
+                            </p:column>
+                            <p:column >
+                                <f:facet name="header" >Count</f:facet>
+                                <h:outputLabel value="#{ds.count}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+
+
+                    <p:panel >
+
+                        <p:panelGrid style="border: 2px;padding: 1px; padding: 1px;margin: 1px;" >
+                            <p:row>
+                                <p:column style=" background-color: yellow;border: 2px;padding: 10px;margin: 3px; mar" >January</p:column>
+                                <p:column style="  background-color: greenyellow;border: 2px;padding: 10px;" >February</p:column>
+                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >March</p:column>
+                                <p:column style="  background-color: green;border: 2px;padding: 10px;" >April</p:column>
+                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >May</p:column>
+                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >June</p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column style=" background-color: yellow;border: 2px;padding: 10px;" >July</p:column>
+                                <p:column style=" background-color: yellow;border: 2px;padding: 10px;" >August</p:column>
+                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >September</p:column>
+                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >October</p:column>
+                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >November</p:column>
+                                <p:column style="color: red;  background-color: yellow;border: 2px;padding: 10px;" >December</p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+
+                </p:panelGrid>    
+
+            </p:panel> 
+
+        </h:form>
     </ui:define>
 
 </ui:composition>
