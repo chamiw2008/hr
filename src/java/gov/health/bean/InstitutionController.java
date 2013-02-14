@@ -57,9 +57,6 @@ public final class InstitutionController implements Serializable {
     Integer offSel = 0;
 
     public List<Institution> getPayCentres() {
-         if (payCentres != null) {
-            return payCentres;
-        }
         String sql = "SELECT i FROM Institution i where i.retired=false and i.payCentre = true order by i.name";
         payCentres = getFacade().findBySQL(sql);
         return payCentres;

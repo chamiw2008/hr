@@ -336,7 +336,7 @@ public class DbfController implements Serializable {
     }
 
     public Integer getPayMonth() {
-        if (payMonth == 0) {
+        if (payMonth==null || payMonth == 0) {
             return Calendar.getInstance().get(Calendar.MONTH);
         }
         return payMonth;
@@ -350,7 +350,7 @@ public class DbfController implements Serializable {
     }
 
     public Integer getPayYear() {
-        if (payYear == 0) {
+        if (payYear == null || payYear == 0) {
             return Calendar.getInstance().get(Calendar.YEAR);
         }
         return payYear;
@@ -824,6 +824,7 @@ public class DbfController implements Serializable {
                 JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " recorded successfully. ");
                 newPersonInstitutions = new ArrayList<PersonInstitution>();
                 getSummeryCounts(newPersonInstitutions);
+                toGetRecordsagain = Boolean.TRUE;
             } else {
                 JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " is listed successfully. If you are satisfied, please click the Save button to permanantly save the new set of data Replacing the old ones under " + institution.getName() + ".");
                 toGetRecordsagain = Boolean.TRUE;
