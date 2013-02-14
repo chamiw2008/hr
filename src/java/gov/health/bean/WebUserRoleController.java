@@ -8,9 +8,7 @@
  */
 package gov.health.bean;
 
-import gov.health.facade.PrivilegeFacade;
 import gov.health.facade.WebUserRoleFacade;
-import gov.health.entity.Privilege;
 import gov.health.entity.WebUserRole;
 import java.io.Serializable;
 import java.util.Calendar;
@@ -36,12 +34,9 @@ public final class WebUserRoleController  implements Serializable {
 
     @EJB
     private WebUserRoleFacade ejbFacade;
-    @EJB
-    private PrivilegeFacade priFacade;
     SessionController sessionController = new SessionController();
     List<WebUserRole> lstItems;
     private WebUserRole current;
-    private Privilege privilege;
     private DataModel<WebUserRole>  items = null;
     private int selectedItemIndex;
     boolean selectControlDisable = false;
@@ -56,21 +51,6 @@ public final class WebUserRoleController  implements Serializable {
         this.ejbFacade = ejbFacade;
     }
 
-    public PrivilegeFacade getPriFacade() {
-        return priFacade;
-    }
-
-    public void setPriFacade(PrivilegeFacade priFacade) {
-        this.priFacade = priFacade;
-    }
-
-    public Privilege getPrivilege() {
-        return privilege;
-    }
-
-    public void setPrivilege(Privilege privilege) {
-        this.privilege = privilege;
-    }
 
     public SessionController getSessionController() {
         return sessionController;
@@ -105,11 +85,6 @@ public final class WebUserRoleController  implements Serializable {
             JsfUtil.addSuccessMessage("getCurrent - getting privilege");
             String temSQL;
             temSQL = "SELECT i FROM Privilege i WHERE i.webUserRole.id = " + current.getId();
-            try {
-                privilege = getPriFacade().findBySQL(temSQL).get(0);
-            } catch (Exception e) {
-                JsfUtil.addErrorMessage(e.getMessage());
-            }
         }
         return current;
     }
@@ -121,12 +96,6 @@ public final class WebUserRoleController  implements Serializable {
             JsfUtil.addSuccessMessage("setCurrent Privilege - getting");
             String temSQL;
             temSQL = "SELECT i FROM Privilege i WHERE i.webUserRole.id = " + current.getId();
-            try {
-                privilege = getPriFacade().findBySQL(temSQL).get(0);
-                JsfUtil.addSuccessMessage(privilege.getName());
-            } catch (Exception e) {
-                JsfUtil.addErrorMessage(e.getMessage());
-            }
         }
     }
 
@@ -207,26 +176,17 @@ public final class WebUserRoleController  implements Serializable {
     public void prepareAdd() {
         selectedItemIndex = -1;
         current = new WebUserRole();
-        privilege = new Privilege();
         this.prepareSelectControlDisable();
     }
 
     public void saveSelected() {
-        if (sessionController.getPrivilege().isInstAdmin()==false){
-            JsfUtil.addErrorMessage("You are not autherized to make changes to any content");
-            return;
-        }            
         if (selectedItemIndex > 0) {
             getFacade().edit(current);
-            priFacade.edit(privilege);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));
         } else {
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
             getFacade().create(current);
-            privilege.setName("Role Privilege");
-            privilege.setWebUserRole(current);
-            priFacade.create(privilege);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
         }
         this.prepareSelect();
@@ -257,10 +217,6 @@ public final class WebUserRoleController  implements Serializable {
     }
 
     public void delete() {
-        if (sessionController.getPrivilege().isInstAdmin()==false){
-            JsfUtil.addErrorMessage("You are not autherized to delete any content");
-            return;
-        }
         if (current != null) {
             current.setRetired(true);
             current.setRetiredAt(Calendar.getInstance().getTime());

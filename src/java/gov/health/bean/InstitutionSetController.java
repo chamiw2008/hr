@@ -110,8 +110,8 @@ public final class InstitutionSetController implements Serializable {
 
     public List<InstitutionSet> getItems() {
         Long insId = 0L;
-        if (getSessionController().getPrivilege().getRestrictedInstitution() != null) {
-            insId = getSessionController().getPrivilege().getRestrictedInstitution().getId();
+        if (getSessionController().getLoggedUser().getRestrictedInstitution() != null) {
+            insId = getSessionController().getLoggedUser().getRestrictedInstitution().getId();
         } else if (getInstitution() != null && getInstitution().getId() != 0) {
             insId = getInstitution().getId();
         } else {
@@ -142,8 +142,8 @@ public final class InstitutionSetController implements Serializable {
             }
             setCurrent(new InstitutionSet());
             getCurrent().setName(newName);
-            if (getSessionController().getPrivilege().getRestrictedInstitution() != null) {
-                getCurrent().setInstitution(getSessionController().getPrivilege().getRestrictedInstitution());
+            if (getSessionController().getLoggedUser().getRestrictedInstitution() != null) {
+                getCurrent().setInstitution(getSessionController().getLoggedUser().getRestrictedInstitution());
                 System.out.println("1");
             } else if (getInstitution() != null && getInstitution().getId() != 0) {
                 getCurrent().setInstitution(getInstitution());

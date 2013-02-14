@@ -38,9 +38,7 @@ public class ConnetcionController implements Serializable {
     PersonFacade pFacade;
     @EJB
     WebUserRoleFacade rFacade;
-    @EJB
-    PrivilegeFacade vFacade;
-    @EJB
+        @EJB
     InstitutionFacade institutionFacade;
     @EJB
     AreaFacade areaFacade;
@@ -68,7 +66,6 @@ public class ConnetcionController implements Serializable {
     //
     boolean logged;
     boolean activated;
-    Privilege privilege;
     String displayName;
 //
     Institution institution;
@@ -209,34 +206,9 @@ public class ConnetcionController implements Serializable {
         user.setRole(role);
         uFacade.create(user);
 
-        Privilege p = new Privilege();
-        //
-        p.setName("user Previlage");
-
-        p.setInstAdmin(true);
-        p.setInstUser(true);
-        p.setSuperUser(true);
-        p.setSystemAdmin(true);
-        p.setWebUser(user);
-        //
-        getvFacade().create(p);
-
-        //
-        //Privilege for Administrator Role
-        p = new Privilege();
-        //
-        p.setName("Role Previlage");
-        p.setInstAdmin(true);
-        p.setInstUser(true);
-        p.setSuperUser(true);
-        p.setSystemAdmin(true);        //
-        p.setWebUserRole(role);
-        //
-        getvFacade().create(p);
 
 //        JsfUtil.addSuccessMessage("New User Added");
 
-        sessionController.setPrivilege(allUserPrivilege(user));
 
     }
 
@@ -379,7 +351,6 @@ public class ConnetcionController implements Serializable {
                     sessionController.setLoggedUser(u);
                     sessionController.setLogged(Boolean.TRUE);
                     sessionController.setActivated(u.isActivated());
-                    sessionController.setPrivilege(allUserPrivilege(u));
                     JsfUtil.addSuccessMessage("Logged successfully");
                     return true;
                 }
@@ -388,42 +359,12 @@ public class ConnetcionController implements Serializable {
         return false;
     }
 
-    private Privilege allUserPrivilege(WebUser user) {
-        Privilege p = new Privilege();
-
-        String temSQL = "SELECT p From Privilege p WHERE p.webUser.id = " + user.getId();
-        List<Privilege> allP = getvFacade().findBySQL(temSQL);
-
-        for (Privilege pv : allP) {
-            //Cadre
-            if (pv.isInstAdmin() == true) {
-                p.setInstAdmin(true);
-            }
-            if (pv.isInstUser() == true) {
-                p.setInstUser(true);
-            }
-            if (pv.isSuperUser() == true) {
-                p.setSuperUser(true);
-            }
-            if (pv.isSystemAdmin() == true) {
-                p.setSystemAdmin(true);
-            }
-            if (pv.getRestrictedArea() != null) {
-                p.setRestrictedArea(pv.getRestrictedArea());
-            }
-            if (pv.getRestrictedInstitution() != null) {
-                p.setRestrictedInstitution(pv.getRestrictedInstitution());
-            }
-        }
-
-        return p;
-    }
+ 
 
     public void logout() {
         sessionController.setLoggedUser(null);
         sessionController.setLogged(false);
         sessionController.setActivated(false);
-        sessionController.setPrivilege(null);
     }
 
     public WebUser getCurrent() {
@@ -561,24 +502,7 @@ public class ConnetcionController implements Serializable {
         this.rFacade = rFacade;
     }
 
-    public PrivilegeFacade getvFacade() {
-        return vFacade;
-    }
-
-    public void setvFacade(PrivilegeFacade vFacade) {
-        this.vFacade = vFacade;
-    }
-
-    public Privilege getPrivilege() {
-        return sessionController.getPrivilege();
-    }
-
-    public void setPrivilege(Privilege privilege) {
-        this.privilege = privilege;
-        sessionController.setPrivilege(privilege);
-    }
-
-    public String getDisplayName() {
+        public String getDisplayName() {
         return HOSecurity.decrypt(sessionController.getLoggedUser().getName());
     }
 

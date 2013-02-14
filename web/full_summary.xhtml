@@ -8,7 +8,7 @@
 
     <ui:define name="content">
 
-        <h:form  rendered="#{sessionController.privilege.systemAdmin}">
+        <h:form  rendered="#{sessionController.loggedUser.systemAdmin}">
             
             <pou:growl ></pou:growl>
             <h:panelGrid columns="2" >

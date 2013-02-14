@@ -58,22 +58,6 @@ public class Menu implements Serializable {
 
 
 
-        if (sessionController.privilege.isSystemAdmin()) {
-            //model.addSubmenu(viewData());
-        }
-
-        if (sessionController.privilege.isSuperUser()) {
-            //model.addSubmenu(uploadData());
-        }
-
-        if (sessionController.privilege.isInstUser()) {
-            //model.addSubmenu(matadata());
-        }
-
-        if (sessionController.privilege.isInstAdmin()) {
-            //model.addSubmenu(adminSubmenu());
-        }
-
         // View data
         model.addSubmenu(viewData());
 
@@ -97,34 +81,34 @@ public class Menu implements Serializable {
 
         MenuItem item;
 
-        if (sessionController.privilege.isSystemAdmin()) {
 
-            item = new MenuItem();
-            item.setValue("Institution Types");
-            item.setUrl("institution_type.xhtml");
-            submenu.getChildren().add(item);
 
-            item = new MenuItem();
-            item.setValue("Institutions");
-            item.setUrl("institutions.xhtml");
-            submenu.getChildren().add(item);
-            
-             item = new MenuItem();
-            item.setValue("Institution Sets");
-            item.setUrl("institution_set.xhtml");
-            submenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue("Institution Types");
+        item.setUrl("institution_type.xhtml");
+        submenu.getChildren().add(item);
 
-            item = new MenuItem();
-            item.setValue("Designations");
-            item.setUrl("designation.xhtml");
-            submenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue("Institutions");
+        item.setUrl("institutions.xhtml");
+        submenu.getChildren().add(item);
 
-            item = new MenuItem();
-            item.setValue("Manage (Designation) Service Type");
-            item.setUrl("designation_category.xhtml");
-            submenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue("Institution Sets");
+        item.setUrl("institution_set.xhtml");
+        submenu.getChildren().add(item);
 
-        }
+        item = new MenuItem();
+        item.setValue("Designations");
+        item.setUrl("designation.xhtml");
+        submenu.getChildren().add(item);
+
+        item = new MenuItem();
+        item.setValue("Manage (Designation) Service Type");
+        item.setUrl("designation_category.xhtml");
+        submenu.getChildren().add(item);
+
+
 
         return submenu;
 
@@ -140,7 +124,7 @@ public class Menu implements Serializable {
         submenu.setLabel("View Data");
 
         // for Super user & System admins
-//        if (sessionController.privilege.isSystemAdmin() || sessionController.privilege.isSuperUser()) {
+//        if (sessionController.loggedUser.isSystemAdmin() || sessionController.loggedUser.isSuperUser()) {
 //            item = new MenuItem();
 //            item.setValue("Full Summary");
 //            item.setUrl("full_summary.xhtml");
@@ -148,28 +132,22 @@ public class Menu implements Serializable {
 //        }
 
         // for all 4 categories
-        if (sessionController.privilege.isSystemAdmin() || sessionController.privilege.isSuperUser() || sessionController.privilege.isInstAdmin() || sessionController.privilege.isInstUser()) {
-            item = new MenuItem();
-            item.setValue("Institution Summary");
-            item.setUrl("inst_summary.xhtml");
-            submenu.getChildren().add(item);
-        }
+        item = new MenuItem();
+        item.setValue("Institution Summary");
+        item.setUrl("inst_summary.xhtml");
+        submenu.getChildren().add(item);
 
-        if (sessionController.privilege.isSystemAdmin() || sessionController.privilege.isSuperUser() || sessionController.privilege.isInstAdmin() || sessionController.privilege.isInstUser()) {
-            item = new MenuItem();
-            item.setValue("Records wihout NIC");
-            item.setUrl("records_without_nic.xhtml");
-            submenu.getChildren().add(item);
-        }
+        item = new MenuItem();
+        item.setValue("Records wihout NIC");
+        item.setUrl("records_without_nic.xhtml");
+        submenu.getChildren().add(item);
 
-        if (sessionController.privilege.isSystemAdmin() || sessionController.privilege.isSuperUser() || sessionController.privilege.isInstAdmin() || sessionController.privilege.isInstUser()) {
-            item = new MenuItem();
-            item.setValue("Records wihout Designations");
-            item.setUrl("records_without_designation.xhtml");
-            submenu.getChildren().add(item);
-        }
-        
-        
+        item = new MenuItem();
+        item.setValue("Records wihout Designations");
+        item.setUrl("records_without_designation.xhtml");
+        submenu.getChildren().add(item);
+
+
         return submenu;
     }
 

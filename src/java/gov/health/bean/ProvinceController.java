@@ -156,10 +156,7 @@ public final class ProvinceController  implements Serializable {
     }
 
     public void saveSelected() {
-        if (sessionController.getPrivilege().isInstUser()==false){
-            JsfUtil.addErrorMessage("You are not autherized to make changes to any content");
-            return;
-        }            
+                  
         if (selectedItemIndex > 0) {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));
@@ -197,10 +194,7 @@ public final class ProvinceController  implements Serializable {
     }
 
     public void delete() {
-        if (sessionController.getPrivilege().isInstUser()==false){
-            JsfUtil.addErrorMessage("You are not autherized to delete any content");
-            return;
-        }
+       
         if (current != null) {
             current.setRetired(true);
             current.setRetiredAt(Calendar.getInstance().getTime());

@@ -32,11 +32,11 @@
                     <h:outputText value="&nbsp;"/>
 
                     <pou:panel id="cmbLoc"  style="border: 0px;margin: 0px;padding: 0px;">
-                        <h:selectOneListbox size="5" rendered="#{sessionController.privilege.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}" >
+                        <h:selectOneListbox size="5" rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}" >
                             <f:selectItems value="#{institutionController.payCentres}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
                             <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls gridSummery" />
                         </h:selectOneListbox>
-                        <h:outputLabel rendered="#{sessionController.privilege.restrictedInstitution != null}"  value="#{sessionController.privilege.restrictedInstitution.name}"/>
+                        <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
                     </pou:panel>
 
 

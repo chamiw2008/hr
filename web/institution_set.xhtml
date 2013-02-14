@@ -22,11 +22,11 @@
                             </pou:column>
 
                             <pou:column>
-                                <h:selectOneListbox id="cmbIns" rendered="#{sessionController.privilege.restrictedInstitution==null}"  value="#{institutionSetController.institution}" >
+                                <h:selectOneListbox id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}"  value="#{institutionSetController.institution}" >
                                     <f:selectItems value="#{institutionController.items}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}"/>
                                     <f:ajax execute="cmbIns" event="change" render="cmbSet"/>
                                 </h:selectOneListbox>
-                                <h:outputLabel rendered="#{sessionController.privilege.restrictedInstitution!=null}" value="#{sessionController.privilege.restrictedInstitution.name}"/>
+                                <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution!=null}" value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
                             </pou:column>
 
 

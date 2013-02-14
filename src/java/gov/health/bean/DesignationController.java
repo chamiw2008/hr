@@ -353,11 +353,6 @@ public final class DesignationController implements Serializable {
 
     public void saveSelected() {
         String msg;
-        if (sessionController.getPrivilege().isInstUser() == false) {
-            JsfUtil.addErrorMessage("You are not autherized to make changes to any content");
-            return;
-        }
-
         if (current.getId() != null && current.getId() != 0) {
             getFacade().edit(current);
             msg = new MessageProvider().getValue("savedOldSuccessfully");

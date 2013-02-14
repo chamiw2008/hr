@@ -7,7 +7,6 @@
  */
 package gov.health.bean;
 
-import gov.health.entity.Privilege;
 import gov.health.entity.WebUser;
 import java.io.Serializable;
 import javax.ejb.Stateless;
@@ -29,7 +28,6 @@ public class SessionController  implements Serializable {
     boolean activated = false;
     String primeTheme;
     String defLocale;
-    Privilege privilege = null;
 
     /**
      * Creates a new instance of SessionController
@@ -120,11 +118,5 @@ public class SessionController  implements Serializable {
         this.activated = activated;
     }
 
-    public Privilege getPrivilege() {
-        return privilege;
-    }
 
-    public void setPrivilege(Privilege privilege) {
-        this.privilege = privilege;
-    }
 }

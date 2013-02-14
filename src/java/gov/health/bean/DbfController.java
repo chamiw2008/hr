@@ -281,8 +281,8 @@ public class DbfController implements Serializable {
     }
 
     public List<InstitutionSet> getInsSets() {
-        if (getSessionController().getPrivilege().getRestrictedInstitution() != null) {
-            setInstitution(getSessionController().getPrivilege().getRestrictedInstitution());
+        if (getSessionController().getLoggedUser().getRestrictedInstitution() != null) {
+            setInstitution(getSessionController().getLoggedUser().getRestrictedInstitution());
         }
         if (getInstitution() == null || getInstitution().getId() == null || getInstitution().getId() == 0) {
             return null;
@@ -541,10 +541,10 @@ public class DbfController implements Serializable {
     }
 
     public Institution getInstitution() {
-        if (getSessionController().getPrivilege().getRestrictedInstitution() == null) {
+        if (getSessionController().getLoggedUser().getRestrictedInstitution() == null) {
             return institution;
         } else {
-            return getSessionController().getPrivilege().getRestrictedInstitution();
+            return getSessionController().getLoggedUser().getRestrictedInstitution();
         }
     }
 
@@ -670,8 +670,8 @@ public class DbfController implements Serializable {
         InputStream in;
         String temNic;
         Boolean newEntries = false;
-        if (sessionController.privilege.getRestrictedInstitution() != null) {
-            setInstitution(sessionController.getPrivilege().getRestrictedInstitution());
+        if (sessionController.getLoggedUser().getRestrictedInstitution() != null) {
+            setInstitution(sessionController.getLoggedUser().getRestrictedInstitution());
         }
         if (getInstitution() == null) {
             JsfUtil.addErrorMessage("Please select an institute");
