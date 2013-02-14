@@ -12,6 +12,7 @@
         <p:growl autoUpdate="true"/>
 
         <p:panel header="Dashboard" >
+            #{sessionController.loggedUser.role}
             <p:panel header="Designation Summery" rendered='#{sessionController.loggedUser.role.name == "insUser"}' >
                 Designation Summery
                 <p:dataTable value="#{dbfController.designationSummery}" var="ds" >
@@ -23,7 +24,6 @@
                         <f:facet name="header" >Count</f:facet>
                         <h:outputLabel value="#{ds.count}" />
                     </p:column>
-
                 </p:dataTable>
             </p:panel>
 

@@ -38,7 +38,7 @@ public class ConnetcionController implements Serializable {
     PersonFacade pFacade;
     @EJB
     WebUserRoleFacade rFacade;
-        @EJB
+    @EJB
     InstitutionFacade institutionFacade;
     @EJB
     AreaFacade areaFacade;
@@ -72,6 +72,15 @@ public class ConnetcionController implements Serializable {
     Area area;
     DataModel<Institution> institutions;
     DataModel<Area> areas;
+    WebUserRole role;
+
+    public WebUserRole getRole() {
+        return role;
+    }
+
+    public void setRole(WebUserRole role) {
+        this.role = role;
+    }
 
     /**
      * Creates a new instance of ConnetcionController
@@ -261,6 +270,7 @@ public class ConnetcionController implements Serializable {
         WebUser user = new WebUser();
         Person person = new Person();
         user.setWebUserPerson(person);
+        user.setRole(role);
 
         person.setName(newPersonName);
         person.setInstitution(institution);
@@ -273,7 +283,7 @@ public class ConnetcionController implements Serializable {
         user.setTelNo(telNo);
         user.setEmail(email);
         user.setActivated(Boolean.TRUE);
-        if (user.getRole() == null && "sysAdmin".equals(user.getRole().getName())) {
+        if (user.getRole() != null && "sysAdmin".equals(user.getRole().getName())) {
             user.setRestrictedInstitution(null);
         } else if (user.getRole() != null && "superUser".equals(user.getRole().getName())) {
             user.setRestrictedInstitution(null);
@@ -358,8 +368,6 @@ public class ConnetcionController implements Serializable {
         }
         return false;
     }
-
- 
 
     public void logout() {
         sessionController.setLoggedUser(null);
@@ -502,7 +510,7 @@ public class ConnetcionController implements Serializable {
         this.rFacade = rFacade;
     }
 
-        public String getDisplayName() {
+    public String getDisplayName() {
         return HOSecurity.decrypt(sessionController.getLoggedUser().getName());
     }
 
