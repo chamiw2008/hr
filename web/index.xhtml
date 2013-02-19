@@ -61,20 +61,20 @@
 
                         <p:panelGrid style="border: 2px;padding: 1px; padding: 1px;margin: 1px;" >
                             <p:row>
-                                <p:column style=" background-color: yellow;border: 2px;padding: 10px;margin: 3px; mar" >January</p:column>
-                                <p:column style="  background-color: greenyellow;border: 2px;padding: 10px;" >February</p:column>
-                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >March</p:column>
-                                <p:column style="  background-color: green;border: 2px;padding: 10px;" >April</p:column>
-                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >May</p:column>
-                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >June</p:column>
+                                <p:column style=" background-color: rgb( #{dbfController.monthColR[0]} ,#{dbfController.monthColR[0]},0); border: 2px;padding: 10px;margin: 3px; mar" >January - #{dbfController.completedSet[0]}</p:column>
+                                <p:column style="  background-color: greenyellow;border: 2px;padding: 10px;" >February - #{dbfController.completedSet[1]}</p:column>
+                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >March - #{dbfController.completedSet[2]}</p:column>
+                                <p:column style="  background-color: green;border: 2px;padding: 10px;" >April - #{dbfController.completedSet[3]}</p:column>
+                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >May - #{dbfController.completedSet[4]}</p:column>
+                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >June - #{dbfController.completedSet[5]}</p:column>
                             </p:row>
                             <p:row>
-                                <p:column style=" background-color: yellow;border: 2px;padding: 10px;" >July</p:column>
-                                <p:column style=" background-color: yellow;border: 2px;padding: 10px;" >August</p:column>
-                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >September</p:column>
-                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >October</p:column>
-                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >November</p:column>
-                                <p:column style="color: red;  background-color: yellow;border: 2px;padding: 10px;" >December</p:column>
+                                <p:column style=" background-color: yellow;border: 2px;padding: 10px;" >July - #{dbfController.completedSet[6]}</p:column>
+                                <p:column style=" background-color: yellow;border: 2px;padding: 10px;" >August - #{dbfController.completedSet[7]}</p:column>
+                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >September - #{dbfController.completedSet[8]}</p:column>
+                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >October - #{dbfController.completedSet[9]}</p:column>
+                                <p:column style="  background-color: yellow;border: 2px;padding: 10px;" >November - #{dbfController.completedSet[10]}</p:column>
+                                <p:column style="color: red;  background-color: yellow;border: 2px;padding: 10px;" >December - #{dbfController.completedSet[11]}</p:column>
                             </p:row>
                         </p:panelGrid>
                     </p:panel>

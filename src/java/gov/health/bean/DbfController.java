@@ -99,6 +99,97 @@ public class DbfController implements Serializable {
     Long temporaryCount;
 //
     Boolean toGetRecordsagain = Boolean.TRUE;
+    int[] monthColR = new int[12];
+    int[] monthColG = new int[12];
+    int[] completedSet = new int[12];
+    int setCount;
+
+    public int getSetCount() {
+        if (getInstitution() == null) {
+            return 0;
+        }
+        String sql;
+        sql = "select is from InstitutionSet is where is.retired = false and is.institution.id = " + getInstitution().getId() + " ";
+        try {
+            return getPiFacade().findBySQL(sql).size();
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    public void setSetCount(int setCount) {
+        this.setCount = setCount;
+    }
+
+    public int[] getMonthColR() {
+        try {
+            if (setCount < 1) {
+                setCount = 1;
+            }
+            for (int i = 0; i < 12; i++) {
+                monthColR[i] = (setCount - completedSet[i] / setCount) * 255;
+            }
+            return monthColR;
+        } catch (Exception e) {
+            return monthColR;
+        }
+    }
+
+    public void setMonthColR(int[] monthColR) {
+        this.monthColR = monthColR;
+    }
+
+    public int[] getMonthColG() {
+        if (setCount < 1) {
+            setCount = 1;
+        }
+
+        try {
+            for (int i = 0; i < 12; i++) {
+                monthColG[i] = (completedSet[i] / setCount) * 255;
+            }
+            return monthColG;
+        } catch (Exception e) {
+            return monthColG;
+        }
+    }
+
+    public void setMonthColG(int[] monthColG) {
+        this.monthColG = monthColG;
+    }
+
+    public int[] getCompletedSet() {
+        for (int i = 0; i < 12; i++) {
+            completedSet[i] = completedSetCount(payYear, i + 1);
+        }
+        return completedSet;
+    }
+
+    public void setCompletedSet(int[] completedSet) {
+        this.completedSet = completedSet;
+    }
+
+    public static int intValue(long value) {
+        int valueInt = (int) value;
+        if (valueInt != value) {
+            throw new IllegalArgumentException(
+                    "The long value " + value + " is not within range of the int type");
+        }
+        return valueInt;
+    }
+
+    public int completedSetCount(Integer temPayYear, Integer temPayMonth) {
+        if (getInstitution() == null || temPayMonth == 0 || getPayYear() == null) {
+            return 0;
+        }
+        String sql;
+        sql = "select distinct pi.paySet from PersonInstitution pi where pi.retired = false and pi.payYear = " + temPayYear + " and pi.payMonth = " + temPayMonth + " and pi.payCentre.id = " + getInstitution().getId() + " ";
+        try {
+            return getPiFacade().findBySQL(sql).size();
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 
     public Boolean getToGetRecordsagain() {
         return toGetRecordsagain;
@@ -336,7 +427,7 @@ public class DbfController implements Serializable {
     }
 
     public Integer getPayMonth() {
-        if (payMonth==null || payMonth == 0) {
+        if (payMonth == null || payMonth == 0) {
             return Calendar.getInstance().get(Calendar.MONTH);
         }
         return payMonth;
