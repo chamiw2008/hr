@@ -19,16 +19,19 @@
 
                         <p:column colspan="2" >
 
+                            
+<!--Institution-->                            
                             <p:panel id="cmbLoc" style="border: 0px;margin: 0px;padding: 0px;">
                                 <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
                             </p:panel>
 
-
+<!--Year-->
                             <h:selectOneListbox id="cmbYear" value="#{dbfController.payYear}" size="1">
                                 <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
                                 <f:ajax event="change" execute="cmbYear cmbMonth" render="tabTbls" />
                             </h:selectOneListbox>
 
+<!--Month-->
                             <h:selectOneListbox id="cmbMonth" value="#{dbfController.payMonth}" size="1" >
                                 <f:selectItem itemValue="1" itemLabel="January" />
                                 <f:selectItem itemValue="2" itemLabel="February" />
@@ -72,20 +75,20 @@
 
                                 <p:panelGrid style="border: 2px;padding: 1px; padding: 1px;margin: 1px;" >
                                     <p:row>
-                                        <p:column style=" background-color: rgb( #{dbfController.monthColR[0]} ,#{dbfController.monthColR[0]},50); border: 2px;padding: 10px;margin: 3px; mar" >January - #{dbfController.completedSet[0]}</p:column>
-                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[1]} ,#{dbfController.monthColR[0]},50);border: 2px;padding: 10px;" >February - #{dbfController.completedSet[1]}</p:column>
-                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[2]} ,#{dbfController.monthColR[0]},50);border: 2px;padding: 10px;" >March - #{dbfController.completedSet[2]}</p:column>
-                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[3]} ,#{dbfController.monthColR[0]},50);border: 2px;padding: 10px;" >April - #{dbfController.completedSet[3]}</p:column>
-                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[4]} ,#{dbfController.monthColR[0]},50);border: 2px;padding: 10px;" >May - #{dbfController.completedSet[4]}</p:column>
-                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[5]} ,#{dbfController.monthColR[0]},50);border: 2px;padding: 10px;" >June - #{dbfController.completedSet[5]}</p:column>
+                                        <p:column style=" background-color: rgb( #{dbfController.monthColR[0]} ,#{dbfController.monthColG[0]},50); border: 2px;padding: 10px;margin: 3px;" >January - #{dbfController.completedSet[0]}</p:column>
+                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[1]} ,#{dbfController.monthColG[1]},50);border: 2px;padding: 10px;" >February - #{dbfController.completedSet[1]}</p:column>
+                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[2]} ,#{dbfController.monthColG[2]},50);border: 2px;padding: 10px;" >March - #{dbfController.completedSet[2]}</p:column>
+                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[3]} ,#{dbfController.monthColG[3]},50);border: 2px;padding: 10px;" >April - #{dbfController.completedSet[3]}</p:column>
+                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[4]} ,#{dbfController.monthColG[4]},50);border: 2px;padding: 10px;" >May - #{dbfController.completedSet[4]}</p:column>
+                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[5]} ,#{dbfController.monthColG[5]},50);border: 2px;padding: 10px;" >June - #{dbfController.completedSet[5]}</p:column>
                                     </p:row>
                                     <p:row>
-                                        <p:column style=" background-color: rgb( #{dbfController.monthColR[6]} ,#{dbfController.monthColR[0]},0);border: 2px;padding: 10px;" >July - #{dbfController.completedSet[6]}</p:column>
-                                        <p:column style=" background-color: rgb( #{dbfController.monthColR[7]} ,#{dbfController.monthColR[0]},0);border: 2px;padding: 10px;" >August - #{dbfController.completedSet[7]}</p:column>
-                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[8]} ,#{dbfController.monthColR[0]},0);border: 2px;padding: 10px;" >September - #{dbfController.completedSet[8]}</p:column>
-                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[9]} ,#{dbfController.monthColR[0]},0);border: 2px;padding: 10px;" >October - #{dbfController.completedSet[9]}</p:column>
-                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[10]} ,#{dbfController.monthColR[0]},0);border: 2px;padding: 10px;" >November - #{dbfController.completedSet[10]}</p:column>
-                                        <p:column style="color: red;  background-color: rgb( #{dbfController.monthColR[11]} ,#{dbfController.monthColR[0]},0);border: 2px;padding: 10px;" >December - #{dbfController.completedSet[11]}</p:column>
+                                        <p:column style=" background-color: rgb( #{dbfController.monthColR[6]} ,#{dbfController.monthColG[6]},0);border: 2px;padding: 10px;" >July - #{dbfController.completedSet[6]}</p:column>
+                                        <p:column style=" background-color: rgb( #{dbfController.monthColR[7]} ,#{dbfController.monthColG[7]},0);border: 2px;padding: 10px;" >August - #{dbfController.completedSet[7]}</p:column>
+                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[8]} ,#{dbfController.monthColG[8]},0);border: 2px;padding: 10px;" >September - #{dbfController.completedSet[8]}</p:column>
+                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[9]} ,#{dbfController.monthColG[9]},0);border: 2px;padding: 10px;" >October - #{dbfController.completedSet[9]}</p:column>
+                                        <p:column style="  background-color: rgb( #{dbfController.monthColR[10]} ,#{dbfController.monthColG[10]},0);border: 2px;padding: 10px;" >November - #{dbfController.completedSet[10]}</p:column>
+                                        <p:column style="color: red;  background-color: rgb( #{dbfController.monthColR[11]} ,#{dbfController.monthColG[11]},0);border: 2px;padding: 10px;" >December - #{dbfController.completedSet[11]}</p:column>
                                     </p:row>
                                 </p:panelGrid>
                             </p:panel>

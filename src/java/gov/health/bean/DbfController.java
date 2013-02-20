@@ -137,27 +137,34 @@ public class DbfController implements Serializable {
         this.monthColG = monthColG;
     }
 
-    
- 
-    public int[] getCompletedSet() {
+    public void prepareSetSeubmitColours() {
+        getSetCount();
+        System.out.println("Set Count " + setCount);
         for (int i = 0; i < 12; i++) {
             completedSet[i] = completedSetCount(payYear, i + 1);
+            System.out.println("Completed Sets " + completedSet[i]  );
             int halfSetCount = completedSet[i] / 2;
-                if (setCount == 0) {
-                    monthColR[i] = 0;
-                    monthColG[i] = 255;
-                } else if (setCount == completedSet[i]) {
-                    monthColR[i] = 0;
-                    monthColG[i] = 255;
-                } else if (setCount >= halfSetCount) {
-                    monthColR[i] = 127;
-                    monthColG[i] = 127;
-                } else {
-                    monthColR[i] = 255;
-                    monthColG[i] = 0;
-                }
-            System.out.println("yyyyyyyyyyyy");
+            if (setCount == 0) {
+                monthColR[i] = 0;
+                monthColG[i] = 255;
+            } else if (setCount == completedSet[i]) {
+                monthColR[i] = 0;
+                monthColG[i] = 255;
+            } else if (setCount >= halfSetCount) {
+                monthColR[i] = 127;
+                monthColG[i] = 127;
+            } else {
+                monthColR[i] = 255;
+                monthColG[i] = 0;
+            }
+            System.out.println("i " + i);
+            System.out.println("R "  + monthColR[i]);
+            System.out.println("G " + monthColG[i]);
         }
+    }
+
+    public int[] getCompletedSet() {
+
         return completedSet;
     }
 
@@ -176,7 +183,7 @@ public class DbfController implements Serializable {
 
     public int completedSetCount(Integer temPayYear, Integer temPayMonth) {
         if (getInstitution() == null || temPayMonth == 0 || getPayYear() == null) {
-            System.out.println("0 xxxxxxxxxx"); 
+            System.out.println("0 xxxxxxxxxx");
             return 0;
         }
         String sql;
@@ -332,10 +339,8 @@ public class DbfController implements Serializable {
             s.setCount(Long.valueOf(o[1].toString()));
             sums.add(s);
         }
-//        PersonInstitution pi = new PersonInstitution();
-//        pi.getDesignation();
         getSetCount();
-        getCompletedSet();
+        prepareSetSeubmitColours();
         return sums;
     }
 
