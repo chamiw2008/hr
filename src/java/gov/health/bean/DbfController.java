@@ -145,16 +145,15 @@ public class DbfController implements Serializable {
         System.out.println("Set Count " + setCount);
         for (int i = 0; i < 12; i++) {
             System.out.println("Completed Sets " + completedSet[i]);
-            int halfSetCount = completedSet[i] / 2;
             if (setCount == 0) {
                 monthColR[i] = 0;
                 monthColG[i] = 255;
             } else if (setCount == completedSet[i]) {
                 monthColR[i] = 0;
                 monthColG[i] = 255;
-            } else if (setCount >= halfSetCount) {
-                monthColR[i] = 127;
-                monthColG[i] = 127;
+            } else if (completedSet[i] >= (setCount / 2)) {
+                monthColR[i] = 255;
+                monthColG[i] = 255;
             } else {
                 monthColR[i] = 255;
                 monthColG[i] = 0;
