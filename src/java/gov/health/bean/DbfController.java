@@ -111,8 +111,10 @@ public class DbfController implements Serializable {
         String sql;
         sql = "select iset from InstitutionSet iset where iset.retired = false and iset.institution.id = " + getInstitution().getId() + " ";
         try {
-            return getPiFacade().findBySQL(sql).size();
+            setCount =getPiFacade().findBySQL(sql).size();
+            return setCount;
         } catch (Exception e) {
+            System.out.println("Error in getting set count is " + e.getMessage());
             return 0;
         }
     }
