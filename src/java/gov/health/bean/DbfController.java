@@ -101,6 +101,8 @@ public class DbfController implements Serializable {
     Boolean toGetRecordsagain = Boolean.TRUE;
     int[] monthColR = new int[12];
     int[] monthColG = new int[12];
+    int[] monthColB = new int[12];
+    
     int[] completedSet = new int[12];
     int setCount;
 
@@ -139,6 +141,16 @@ public class DbfController implements Serializable {
         this.monthColG = monthColG;
     }
 
+    public int[] getMonthColB() {
+        return monthColB;
+    }
+
+    public void setMonthColB(int[] monthColB) {
+        this.monthColB = monthColB;
+    }
+
+    
+    
     public void prepareSetSeubmitColours() {
         getSetCount();
         completedSetCount(getPayYear());
@@ -148,15 +160,19 @@ public class DbfController implements Serializable {
             if (setCount == 0) {
                 monthColR[i] = 0;
                 monthColG[i] = 255;
+                monthColB[i]=0;
             } else if (setCount == completedSet[i]) {
                 monthColR[i] = 0;
                 monthColG[i] = 255;
+                monthColB[i]=0;
             } else if (completedSet[i] >= (setCount / 2)) {
                 monthColR[i] = 255;
                 monthColG[i] = 255;
+                monthColB[i]=0;
             } else {
-                monthColR[i] = 255;
-                monthColG[i] = 0;
+                monthColR[i] = 245;
+                monthColG[i] = 245;
+                monthColB[i]=245;
             }
             System.out.println("i " + i);
             System.out.println("R " + monthColR[i]);
