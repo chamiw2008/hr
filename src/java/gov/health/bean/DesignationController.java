@@ -353,7 +353,7 @@ public final class DesignationController implements Serializable {
             return;
         }
         
-        if (current.getId()!=null || current.getId()!=0) {
+        if (current.getId()!=null && current.getId()!=0) {
             getFacade().edit(current);
             msg = new MessageProvider().getValue("savedOldSuccessfully");
         } else {

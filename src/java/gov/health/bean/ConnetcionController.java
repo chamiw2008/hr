@@ -144,7 +144,7 @@ public class ConnetcionController implements Serializable {
         request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         Enumeration headerIter = request.getHeaderNames();
         String userAgent = request.getHeader("User-Agent");
-        
+
         while (headerIter.hasMoreElements()) {
             String headername = (String) headerIter.nextElement();
             System.out.println("headername + : " + request.getHeader(headername));
@@ -335,11 +335,12 @@ public class ConnetcionController implements Serializable {
     }
 
     private boolean isFirstVisit() {
+
         if (getFacede().count() <= 0) {
-//            JsfUtil.addSuccessMessage("First Visit");
+            JsfUtil.addSuccessMessage("First Visit");
             return true;
         } else {
-//            JsfUtil.addSuccessMessage("Not, Not First Visit");
+            JsfUtil.addSuccessMessage("Not, Not First Visit");
             return false;
         }
 

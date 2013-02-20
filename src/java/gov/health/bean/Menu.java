@@ -108,8 +108,8 @@ public class Menu implements Serializable {
             item.setValue("Institutions");
             item.setUrl("institutions.xhtml");
             submenu.getChildren().add(item);
-            
-             item = new MenuItem();
+
+            item = new MenuItem();
             item.setValue("Institution Sets");
             item.setUrl("institution_set.xhtml");
             submenu.getChildren().add(item);
@@ -124,6 +124,10 @@ public class Menu implements Serializable {
             item.setUrl("designation_category.xhtml");
             submenu.getChildren().add(item);
 
+            item = new MenuItem();
+            item.setValue("Bulk upload");
+            item.setUrl("bulk_upload.xhtml");
+            submenu.getChildren().add(item);
         }
 
         return submenu;
@@ -168,8 +172,8 @@ public class Menu implements Serializable {
             item.setUrl("records_without_designation.xhtml");
             submenu.getChildren().add(item);
         }
-        
-        
+
+
         return submenu;
     }
 

@@ -14,9 +14,6 @@ package gov.health.bean;
 import java.io.Serializable;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
 import javax.faces.context.FacesContext;
 
 public class MessageProvider  implements Serializable {
