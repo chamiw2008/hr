@@ -139,7 +139,7 @@ public class DbfController implements Serializable {
 
     public void prepareSetSeubmitColours() {
         getSetCount();
-        completedSetCount(payYear, payMonth);
+        completedSetCount(payYear);
         System.out.println("Set Count " + setCount);
         for (int i = 0; i < 12; i++) {
             System.out.println("Completed Sets " + completedSet[i]);
@@ -180,18 +180,25 @@ public class DbfController implements Serializable {
         return valueInt;
     }
 
-    public void completedSetCount(Integer temPayYear, Integer temPayMonth) {
+    public void completedSetCount(Integer temPayYear) {
+        int temPayMonth = 0;
+        if (getInstitution() == null || getPayYear() == 0) {
+            System.out.println("Completed Set Count ok");
+            System.out.println(getInstitution().toString());
+            System.out.println("Pay Month " + temPayMonth);
+            System.out.println("Pay Year " + temPayYear);
+            return;
+        }
         for (int i = 0; i < 12; i++) {
-            if (getInstitution() == null || temPayMonth == 0 || getPayYear() == null) {
-                System.out.println("0 xxxxxxxxxx");
-                return ;
-            }
+            temPayMonth = i + 1;
+
+            System.out.println("Completed Set Count ok");
             String sql;
             sql = "select distinct pi.paySet from PersonInstitution pi where pi.retired = false and pi.payYear = " + temPayYear + " and pi.payMonth = " + temPayMonth + " and pi.payCentre.id = " + getInstitution().getId() + " ";
             try {
-                completedSet[i] =  getPiFacade().findBySQL(sql).size();
+                completedSet[i] = getPiFacade().findBySQL(sql).size();
             } catch (Exception e) {
-                completedSet[i] =  0;
+                completedSet[i] = 0;
             }
         }
     }
