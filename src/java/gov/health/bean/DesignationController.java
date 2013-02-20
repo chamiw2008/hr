@@ -74,12 +74,12 @@ public final class DesignationController implements Serializable {
     }
 
     public int replaceDesignations(Designation going, Designation comming) {
-        if (going==null){
+        if (going == null) {
             return 0;
         }
-        sql = "select pi from PersonInstitution pi where pi.designation.id = " + going.getId() ;
-        List<PersonInstitution> pis= getPiFacade().findBySQL(sql);
-        for (PersonInstitution pi:pis){
+        sql = "select pi from PersonInstitution pi where pi.designation.id = " + going.getId();
+        List<PersonInstitution> pis = getPiFacade().findBySQL(sql);
+        for (PersonInstitution pi : pis) {
             pi.setDesignation(comming);
             getPiFacade().edit(pi);
         }
@@ -245,7 +245,7 @@ public final class DesignationController implements Serializable {
         this.officialDesignations = lstItems;
     }
 
-      public Designation getCurrent() {
+    public Designation getCurrent() {
         if (current == null) {
             current = new Designation();
             current.setOfficial(Boolean.TRUE);
@@ -254,7 +254,13 @@ public final class DesignationController implements Serializable {
     }
 
     public void setCurrent(Designation current) {
-        oldDesignation = current.getMappedToDesignation();
+        if (current != null) {
+            if (current.getMappedToDesignation() != null) {
+                oldDesignation = current.getMappedToDesignation();
+            }else{
+                oldDesignation = current;
+            }
+        }
         this.current = current;
     }
 
@@ -314,7 +320,6 @@ public final class DesignationController implements Serializable {
                 current = items.get(0);
                 Long temLong = current.getId();
             } else {
-                
             }
 
         }
@@ -348,12 +353,7 @@ public final class DesignationController implements Serializable {
 
     public void saveSelected() {
         String msg;
-        if (sessionController.getPrivilege().isInstUser() == false) {
-            JsfUtil.addErrorMessage("You are not autherized to make changes to any content");
-            return;
-        }
-        
-        if (current.getId()!=null && current.getId()!=0) {
+        if (current.getId() != null && current.getId() != 0) {
             getFacade().edit(current);
             msg = new MessageProvider().getValue("savedOldSuccessfully");
         } else {

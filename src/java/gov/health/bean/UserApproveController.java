@@ -6,11 +6,9 @@ package gov.health.bean;
 
 import gov.health.facade.WebUserFacade;
 import gov.health.facade.InstitutionFacade;
-import gov.health.facade.PrivilegeFacade;
 import gov.health.facade.AreaFacade;
 import gov.health.entity.WebUser;
 import gov.health.entity.Area;
-import gov.health.entity.Privilege;
 import gov.health.entity.Institution;
 import java.io.Serializable;
 import java.util.Calendar;
@@ -37,8 +35,6 @@ public class UserApproveController  implements Serializable {
     @EJB
     WebUserFacade userFacade;
     @EJB
-    PrivilegeFacade priFacade;
-    @EJB
     AreaFacade areaFacade;
     @EJB
     InstitutionFacade institutionFacade;
@@ -47,7 +43,6 @@ public class UserApproveController  implements Serializable {
     String activateComments;
     @ManagedProperty(value = "#{sessionController}")
     private SessionController sessionController;
-    Privilege privilege;
     DataModel<Area> areas;
     DataModel<Institution> institutions;
     @ManagedProperty(value = "#{imageController}")
@@ -71,8 +66,8 @@ public class UserApproveController  implements Serializable {
     
     public DataModel<WebUser> getUsers() {
         String temSql;
-        if (sessionController.getPrivilege().getRestrictedInstitution() != null) {
-            temSql = "SELECT a FROM WebUser a WHERE a.retired=false AND a.webUserPerson.institution.id = " + sessionController.getPrivilege().getRestrictedInstitution().getId() + " ORDER BY a.name ";
+        if (sessionController.getLoggedUser().getRestrictedInstitution() != null) {
+            temSql = "SELECT a FROM WebUser a WHERE a.retired=false AND a.webUserPerson.institution.id = " + sessionController.getLoggedUser().getRestrictedInstitution().getId() + " ORDER BY a.name ";
         } else {
             temSql = "SELECT a FROM WebUser a WHERE a.retired=false ORDER BY a.name ";
         }
@@ -91,16 +86,6 @@ public class UserApproveController  implements Serializable {
         this.areaFacade = areaFacade;
     }
 
-    public DataModel<Area> getAreas() {
-        String temSql;
-        if (sessionController.getPrivilege().getRestrictedArea() == null) {
-            temSql = "SELECT a FROM Area a WHERE a.retired=false ORDER BY a.name ";
-        } else {
-            temSql = "SELECT a FROM Area a WHERE a.retired=false AND a.id = " + sessionController.getPrivilege().getRestrictedArea().getId();
-        }
-        return new ListDataModel<Area>(getAreaFacade().findBySQL(temSql));
-    }
-
     public void setAreas(DataModel<Area> areas) {
         this.areas = areas;
     }
@@ -115,10 +100,10 @@ public class UserApproveController  implements Serializable {
 
     public DataModel<Institution> getInstitutions() {
         String temSql;
-        if (sessionController.getPrivilege().getRestrictedInstitution() == null) {
+        if (sessionController.getLoggedUser().getRestrictedInstitution() == null) {
             temSql = "SELECT a FROM Institution a WHERE a.retired=false ORDER BY a.name ";
         } else {
-            temSql = "SELECT a FROM Institution a WHERE a.retired=false AND a.id = " + sessionController.getPrivilege().getRestrictedInstitution().getId();
+            temSql = "SELECT a FROM Institution a WHERE a.retired=false AND a.id = " + sessionController.getLoggedUser().getRestrictedInstitution().getId();
 
         }
         return new ListDataModel<Institution>(getInstitutionFacade().findBySQL(temSql));
@@ -142,25 +127,6 @@ public class UserApproveController  implements Serializable {
         this.activateComments = activateComments;
     }
 
-    public Privilege getPrivilege() {
-
-        if (privilege == null) {
-            if (getSelectedUser() != null) {
-                privilege = getPriFacade().findFirstBySQL("SELECT p FROM Privilege p WHERE p.webUser.id = " + getSelectedUser().getId());
-                if (privilege == null) {
-                    privilege = new Privilege();
-                }
-            } else {
-                privilege = new Privilege();
-            }
-        }
-        return privilege;
-    }
-
-    public void setPrivilege(Privilege privilege) {
-        this.privilege = privilege;
-    }
-
     public SessionController getSessionController() {
         return sessionController;
     }
@@ -175,8 +141,6 @@ public class UserApproveController  implements Serializable {
 
     public void setSelectedUser(WebUser selectedUser) {
         this.selectedUser = selectedUser;
-        this.privilege = null;
-        this.privilege = getPrivilege();
     }
 
     public DataModel<WebUser> getToApproveUsers() {
@@ -206,17 +170,7 @@ public class UserApproveController  implements Serializable {
         }
 
         userFacade.edit(selectedUser);
-
-        getPrivilege().setWebUser(selectedUser);
-        if (getPrivilege().getId()==null || getPrivilege().getId()==0){
-            priFacade.create(getPrivilege());
-        }else{
-            priFacade.edit(getPrivilege());
-        }
-        
-
         selectedUser = null;
-        privilege = null;
 
         JsfUtil.addSuccessMessage("Successfully activated");
     }
@@ -232,20 +186,11 @@ public class UserApproveController  implements Serializable {
         selectedUser.setActivateComments(activateComments);
         userFacade.edit(selectedUser);
 
-        privilege.setWebUser(selectedUser);
-        priFacade.create(privilege);
+
 
         selectedUser = null;
-        privilege = null;
 
         JsfUtil.addSuccessMessage("Successfully activated");
     }
 
-    public PrivilegeFacade getPriFacade() {
-        return priFacade;
-    }
-
-    public void setPriFacade(PrivilegeFacade priFacade) {
-        this.priFacade = priFacade;
-    }
 }

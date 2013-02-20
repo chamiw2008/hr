@@ -39,8 +39,6 @@ public class ConnetcionController implements Serializable {
     @EJB
     WebUserRoleFacade rFacade;
     @EJB
-    PrivilegeFacade vFacade;
-    @EJB
     InstitutionFacade institutionFacade;
     @EJB
     AreaFacade areaFacade;
@@ -68,13 +66,21 @@ public class ConnetcionController implements Serializable {
     //
     boolean logged;
     boolean activated;
-    Privilege privilege;
     String displayName;
 //
     Institution institution;
     Area area;
     DataModel<Institution> institutions;
     DataModel<Area> areas;
+    WebUserRole role;
+
+    public WebUserRole getRole() {
+        return role;
+    }
+
+    public void setRole(WebUserRole role) {
+        this.role = role;
+    }
 
     /**
      * Creates a new instance of ConnetcionController
@@ -186,7 +192,20 @@ public class ConnetcionController implements Serializable {
         pFacade.create(person);
 
         WebUserRole role = new WebUserRole();
-        role.setName("Administrator");
+        role.setName("superUser");
+        rFacade.create(role);
+
+        role = new WebUserRole();
+        role.setName("insUser");
+        rFacade.create(role);
+
+        role = new WebUserRole();
+        role.setName("insAdmin");
+        rFacade.create(role);
+
+
+        role = new WebUserRole();
+        role.setName("sysAdmin");
         rFacade.create(role);
 
         user.setName(HOSecurity.encrypt(userName));
@@ -196,34 +215,9 @@ public class ConnetcionController implements Serializable {
         user.setRole(role);
         uFacade.create(user);
 
-        Privilege p = new Privilege();
-        //
-        p.setName("user Previlage");
-
-        p.setInstAdmin(true);
-        p.setInstUser(true);
-        p.setSuperUser(true);
-        p.setSystemAdmin(true);
-        p.setWebUser(user);
-        //
-        getvFacade().create(p);
-
-        //
-        //Privilege for Administrator Role
-        p = new Privilege();
-        //
-        p.setName("Role Previlage");
-        p.setInstAdmin(true);
-        p.setInstUser(true);
-        p.setSuperUser(true);
-        p.setSystemAdmin(true);        //
-        p.setWebUserRole(role);
-        //
-        getvFacade().create(p);
 
 //        JsfUtil.addSuccessMessage("New User Added");
 
-        sessionController.setPrivilege(allUserPrivilege(user));
 
     }
 
@@ -260,10 +254,10 @@ public class ConnetcionController implements Serializable {
     }
 
     public String registeUser() {
-        if (!telNoOk()) {
-            JsfUtil.addErrorMessage("Telephone number in correct, Please enter a valid phone number");
-            return "";
-        }
+//        if (!telNoOk()) {
+//            JsfUtil.addErrorMessage("Telephone number in correct, Please enter a valid phone number");
+//            return "";
+//        }
 
         if (!userNameAvailable(newUserName)) {
             JsfUtil.addErrorMessage("User name already exists. Plese enter another user name");
@@ -276,9 +270,11 @@ public class ConnetcionController implements Serializable {
         WebUser user = new WebUser();
         Person person = new Person();
         user.setWebUserPerson(person);
+        user.setRole(role);
 
         person.setName(newPersonName);
         person.setInstitution(institution);
+
         person.setArea(area);
         pFacade.create(person);
         user.setName(HOSecurity.encrypt(newUserName));
@@ -286,7 +282,14 @@ public class ConnetcionController implements Serializable {
         user.setWebUserPerson(person);
         user.setTelNo(telNo);
         user.setEmail(email);
-        user.setActivated(false);
+        user.setActivated(Boolean.TRUE);
+        if (user.getRole() != null && "sysAdmin".equals(user.getRole().getName())) {
+            user.setRestrictedInstitution(null);
+        } else if (user.getRole() != null && "superUser".equals(user.getRole().getName())) {
+            user.setRestrictedInstitution(null);
+        } else {
+            user.setRestrictedInstitution(institution);
+        }
         uFacade.create(user);
         //
         //
@@ -298,10 +301,10 @@ public class ConnetcionController implements Serializable {
 //        imageFacade.create(perImage);
         //
         //
-        JsfUtil.addSuccessMessage("New User Registered. You will be able to access the system when the administrater activate your account.");
-        sessionController.setLoggedUser(user);
-        sessionController.setLogged(Boolean.TRUE);
-        sessionController.setActivated(false);
+        JsfUtil.addSuccessMessage("New User Registered.");
+//        sessionController.setLoggedUser(user);
+//        sessionController.setLogged(Boolean.TRUE);
+//        sessionController.setActivated(false);
         return "index";
     }
 
@@ -359,7 +362,6 @@ public class ConnetcionController implements Serializable {
                     sessionController.setLoggedUser(u);
                     sessionController.setLogged(Boolean.TRUE);
                     sessionController.setActivated(u.isActivated());
-                    sessionController.setPrivilege(allUserPrivilege(u));
                     JsfUtil.addSuccessMessage("Logged successfully");
                     return true;
                 }
@@ -368,42 +370,10 @@ public class ConnetcionController implements Serializable {
         return false;
     }
 
-    private Privilege allUserPrivilege(WebUser user) {
-        Privilege p = new Privilege();
-
-        String temSQL = "SELECT p From Privilege p WHERE p.webUser.id = " + user.getId();
-        List<Privilege> allP = getvFacade().findBySQL(temSQL);
-
-        for (Privilege pv : allP) {
-            //Cadre
-            if (pv.isInstAdmin() == true) {
-                p.setInstAdmin(true);
-            }
-            if (pv.isInstUser() == true) {
-                p.setInstUser(true);
-            }
-            if (pv.isSuperUser() == true) {
-                p.setSuperUser(true);
-            }
-            if (pv.isSystemAdmin() == true) {
-                p.setSystemAdmin(true);
-            }
-            if (pv.getRestrictedArea() != null) {
-                p.setRestrictedArea(pv.getRestrictedArea());
-            }
-            if (pv.getRestrictedInstitution() != null) {
-                p.setRestrictedInstitution(pv.getRestrictedInstitution());
-            }
-        }
-
-        return p;
-    }
-
     public void logout() {
         sessionController.setLoggedUser(null);
         sessionController.setLogged(false);
         sessionController.setActivated(false);
-        sessionController.setPrivilege(null);
     }
 
     public WebUser getCurrent() {
@@ -539,23 +509,6 @@ public class ConnetcionController implements Serializable {
 
     public void setrFacade(WebUserRoleFacade rFacade) {
         this.rFacade = rFacade;
-    }
-
-    public PrivilegeFacade getvFacade() {
-        return vFacade;
-    }
-
-    public void setvFacade(PrivilegeFacade vFacade) {
-        this.vFacade = vFacade;
-    }
-
-    public Privilege getPrivilege() {
-        return sessionController.getPrivilege();
-    }
-
-    public void setPrivilege(Privilege privilege) {
-        this.privilege = privilege;
-        sessionController.setPrivilege(privilege);
     }
 
     public String getDisplayName() {

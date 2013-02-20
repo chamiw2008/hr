@@ -175,10 +175,7 @@ public final class ContactTypeController  implements Serializable {
     }
 
     public void saveSelected() {
-        if (sessionController.getPrivilege().isInstUser()==false){
-            JsfUtil.addErrorMessage("You are not autherized to make changes to any content");
-            return;
-        }            
+      
         if (selectedItemIndex > 0) {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));

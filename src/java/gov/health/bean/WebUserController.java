@@ -8,7 +8,7 @@
  */
 package gov.health.bean;
 
-import gov.health.facade.PrivilegeFacade;
+import gov.health.entity.Person;
 import gov.health.facade.WebUserFacade;
 import gov.health.facade.WebUserRoleFacade;
 import gov.health.entity.WebUser;
@@ -35,16 +35,14 @@ import javax.faces.model.ListDataModel;
 public final class WebUserController implements Serializable {
 
     @EJB
+    private SessionController sessionController;
+    @EJB
     private WebUserFacade ejbFacade;
     @EJB
     WebUserRoleFacade roleFacade;
-    @EJB
-    PrivilegeFacade preFacade;
-    
-    SessionController sessionController = new SessionController();
     List<WebUser> lstItems;
     private WebUser current;
-    private DataModel<WebUser>  items = null;
+    private DataModel<WebUser> items = null;
     private int selectedItemIndex;
     boolean selectControlDisable = false;
     boolean modifyControlDisable = true;
@@ -73,6 +71,10 @@ public final class WebUserController implements Serializable {
         if (current == null) {
             current = new WebUser();
         }
+        if (current.getWebUserPerson() == null) {
+            Person p = new Person();
+            current.setWebUserPerson(p);
+        }
         return current;
     }
 
@@ -84,7 +86,7 @@ public final class WebUserController implements Serializable {
         return ejbFacade;
     }
 
-    public DataModel<WebUser>  getItems() {
+    public DataModel<WebUser> getItems() {
         items = new ListDataModel(getFacade().findAll("name", true));
         return items;
     }
@@ -161,10 +163,6 @@ public final class WebUserController implements Serializable {
     }
 
     public void saveSelected() {
-        if (sessionController.getPrivilege().isInstAdmin()==false){
-            JsfUtil.addErrorMessage("You are not autherized to make changes to any content");
-            return;
-        }            
         if (selectedItemIndex > 0) {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));
@@ -202,10 +200,6 @@ public final class WebUserController implements Serializable {
     }
 
     public void delete() {
-        if (sessionController.getPrivilege().isInstAdmin() ==false){
-            JsfUtil.addErrorMessage("You are not autherized to delete any content");
-            return;
-        }
         if (current != null) {
             current.setRetired(true);
             current.setRetiredAt(Calendar.getInstance().getTime());

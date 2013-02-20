@@ -99,6 +99,128 @@ public class DbfController implements Serializable {
     Long temporaryCount;
 //
     Boolean toGetRecordsagain = Boolean.TRUE;
+    int[] monthColR = new int[12];
+    int[] monthColG = new int[12];
+    int[] monthColB = new int[12];
+    
+    int[] completedSet = new int[12];
+    int setCount;
+
+    public int getSetCount() {
+        if (getInstitution() == null) {
+            return 0;
+        }
+        String sql;
+        sql = "select iset from InstitutionSet iset where iset.retired = false and iset.institution.id = " + getInstitution().getId() + " ";
+        try {
+            setCount =getPiFacade().findBySQL(sql).size();
+            return setCount;
+        } catch (Exception e) {
+            System.out.println("Error in getting set count is " + e.getMessage());
+            return 0;
+        }
+    }
+
+    public void setSetCount(int setCount) {
+        this.setCount = setCount;
+    }
+
+    public int[] getMonthColR() {
+        return monthColR;
+    }
+
+    public void setMonthColR(int[] monthColR) {
+        this.monthColR = monthColR;
+    }
+
+    public int[] getMonthColG() {
+        return monthColG;
+    }
+
+    public void setMonthColG(int[] monthColG) {
+        this.monthColG = monthColG;
+    }
+
+    public int[] getMonthColB() {
+        return monthColB;
+    }
+
+    public void setMonthColB(int[] monthColB) {
+        this.monthColB = monthColB;
+    }
+
+    
+    
+    public void prepareSetSeubmitColours() {
+        getSetCount();
+        completedSetCount(getPayYear());
+        System.out.println("Set Count " + setCount);
+        for (int i = 0; i < 12; i++) {
+            System.out.println("Completed Sets " + completedSet[i]);
+            if (setCount == 0) {
+                monthColR[i] = 0;
+                monthColG[i] = 255;
+                monthColB[i]=0;
+            } else if (setCount == completedSet[i]) {
+                monthColR[i] = 0;
+                monthColG[i] = 255;
+                monthColB[i]=0;
+            } else if (completedSet[i] >= (setCount / 2)) {
+                monthColR[i] = 255;
+                monthColG[i] = 255;
+                monthColB[i]=0;
+            } else {
+                monthColR[i] = 245;
+                monthColG[i] = 245;
+                monthColB[i]=245;
+            }
+            System.out.println("i " + i);
+            System.out.println("R " + monthColR[i]);
+            System.out.println("G " + monthColG[i]);
+        }
+    }
+
+    public int[] getCompletedSet() {
+        return completedSet;
+    }
+
+    public void setCompletedSet(int[] completedSet) {
+        this.completedSet = completedSet;
+    }
+
+    public static int intValue(long value) {
+        int valueInt = (int) value;
+        if (valueInt != value) {
+            throw new IllegalArgumentException(
+                    "The long value " + value + " is not within range of the int type");
+        }
+        return valueInt;
+    }
+
+    public void completedSetCount(Integer temPayYear) {
+        int temPayMonth = 0;
+        if (getInstitution() == null || getPayYear() == 0) {
+            System.out.println("Completed Set Count ok");
+            System.out.println(getInstitution().toString());
+            System.out.println("Pay Month " + temPayMonth);
+            System.out.println("Pay Year " + temPayYear);
+            return;
+        }
+        for (int i = 0; i < 12; i++) {
+            temPayMonth = i + 1;
+            String sql;
+            
+            sql = "select distinct pi.paySet from PersonInstitution pi where pi.retired = false and pi.payYear = " + temPayYear + " and pi.payMonth = " + temPayMonth + " and pi.payCentre.id = " + getInstitution().getId() + " ";
+            System.out.println(sql);
+            try {
+                completedSet[i] = getPiFacade().findBySQL(sql).size();
+                System.out.println(completedSet[i]);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                completedSet[i] = 0;
+            }
+        }
+    }
 
     public Boolean getToGetRecordsagain() {
         return toGetRecordsagain;
@@ -244,8 +366,8 @@ public class DbfController implements Serializable {
             s.setCount(Long.valueOf(o[1].toString()));
             sums.add(s);
         }
-//        PersonInstitution pi = new PersonInstitution();
-//        pi.getDesignation();
+        getSetCount();
+        prepareSetSeubmitColours();
         return sums;
     }
 
@@ -281,8 +403,8 @@ public class DbfController implements Serializable {
     }
 
     public List<InstitutionSet> getInsSets() {
-        if (getSessionController().getPrivilege().getRestrictedInstitution() != null) {
-            setInstitution(getSessionController().getPrivilege().getRestrictedInstitution());
+        if (getSessionController().getLoggedUser().getRestrictedInstitution() != null) {
+            setInstitution(getSessionController().getLoggedUser().getRestrictedInstitution());
         }
         if (getInstitution() == null || getInstitution().getId() == null || getInstitution().getId() == 0) {
             return null;
@@ -336,7 +458,7 @@ public class DbfController implements Serializable {
     }
 
     public Integer getPayMonth() {
-        if (payMonth == 0) {
+        if (payMonth == null || payMonth == 0) {
             return Calendar.getInstance().get(Calendar.MONTH);
         }
         return payMonth;
@@ -350,7 +472,7 @@ public class DbfController implements Serializable {
     }
 
     public Integer getPayYear() {
-        if (payYear == 0) {
+        if (payYear == null || payYear == 0) {
             return Calendar.getInstance().get(Calendar.YEAR);
         }
         return payYear;
@@ -541,10 +663,10 @@ public class DbfController implements Serializable {
     }
 
     public Institution getInstitution() {
-        if (getSessionController().getPrivilege().getRestrictedInstitution() == null) {
+        if (getSessionController().getLoggedUser().getRestrictedInstitution() == null) {
             return institution;
         } else {
-            return getSessionController().getPrivilege().getRestrictedInstitution();
+            return getSessionController().getLoggedUser().getRestrictedInstitution();
         }
     }
 
@@ -670,8 +792,8 @@ public class DbfController implements Serializable {
         InputStream in;
         String temNic;
         Boolean newEntries = false;
-        if (sessionController.privilege.getRestrictedInstitution() != null) {
-            setInstitution(sessionController.getPrivilege().getRestrictedInstitution());
+        if (sessionController.getLoggedUser().getRestrictedInstitution() != null) {
+            setInstitution(sessionController.getLoggedUser().getRestrictedInstitution());
         }
         if (getInstitution() == null) {
             JsfUtil.addErrorMessage("Please select an institute");
@@ -824,6 +946,7 @@ public class DbfController implements Serializable {
                 JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " recorded successfully. ");
                 newPersonInstitutions = new ArrayList<PersonInstitution>();
                 getSummeryCounts(newPersonInstitutions);
+                toGetRecordsagain = Boolean.TRUE;
             } else {
                 JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " is listed successfully. If you are satisfied, please click the Save button to permanantly save the new set of data Replacing the old ones under " + institution.getName() + ".");
                 toGetRecordsagain = Boolean.TRUE;

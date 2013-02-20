@@ -45,10 +45,18 @@
                     <td align="left"><h:inputText value="#{connetcionController.email}"  /></td>
                 </tr>
                 <tr>
-                    <td class="pdLabel" align="right">Institution</td>
+                    <td class="pdLabel" align="right">Restricted Institute</td>
                     <td align="left">
                         <h:selectOneListbox id="cmbIns" value="#{connetcionController.institution}" style="min-width: 300px;">
-                            <f:selectItems value="#{connetcionController.institutions}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}"/>
+                            <f:selectItems value="#{institutionController.payCentres}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}"/>
+                        </h:selectOneListbox>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pdLabel" align="right">Role</td>
+                    <td align="left">
+                        <h:selectOneListbox id="cmbRole" value="#{connetcionController.role}" style="min-width: 300px;">
+                            <f:selectItems value="#{webUserRoleController.items}" var="ro" itemValue="#{ro}" itemLabel="#{ro.name}"/>
                         </h:selectOneListbox>
                     </td>
                 </tr>

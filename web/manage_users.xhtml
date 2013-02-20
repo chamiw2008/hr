@@ -14,7 +14,7 @@
     <ui:define name="content">
         <p:growl autoUpdate="true" />
         <h:outputStylesheet library="css" name="pdhscss1.css"   />
-        <h:form rendered="#{sessionController.privilege.instAdmin}">
+        <h:form >
 
             <h:panelGrid columns="1">
                 <h:outputLabel class="pdPageTitle" value="Manage User Accounts" />
@@ -34,27 +34,15 @@
                         <h:outputLabel value="Privilege" />
                         <h:outputLabel value="Status" />
 
-                        <h:outputLabel rendered="#{sessionController.privilege.instAdmin}"  value="Administration" />
-                        <h:selectBooleanCheckbox rendered="#{sessionController.privilege.instAdmin}" value="#{userApproveController.privilege.instAdmin}"/>
-
-                        <h:outputLabel rendered="#{sessionController.privilege.instUser}"  value="Edit Metadata" />
-                        <h:selectBooleanCheckbox rendered="#{sessionController.privilege.instUser}" value="#{userApproveController.privilege.instUser}"/>
-                        
-                        <h:outputLabel rendered="#{sessionController.privilege.superUser}"  value="Upload" />
-                        <h:selectBooleanCheckbox rendered="#{sessionController.privilege.superUser}" value="#{userApproveController.privilege.superUser}"/>
-
-                        <h:outputLabel rendered="#{sessionController.privilege.systemAdmin}"  value="View" />
-                        <h:selectBooleanCheckbox rendered="#{sessionController.privilege.systemAdmin}" value="#{userApproveController.privilege.systemAdmin}"/>
-                        
                         
                         
                     </h:panelGrid>
                     <h:panelGrid columns="2">
 
 
-                        <h:outputLabel rendered="#{sessionController.privilege.restrictedInstitution==null}"  value="Previleges Restricted to" />
-                        <h:selectOneListbox id="cmbIns" rendered="#{sessionController.privilege.restrictedInstitution==null}" value="#{userApproveController.privilege.restrictedInstitution}"  size="5">
-                            <f:selectItems value="#{userApproveController.institutions}" var="ri" itemValue="#{ri}" itemLabel="#{ri.name}" />
+                        <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution==null}"  value="Previleges Restricted to" />
+                        <h:selectOneListbox id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}" value="#{userApproveController.logge .restrictedInstitution}"  size="5">
+                            <f:selectItems value="#{insti.institutions}" var="ri" itemValue="#{ri}" itemLabel="#{ri.name}" />
                         </h:selectOneListbox>
 
 
@@ -69,7 +57,7 @@
                 </h:panelGroup>
             </h:panelGrid>
         </h:form>        
-        <h:form rendered="#{!sessionController.privilege.instAdmin}">
+        <h:form>
             <h:outputLabel class="pdPageErrorText" value="You are not autherized to view this page."/>
         </h:form>
     </ui:define>
