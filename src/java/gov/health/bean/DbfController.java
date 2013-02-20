@@ -139,7 +139,7 @@ public class DbfController implements Serializable {
 
     public void prepareSetSeubmitColours() {
         getSetCount();
-        completedSetCount(payYear);
+        completedSetCount(getPayYear());
         System.out.println("Set Count " + setCount);
         for (int i = 0; i < 12; i++) {
             System.out.println("Completed Sets " + completedSet[i]);
