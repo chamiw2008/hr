@@ -109,7 +109,7 @@ public class DbfController implements Serializable {
             return 0;
         }
         String sql;
-        sql = "select is from InstitutionSet is where is.retired = false and is.institution.id = " + getInstitution().getId() + " ";
+        sql = "select iset from InstitutionSet iset where iset.retired = false and iset.institution.id = " + getInstitution().getId() + " ";
         try {
             return getPiFacade().findBySQL(sql).size();
         } catch (Exception e) {
@@ -122,17 +122,7 @@ public class DbfController implements Serializable {
     }
 
     public int[] getMonthColR() {
-        try {
-            if (setCount < 1) {
-                setCount = 1;
-            }
-            for (int i = 0; i < 12; i++) {
-                monthColR[i] = (setCount - completedSet[i] / setCount) * 255;
-            }
-            return monthColR;
-        } catch (Exception e) {
-            return monthColR;
-        }
+        return monthColR;
     }
 
     public void setMonthColR(int[] monthColR) {
@@ -140,27 +130,33 @@ public class DbfController implements Serializable {
     }
 
     public int[] getMonthColG() {
-        if (setCount < 1) {
-            setCount = 1;
-        }
-
-        try {
-            for (int i = 0; i < 12; i++) {
-                monthColG[i] = (completedSet[i] / setCount) * 255;
-            }
-            return monthColG;
-        } catch (Exception e) {
-            return monthColG;
-        }
+        return monthColG;
     }
 
     public void setMonthColG(int[] monthColG) {
         this.monthColG = monthColG;
     }
 
+    
+ 
     public int[] getCompletedSet() {
         for (int i = 0; i < 12; i++) {
             completedSet[i] = completedSetCount(payYear, i + 1);
+            int halfSetCount = completedSet[i] / 2;
+                if (setCount == 0) {
+                    monthColR[i] = 0;
+                    monthColG[i] = 255;
+                } else if (setCount == completedSet[i]) {
+                    monthColR[i] = 0;
+                    monthColG[i] = 255;
+                } else if (setCount >= halfSetCount) {
+                    monthColR[i] = 127;
+                    monthColG[i] = 127;
+                } else {
+                    monthColR[i] = 255;
+                    monthColG[i] = 0;
+                }
+            System.out.println("yyyyyyyyyyyy");
         }
         return completedSet;
     }
@@ -180,6 +176,7 @@ public class DbfController implements Serializable {
 
     public int completedSetCount(Integer temPayYear, Integer temPayMonth) {
         if (getInstitution() == null || temPayMonth == 0 || getPayYear() == null) {
+            System.out.println("0 xxxxxxxxxx"); 
             return 0;
         }
         String sql;
@@ -337,6 +334,8 @@ public class DbfController implements Serializable {
         }
 //        PersonInstitution pi = new PersonInstitution();
 //        pi.getDesignation();
+        getSetCount();
+        getCompletedSet();
         return sums;
     }
 
