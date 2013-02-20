@@ -191,13 +191,15 @@ public class DbfController implements Serializable {
         }
         for (int i = 0; i < 12; i++) {
             temPayMonth = i + 1;
-
-            System.out.println("Completed Set Count ok");
             String sql;
+            
             sql = "select distinct pi.paySet from PersonInstitution pi where pi.retired = false and pi.payYear = " + temPayYear + " and pi.payMonth = " + temPayMonth + " and pi.payCentre.id = " + getInstitution().getId() + " ";
+            System.out.println(sql);
             try {
                 completedSet[i] = getPiFacade().findBySQL(sql).size();
+                System.out.println(completedSet[i]);
             } catch (Exception e) {
+                System.out.println(e.getMessage());
                 completedSet[i] = 0;
             }
         }
