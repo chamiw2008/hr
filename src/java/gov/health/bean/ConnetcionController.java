@@ -185,7 +185,7 @@ public class ConnetcionController implements Serializable {
         }
     }
 
-    private void prepareFirstVisit() {
+    public void prepareFirstVisit() {
         WebUser user = new WebUser();
         Person person = new Person();
         person.setName(userName);

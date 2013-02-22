@@ -456,6 +456,7 @@ public class DbfController implements Serializable {
     public void setPayYears(List<Integer> payYears) {
         this.payYears = payYears;
     }
+    
 
     public Integer getPayMonth() {
         if (payMonth == null || payMonth == 0) {

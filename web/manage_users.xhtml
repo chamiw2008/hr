@@ -38,10 +38,10 @@
                         
                     </h:panelGrid>
                     <h:panelGrid columns="2">
-
+                        
 
                         <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution==null}"  value="Previleges Restricted to" />
-                        <h:selectOneListbox id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}" value="#{userApproveController.logge .restrictedInstitution}"  size="5">
+                        <h:selectOneListbox id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}" value=""  size="5">
                             <f:selectItems value="#{insti.institutions}" var="ri" itemValue="#{ri}" itemLabel="#{ri.name}" />
                         </h:selectOneListbox>
 
