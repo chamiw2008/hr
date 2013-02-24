@@ -233,11 +233,6 @@ public class Menu implements Serializable {
         item.setUrl("manage_users.xhtml");
         submenu.getChildren().add(item);
 
-        item = new MenuItem();
-        item.setValue("Edit");
-        item.setUrl("admin_edit.xhtml");
-        submenu.getChildren().add(item);
-
         return submenu;
     }
 
