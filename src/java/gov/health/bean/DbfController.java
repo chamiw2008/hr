@@ -794,6 +794,11 @@ public class DbfController implements Serializable {
         Boolean newEntries = false;
         if (sessionController.getLoggedUser().getRestrictedInstitution() != null) {
             setInstitution(sessionController.getLoggedUser().getRestrictedInstitution());
+        }else{
+            if(getInstitution()==null){
+                JsfUtil.addErrorMessage("Please select an institution");
+                return "";
+            }
         }
         if (getInstitution() == null) {
             JsfUtil.addErrorMessage("Please select an institute");
