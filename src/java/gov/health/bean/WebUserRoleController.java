@@ -20,9 +20,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
-
 /**
  *
  * @author Dr. M. H. B. Ariyaratne, MBBS, PGIM Trainee for MSc(Biomedical
@@ -30,18 +27,28 @@ import javax.faces.model.ListDataModel;
  */
 @ManagedBean
 @SessionScoped
-public final class WebUserRoleController  implements Serializable {
-
+public final class WebUserRoleController implements Serializable {
+    
+    @EJB
+    private SessionController sessionController;
     @EJB
     private WebUserRoleFacade ejbFacade;
-    SessionController sessionController = new SessionController();
     List<WebUserRole> lstItems;
+    List<WebUserRole> lstInsAdminRoles;
     private WebUserRole current;
-    private DataModel<WebUserRole>  items = null;
+    private List<WebUserRole> items = null;
     private int selectedItemIndex;
     boolean selectControlDisable = false;
     boolean modifyControlDisable = true;
     String selectText = "";
+
+    public List<WebUserRole> getLstInsAdminRoles() {
+        return getFacade().findBySQL("Select d From WebUserRole d where d.name = 'insAdmin' or d.name = 'insUser' ");
+    }
+
+    public void setLstInsAdminRoles(List<WebUserRole> lstInsAdminRoles) {
+        this.lstInsAdminRoles = lstInsAdminRoles;
+    }
 
     public WebUserRoleFacade getEjbFacade() {
         return ejbFacade;
@@ -50,7 +57,6 @@ public final class WebUserRoleController  implements Serializable {
     public void setEjbFacade(WebUserRoleFacade ejbFacade) {
         this.ejbFacade = ejbFacade;
     }
-
 
     public SessionController getSessionController() {
         return sessionController;
@@ -64,7 +70,7 @@ public final class WebUserRoleController  implements Serializable {
     }
 
     public List<WebUserRole> getLstItems() {
-        return getFacade().findBySQL("Select d From WebUserRole d");
+        return getFacade().findBySQL("Select d From WebUserRole d where d.name = 'sysAdmin' or d.name = 'superUser' or d.name = 'insUser' or d.name = 'insAdmin'");
     }
 
     public void setLstItems(List<WebUserRole> lstItems) {
@@ -80,31 +86,19 @@ public final class WebUserRoleController  implements Serializable {
     }
 
     public WebUserRole getCurrent() {
-        JsfUtil.addSuccessMessage("getCurrent");
-        if (current != null) {
-            JsfUtil.addSuccessMessage("getCurrent - getting privilege");
-            String temSQL;
-            temSQL = "SELECT i FROM Privilege i WHERE i.webUserRole.id = " + current.getId();
-        }
         return current;
     }
 
     public void setCurrent(WebUserRole current) {
-        JsfUtil.addSuccessMessage("setCurrent");
         this.current = current;
-        if (current != null) {
-            JsfUtil.addSuccessMessage("setCurrent Privilege - getting");
-            String temSQL;
-            temSQL = "SELECT i FROM Privilege i WHERE i.webUserRole.id = " + current.getId();
-        }
     }
 
     private WebUserRoleFacade getFacade() {
         return ejbFacade;
     }
 
-    public DataModel<WebUserRole>  getItems() {
-        items = new ListDataModel(getFacade().findAll("name", true));
+    public List<WebUserRole> getItems() {
+        items = getFacade().findAll("name", true);
         return items;
     }
 
@@ -115,158 +109,6 @@ public final class WebUserRoleController  implements Serializable {
                     "The long value " + value + " is not within range of the int type");
         }
         return valueInt;
-    }
-
-    public DataModel searchItems() {
-        recreateModel();
-        if (items == null) {
-            if (selectText.equals("")) {
-                items = new ListDataModel(getFacade().findAll("name", true));
-            } else {
-                items = new ListDataModel(getFacade().findAll("name", "%" + selectText + "%",
-                        true));
-                if (items.getRowCount() > 0) {
-                    items.setRowIndex(0);
-                    current = (WebUserRole) items.getRowData();
-                    Long temLong = current.getId();
-                    selectedItemIndex = intValue(temLong);
-                } else {
-                    current = null;
-                    selectedItemIndex = -1;
-                }
-            }
-        }
-        return items;
-
-    }
-
-    public WebUserRole searchItem(String itemName, boolean createNewIfNotPresent) {
-        WebUserRole searchedItem = null;
-        items = new ListDataModel(getFacade().findAll("name", itemName, true));
-        if (items.getRowCount() > 0) {
-            items.setRowIndex(0);
-            searchedItem = (WebUserRole) items.getRowData();
-        } else if (createNewIfNotPresent) {
-            searchedItem = new WebUserRole();
-            searchedItem.setName(itemName);
-            searchedItem.setCreatedAt(Calendar.getInstance().getTime());
-            searchedItem.setCreater(sessionController.loggedUser);
-            getFacade().create(searchedItem);
-        }
-        return searchedItem;
-    }
-
-    private void recreateModel() {
-        items = null;
-    }
-
-    public void prepareSelect() {
-        this.prepareModifyControlDisable();
-    }
-
-    public void prepareEdit() {
-        if (current != null) {
-            selectedItemIndex = intValue(current.getId());
-            this.prepareSelectControlDisable();
-        } else {
-            JsfUtil.addErrorMessage(new MessageProvider().getValue("nothingToEdit"));
-        }
-    }
-
-    public void prepareAdd() {
-        selectedItemIndex = -1;
-        current = new WebUserRole();
-        this.prepareSelectControlDisable();
-    }
-
-    public void saveSelected() {
-        if (selectedItemIndex > 0) {
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));
-        } else {
-            current.setCreatedAt(Calendar.getInstance().getTime());
-            current.setCreater(sessionController.loggedUser);
-            getFacade().create(current);
-            JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
-        }
-        this.prepareSelect();
-        recreateModel();
-        getItems();
-        selectText = "";
-        selectedItemIndex = intValue(current.getId());
-    }
-
-    public void addDirectly() {
-        JsfUtil.addSuccessMessage("1");
-        try {
-
-            current.setCreatedAt(Calendar.getInstance().getTime());
-            current.setCreater(sessionController.loggedUser);
-
-            getFacade().create(current);
-            JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
-            current = new WebUserRole();
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, "Error");
-        }
-
-    }
-
-    public void cancelSelect() {
-        this.prepareSelect();
-    }
-
-    public void delete() {
-        if (current != null) {
-            current.setRetired(true);
-            current.setRetiredAt(Calendar.getInstance().getTime());
-            current.setRetirer(sessionController.loggedUser);
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage(new MessageProvider().getValue("deleteSuccessful"));
-        } else {
-            JsfUtil.addErrorMessage(new MessageProvider().getValue("nothingToDelete"));
-        }
-        recreateModel();
-        getItems();
-        selectText = "";
-        selectedItemIndex = -1;
-        current = null;
-        this.prepareSelect();
-    }
-
-    public boolean isModifyControlDisable() {
-        return modifyControlDisable;
-    }
-
-    public void setModifyControlDisable(boolean modifyControlDisable) {
-        this.modifyControlDisable = modifyControlDisable;
-    }
-
-    public boolean isSelectControlDisable() {
-        return selectControlDisable;
-    }
-
-    public void setSelectControlDisable(boolean selectControlDisable) {
-        this.selectControlDisable = selectControlDisable;
-    }
-
-    public String getSelectText() {
-        return selectText;
-    }
-
-    public void setSelectText(String selectText) {
-        this.selectText = selectText;
-        searchItems();
-    }
-
-    public void prepareSelectControlDisable() {
-        selectControlDisable = true;
-        modifyControlDisable = false;
-    }
-
-    public void prepareModifyControlDisable() {
-        selectControlDisable = false;
-        modifyControlDisable = true;
     }
 
     @FacesConverter(forClass = WebUserRole.class)
@@ -293,6 +135,7 @@ public final class WebUserRoleController  implements Serializable {
             return sb.toString();
         }
 
+        @Override
         public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
             if (object == null) {
                 return null;

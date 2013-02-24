@@ -49,7 +49,10 @@ public class Menu implements Serializable {
     public void createMenu() {
         model = new DefaultMenuModel();
 
-
+        if (sessionController.isLogged()==false||sessionController.getLoggedUser()==null){
+            return;
+        }
+        
         MenuItem item;
 
         item = new MenuItem();
@@ -66,11 +69,13 @@ public class Menu implements Serializable {
         model.addSubmenu(uploadData());
 
         // Metadata management
-        model.addSubmenu(matadata());
-
+        if (sessionController.isSysAdmin()) {
+            model.addSubmenu(matadata());
+        }
         // Admin mene {admin management)
-        model.addSubmenu(adminSubmenu());
-
+        if (sessionController.isInsAdmin() || sessionController.isSysAdmin()) {
+            model.addSubmenu(adminSubmenu());
+        }
         // User menu {Edit Password, Change Profile}
         model.addSubmenu(userSubmenu());
     }

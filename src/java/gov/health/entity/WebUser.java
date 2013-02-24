@@ -59,9 +59,19 @@ public class WebUser implements Serializable {
     
     String telNo;
     String email;
+    Boolean needPwReset;
     @ManyToOne
     Institution restrictedInstitution;
 
+    public Boolean getNeedPwReset() {
+        return needPwReset;
+    }
+
+    public void setNeedPwReset(Boolean needPwReset) {
+        this.needPwReset = needPwReset;
+    }
+
+    
     public Institution getRestrictedInstitution() {
         return restrictedInstitution;
     }
