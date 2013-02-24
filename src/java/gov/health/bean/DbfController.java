@@ -75,7 +75,7 @@ public class DbfController implements Serializable {
     Category category;
     //
     DbfFile defFile;
-    List<DbfFile> dbfFiles;
+//    List<DbfFile> dbfFiles;
     List<PersonInstitution> existingPersonInstitutions;
     List<PersonInstitution> previousPersonInstitutions;
     List<PersonInstitution> newPersonInstitutions;
@@ -501,13 +501,13 @@ public class DbfController implements Serializable {
         this.sessionController = sessionController;
     }
 
-    public List<DbfFile> getDbfFiles() {
-        return dbfFiles;
-    }
-
-    public void setDbfFiles(List<DbfFile> dbfFiles) {
-        this.dbfFiles = dbfFiles;
-    }
+//    public List<DbfFile> getDbfFiles() {
+//        return dbfFiles;
+//    }
+//
+//    public void setDbfFiles(List<DbfFile> dbfFiles) {
+//        this.dbfFiles = dbfFiles;
+//    }
 
     public List<PersonInstitution> getExistingPersonInstitutions() {
         if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear() == null) {
@@ -582,17 +582,17 @@ public class DbfController implements Serializable {
         return scImage;
     }
 
-    public List<DbfFile> getAppImages() {
-        if (dbfFiles == null) {
-            dbfFiles = new ArrayList<DbfFile>();
-        }
-        System.out.println("Getting app images - count is" + dbfFiles.size());
-        return dbfFiles;
-    }
-
-    public void setAppImages(List<DbfFile> appImages) {
-        this.dbfFiles = appImages;
-    }
+//    public List<DbfFile> getAppImages() {
+//        if (dbfFiles == null) {
+//            dbfFiles = new ArrayList<DbfFile>();
+//        }
+//        System.out.println("Getting app images - count is" + dbfFiles.size());
+//        return dbfFiles;
+//    }
+//
+//    public void setAppImages(List<DbfFile> appImages) {
+//        this.dbfFiles = appImages;
+//    }
 
     public void setScImage(StreamedContent scImage) {
         this.scImage = scImage;
@@ -629,9 +629,9 @@ public class DbfController implements Serializable {
         setToGetRecordsagain(Boolean.TRUE);
     }
 
-    private void prepareImages(String sql) {
-        dbfFiles = getDbfFileFacade().findBySQL(sql);
-    }
+//    private void prepareImages(String sql) {
+//        dbfFiles = getDbfFileFacade().findBySQL(sql);
+//    }
 
     public CategoryFacade getCatFacade() {
         return catFacade;
@@ -647,11 +647,11 @@ public class DbfController implements Serializable {
 
     public void setCategory(Category category) {
         this.category = category;
-        if (category == null && category.getId() != null) {
-            prepareImages("Select ai from AppImage ai Where ai.category.id = " + category.getId());
-        } else {
-            dbfFiles = null;
-        }
+//        if (category == null && category.getId() != null) {
+//            prepareImages("Select ai from AppImage ai Where ai.category.id = " + category.getId());
+//        } else {
+//            dbfFiles = null;
+//        }
     }
 
     public InstitutionFacade getInsFacade() {
@@ -675,11 +675,11 @@ public class DbfController implements Serializable {
         if (this.institution != institution) {
             setToGetRecordsagain(Boolean.TRUE);
         }
-        if (institution == null && institution.getId() != null) {
-            prepareImages("Select ai from AppImage ai Where ai.institution.id = " + institution.getId());
-        } else {
-            dbfFiles = null;
-        }
+//        if (institution == null && institution.getId() != null) {
+//            prepareImages("Select ai from AppImage ai Where ai.institution.id = " + institution.getId());
+//        } else {
+//            dbfFiles = null;
+//        }
     }
 
     public PersonFacade getPerFacade() {
@@ -696,11 +696,11 @@ public class DbfController implements Serializable {
 
     public void setPerson(Person person) {
         this.person = person;
-        if (person == null && person.getId() != null) {
-            prepareImages("Select ai from AppImage ai Where ai.person.id = " + person.getId());
-        } else {
-            dbfFiles = null;
-        }
+//        if (person == null && person.getId() != null) {
+//            prepareImages("Select ai from AppImage ai Where ai.person.id = " + person.getId());
+//        } else {
+//            dbfFiles = null;
+//        }
     }
 
     public void savePersonImage() {
