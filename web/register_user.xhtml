@@ -10,89 +10,44 @@
 
     <ui:define name="content">
         <p:growl autoUpdate="true"/>
-       
+
         <h:form>
-            <table  width="400px" class="pdTable" align="center">
-                <tr>
-                    <td colspan="2"  class="pdTableHighlightRow">&nbsp;</td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="pdLabel">&nbsp;</td>
-                </tr>
+            <p:panel header="Creating a new user" rendered="#{sessionController.sysAdmin or sessionController.insAdmin}">
+                <p:panelGrid columns="2" >
+                    <h:outputLabel value="Name" />
+                    <h:inputText value="#{connetcionController.newPersonName}" />
+                    <h:outputLabel value="Telephone" />
+                    <h:inputText value="#{connetcionController.telNo}" />
+                    <h:outputLabel value="Email" />
+                    <h:inputText value="#{connetcionController.email}" />
 
-                <tr>
-                    <td align="center" colspan="2">
-                        <span class="pdHeading1">Please fill the details to register</span>
-                    </td>
-                </tr>                  
-                <tr>
-                    <td colspan="2" class="pdLabel">&nbsp;</td>
-                </tr>
-                <tr>
-                    <td class="pdLabel" align="right" width="40%">Name</td>
-                    <td align="left" width="60%"><h:inputText value="#{connetcionController.newPersonName}"/></td>
-                </tr>
-                <tr>
-                    <td class="pdLabel" align="right">Designation</td>
-                    <td align="left"><h:inputText value="#{connetcionController.newDesignation}"  /></td>
-                </tr>
-                <tr>
-                    <td class="pdLabel" align="right">Tel No</td>
-                    <td align="left"><h:inputText value="#{connetcionController.telNo}"  /></td>
-                </tr>
-                <tr>
-                    <td class="pdLabel" align="right">Email</td>
-                    <td align="left"><h:inputText value="#{connetcionController.email}"  /></td>
-                </tr>
-                <tr>
-                    <td class="pdLabel" align="right">Restricted Institute</td>
-                    <td align="left">
-                        <h:selectOneListbox id="cmbIns" value="#{connetcionController.institution}" style="min-width: 300px;">
-                            <f:selectItems value="#{institutionController.payCentres}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}"/>
-                        </h:selectOneListbox>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="pdLabel" align="right">Role</td>
-                    <td align="left">
-                        <h:selectOneListbox id="cmbRole" value="#{connetcionController.role}" style="min-width: 300px;">
-                            <f:selectItems value="#{webUserRoleController.items}" var="ro" itemValue="#{ro}" itemLabel="#{ro.name}"/>
-                        </h:selectOneListbox>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="pdLabel" align="right">Username</td>
-                    <td align="left"><h:inputText value="#{connetcionController.newUserName}"  /></td>
-                </tr>                
-                <tr>
-                    <td class="pdLabel" align="right">Password</td>
-                    <td align="left"><h:inputSecret value="#{connetcionController.newPassword}"  /></td>
-                </tr>                
-                <tr>
-                    <td class="pdLabel" align="right">Reenter Password</td>
-                    <td align="left"><h:inputSecret value="#{connetcionController.newPasswordConfirm}"  /></td>
-                </tr>
-                <tr>                                    
-                    <td align="left"></td>
-                    <td align="left">
-                        <h:commandButton id="btnReg" class="pdButton" type="submit" value="Register" action="#{connetcionController.registeUser}" /> 
-                    </td>
-                    
-                </tr>                  
-                <tr>
-                    <td colspan="2" class="pdLabel">&nbsp;</td>
-                </tr>
-                <tr>
-                    <td colspan="2"  class="pdTableHighlightRow">&nbsp;
-                        <p:messages globalOnly="true"  ></p:messages>
-                    </td>
-                </tr>
+                    <h:outputLabel value="Role" />
+                    <h:selectOneListbox id="cmnSysAdminList" rendered="#{sessionController.sysAdmin}"  value="#{connetcionController.role}" >
+                        <f:selectItems value="#{webUserRoleController.items}" var="adminRole" itemLabel="#{adminRole.name}" itemValue="#{adminRole}"  />
+                    </h:selectOneListbox>
 
+                    <h:selectOneListbox rendered="#{sessionController.insAdmin}"  id="cmnInsAdminList" value="#{connetcionController.role}" >
+                        <f:selectItems value="#{webUserRoleController.lstInsAdminRoles}" var="insRole" itemLabel="#{insRole.name}" itemValue="#{insRole}" />
+                    </h:selectOneListbox>
 
-            </table>
+                    <h:outputLabel value="Previleges Restricted to" />
+                    <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution!=null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}" />
+                    <h:selectOneListbox id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}" value="#{connetcionController.institution}"  size="5">
+                        <f:selectItems value="#{institutionController.offItems}" var="ri" itemValue="#{ri}" itemLabel="#{ri.name}" />
+                    </h:selectOneListbox>
+                    <h:outputLabel value="User name (Case Insensitive)" />
+                    <h:inputText value="#{connetcionController.newUserName}" />
+                    <h:outputLabel value="Password (Case sensitive)" />
+                    <h:inputSecret value="#{connetcionController.newPassword}" />
+                    <h:outputLabel value="Re-enter password" />
+                    <h:inputSecret value="#{connetcionController.newPasswordConfirm}" />
+                </p:panelGrid>
+                <h:commandButton id="btnReg" class="pdButton" type="submit" value="Register" action="#{connetcionController.registeUser}" /> 
+                <p:messages globalOnly="true"  ></p:messages>
+            </p:panel>
         </h:form>
 
     </ui:define>
 
-    </ui:composition>
+</ui:composition>
 

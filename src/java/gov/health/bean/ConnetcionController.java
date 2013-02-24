@@ -19,6 +19,8 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import org.primefaces.event.CaptureEvent;
 
@@ -253,12 +255,25 @@ public class ConnetcionController implements Serializable {
         return false;
     }
 
+    public static boolean isValidEmailAddress(String email) {
+        boolean result = true;
+        try {
+            InternetAddress emailAddr = new InternetAddress(email);
+            emailAddr.validate();
+        } catch (AddressException ex) {
+            JsfUtil.addErrorMessage("Please enter a valid Email \n" + ex.getMessage());
+            result = false;
+        }
+        return result;
+    }
+
     public String registeUser() {
 //        if (!telNoOk()) {
 //            JsfUtil.addErrorMessage("Telephone number in correct, Please enter a valid phone number");
 //            return "";
 //        }
 
+        
         if (!userNameAvailable(newUserName)) {
             JsfUtil.addErrorMessage("User name already exists. Plese enter another user name");
             return "";
@@ -267,6 +282,11 @@ public class ConnetcionController implements Serializable {
             JsfUtil.addErrorMessage("Password and Re-entered password are not matching");
             return "";
         }
+        
+        if(!isValidEmailAddress(email)){
+            return "";
+        }
+        
         WebUser user = new WebUser();
         Person person = new Person();
         user.setWebUserPerson(person);
@@ -291,21 +311,8 @@ public class ConnetcionController implements Serializable {
             user.setRestrictedInstitution(institution);
         }
         uFacade.create(user);
-        //
-        //
-//        AppImage perImage = new AppImage();
-//        perImage.setPerson(person);
-//        perImage.setFileName("initial_photo_" + person.getId() + ".png");
-//        perImage.setBaImage(photo);
-//        perImage.setFileType("image/png");
-//        imageFacade.create(perImage);
-        //
-        //
         JsfUtil.addSuccessMessage("New User Registered.");
-//        sessionController.setLoggedUser(user);
-//        sessionController.setLogged(Boolean.TRUE);
-//        sessionController.setActivated(false);
-        return "index";
+        return "";
     }
 
     public String changePassword() {
