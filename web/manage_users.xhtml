@@ -63,7 +63,7 @@
                 </h:panelGrid>
             </h:form>        
         </p:panel>
-        <p:panel header="You are not authrerized to view this page" rendered="#{!sessionController.sysAdmin or !sessionController.insAdmin}" >
+        <p:panel header="You are not authrerized to view this page" rendered="#{!sessionController.sysAdmin and !sessionController.insAdmin}" >
         </p:panel>
     </ui:define>
 </ui:composition>
