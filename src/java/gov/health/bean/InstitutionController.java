@@ -10,8 +10,10 @@ package gov.health.bean;
 
 import gov.health.facade.InstitutionFacade;
 import gov.health.entity.Institution;
+import gov.health.entity.InstitutionSet;
 import gov.health.entity.InstitutionType;
 import gov.health.entity.PersonInstitution;
+import gov.health.facade.InstitutionSetFacade;
 import gov.health.facade.InstitutionTypeFacade;
 import gov.health.facade.PersonInstitutionFacade;
 import java.io.Serializable;
@@ -43,6 +45,8 @@ public final class InstitutionController implements Serializable {
     InstitutionTypeFacade institutionTypeFacade;
     @EJB
     PersonInstitutionFacade piFacade;
+    @EJB
+    InstitutionSetFacade inSetFacade;
     @ManagedProperty(value = "#{sessionController}")
     SessionController sessionController;
     List<Institution> offItems;
@@ -55,6 +59,16 @@ public final class InstitutionController implements Serializable {
     boolean modifyControlDisable = true;
     String selectText = "";
     Integer offSel = 0;
+
+    public InstitutionSetFacade getInSetFacade() {
+        return inSetFacade;
+    }
+
+    public void setInSetFacade(InstitutionSetFacade inSetFacade) {
+        this.inSetFacade = inSetFacade;
+    }
+    
+    
 
     public List<Institution> getPayCentres() {
         String sql = "SELECT i FROM Institution i where i.retired=false and i.payCentre = true order by i.name";
@@ -270,6 +284,12 @@ public final class InstitutionController implements Serializable {
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
             getFacade().create(current);
+            InstitutionSet insSet = new InstitutionSet();
+            insSet.setName("Default");
+            insSet.setCreatedAt(Calendar.getInstance().getTime());
+            insSet.setCreater(sessionController.loggedUser);
+            insSet.setInstitution(current);
+            inSetFacade.create(insSet);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
         }
         this.prepareSelect();

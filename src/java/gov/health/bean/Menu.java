@@ -68,9 +68,13 @@ public class Menu implements Serializable {
         // Upload File
         model.addSubmenu(uploadData());
 
-        // Metadata management
+        // Metadata management by sysAdmin
         if (sessionController.isSysAdmin()) {
-            model.addSubmenu(matadata());
+            model.addSubmenu(sysAdminMetadata());
+        }
+        // Metadata management by sysAdmin
+        if (sessionController.isInsAdmin()) {
+            model.addSubmenu(insAdminMetadata());
         }
         // Admin mene {admin management)
         if (sessionController.isInsAdmin() || sessionController.isSysAdmin()) {
@@ -80,7 +84,7 @@ public class Menu implements Serializable {
         model.addSubmenu(userSubmenu());
     }
 
-    private Submenu matadata() {
+    private Submenu sysAdminMetadata() {
 
         Submenu submenu = new Submenu();
         submenu.setLabel("Edit Metadata");
@@ -120,6 +124,24 @@ public class Menu implements Serializable {
 
     }
 
+    
+    private Submenu insAdminMetadata() {
+
+        Submenu submenu = new Submenu();
+        submenu.setLabel("Edit Metadata");
+
+        MenuItem item;
+
+        item = new MenuItem();
+        item.setValue("Institution Sets");
+        item.setUrl("institution_set.xhtml");
+        submenu.getChildren().add(item);
+
+        return submenu;
+
+    }
+
+    
     private Submenu viewData() {
 
         Submenu submenu;
