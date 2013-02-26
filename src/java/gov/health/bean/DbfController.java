@@ -102,7 +102,6 @@ public class DbfController implements Serializable {
     int[] monthColR = new int[12];
     int[] monthColG = new int[12];
     int[] monthColB = new int[12];
-    
     int[] completedSet = new int[12];
     int setCount;
 
@@ -113,7 +112,7 @@ public class DbfController implements Serializable {
         String sql;
         sql = "select iset from InstitutionSet iset where iset.retired = false and iset.institution.id = " + getInstitution().getId() + " ";
         try {
-            setCount =getPiFacade().findBySQL(sql).size();
+            setCount = getPiFacade().findBySQL(sql).size();
             return setCount;
         } catch (Exception e) {
             System.out.println("Error in getting set count is " + e.getMessage());
@@ -149,8 +148,6 @@ public class DbfController implements Serializable {
         this.monthColB = monthColB;
     }
 
-    
-    
     public void prepareSetSeubmitColours() {
         getSetCount();
         completedSetCount(getPayYear());
@@ -160,19 +157,19 @@ public class DbfController implements Serializable {
             if (setCount == 0) {
                 monthColR[i] = 0;
                 monthColG[i] = 255;
-                monthColB[i]=0;
+                monthColB[i] = 0;
             } else if (setCount == completedSet[i]) {
                 monthColR[i] = 0;
                 monthColG[i] = 255;
-                monthColB[i]=0;
+                monthColB[i] = 0;
             } else if (completedSet[i] >= (setCount / 2)) {
                 monthColR[i] = 255;
                 monthColG[i] = 255;
-                monthColB[i]=0;
+                monthColB[i] = 0;
             } else {
                 monthColR[i] = 245;
                 monthColG[i] = 245;
-                monthColB[i]=245;
+                monthColB[i] = 245;
             }
             System.out.println("i " + i);
             System.out.println("R " + monthColR[i]);
@@ -209,7 +206,7 @@ public class DbfController implements Serializable {
         for (int i = 0; i < 12; i++) {
             temPayMonth = i + 1;
             String sql;
-            
+
             sql = "select distinct pi.paySet from PersonInstitution pi where pi.retired = false and pi.payYear = " + temPayYear + " and pi.payMonth = " + temPayMonth + " and pi.payCentre.id = " + getInstitution().getId() + " ";
             System.out.println(sql);
             try {
@@ -508,7 +505,6 @@ public class DbfController implements Serializable {
 //    public void setDbfFiles(List<DbfFile> dbfFiles) {
 //        this.dbfFiles = dbfFiles;
 //    }
-
     public List<PersonInstitution> getExistingPersonInstitutions() {
         if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear() == null) {
             return new ArrayList<PersonInstitution>();
@@ -593,7 +589,6 @@ public class DbfController implements Serializable {
 //    public void setAppImages(List<DbfFile> appImages) {
 //        this.dbfFiles = appImages;
 //    }
-
     public void setScImage(StreamedContent scImage) {
         this.scImage = scImage;
     }
@@ -632,7 +627,6 @@ public class DbfController implements Serializable {
 //    private void prepareImages(String sql) {
 //        dbfFiles = getDbfFileFacade().findBySQL(sql);
 //    }
-
     public CategoryFacade getCatFacade() {
         return catFacade;
     }
@@ -794,8 +788,8 @@ public class DbfController implements Serializable {
         Boolean newEntries = false;
         if (sessionController.getLoggedUser().getRestrictedInstitution() != null) {
             setInstitution(sessionController.getLoggedUser().getRestrictedInstitution());
-        }else{
-            if(getInstitution()==null){
+        } else {
+            if (getInstitution() == null) {
                 JsfUtil.addErrorMessage("Please select an institution");
                 return "";
             }
@@ -859,93 +853,110 @@ public class DbfController implements Serializable {
                 String insName;
                 insName = rowObjects[21].toString() + " " + rowObjects[22].toString() + " " + rowObjects[23].toString();
 
-                if (insName.trim().equals("")) {
-                    attachedIns = getInstitution();
-                } else {
-                    attachedIns = findInstitution(insName);
+                String empNo = "";
+
+                try {
+                    empNo = rowObjects[0].toString();
+                } catch (Exception e) {
+                    empNo = "999999.0";
                 }
 
-                temNic = rowObjects[48].toString();
+                if (empNo != "999999.0") {
 
-                if ("".equals(temNic.trim())) {
-                    pi.setPerson(null);
-                } else {
-                    p = getPerFacade().findFirstBySQL("select p from Person p where p.retired = false and p.nic = '" + temNic + "'");
-                    if (p == null) {
-                        p = new Person();
-                        p.setCreatedAt(Calendar.getInstance().getTime());
-                        p.setCreater(sessionController.getLoggedUser());
-                        p.setInstitution(attachedIns);
-                        p.setTitle(rowObjects[1].toString());
-                        p.setInitials(rowObjects[3].toString());
-                        p.setSurname(rowObjects[2].toString());
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-                        try {
-                            p.setDob(dateFormat.parse(rowObjects[7].toString()));
-                        } catch (Exception e) {
-                            p.setDob(null);
-                        }
-                        p.setNic(rowObjects[48].toString());
-                        p.setName(p.getTitle() + " " + p.getInitials() + " " + p.getSurname());
-                        getPerFacade().create(p);
+                    if (insName.trim().equals("")) {
+                        attachedIns = getInstitution();
                     } else {
-                        if (p.getInstitution() != getInstitution()) {
-                            markTransfer(p, p.getInstitution(), institution, pi);
-                        }
+                        attachedIns = findInstitution(insName);
                     }
 
-                }
+                    temNic = rowObjects[48].toString();
 
-
-                pi.setPerson(p);
-                pi.setInstitution(attachedIns);
-                pi.setPayCentre(getInstitution());
-                pi.setNic(rowObjects[48].toString());
-
-                pi.setEmpNo(rowObjects[0].toString());
-                pi.setAddress1(rowObjects[18].toString());
-                pi.setAddress2(rowObjects[19].toString());
-                pi.setAddress3(rowObjects[20].toString());
-                pi.setOffAddress1(rowObjects[21].toString());
-                pi.setOffAddress2(rowObjects[22].toString());
-                pi.setOffAddress3(rowObjects[23].toString());
-
-                pi.setDesignation(findDesignation(rowObjects[8].toString()));
-
-                pi.setName(rowObjects[1].toString() + " " + rowObjects[2].toString() + " " + rowObjects[3].toString());
-                pi.setPayMonth(payMonth);
-                pi.setPayYear(payYear);
-                pi.setPaySet(insSet);
-
-
-                if (rowObjects[4].toString().equals("") || rowObjects[50].toString().equals("")) {
-                    pi.setPermanent(Boolean.FALSE);
-                } else {
-                    pi.setPermanent(Boolean.TRUE);
-                }
-                try {
-                    if (Integer.valueOf(rowObjects[4].toString()) == 0) {
-                        pi.setNopay(Boolean.TRUE);
+                    if ("".equals(temNic.trim())) {
+                        pi.setPerson(null);
                     } else {
+                        p = getPerFacade().findFirstBySQL("select p from Person p where p.retired = false and p.nic = '" + temNic + "'");
+                        if (p == null) {
+                            p = new Person();
+                            p.setCreatedAt(Calendar.getInstance().getTime());
+                            p.setCreater(sessionController.getLoggedUser());
+                            p.setInstitution(attachedIns);
+                            p.setTitle(rowObjects[1].toString());
+                            p.setInitials(rowObjects[3].toString());
+                            p.setSurname(rowObjects[2].toString());
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                            try {
+                                p.setDob(dateFormat.parse(rowObjects[7].toString()));
+                            } catch (Exception e) {
+//                            p.setDob(null);
+                            }
+                            try {
+                                p.setNic(rowObjects[48].toString());
+                            } catch (Exception e) {
+                            }
+                            try {
+                                p.setName(p.getTitle() + " " + p.getInitials() + " " + p.getSurname());
+                            } catch (Exception e) {
+                            }
+                            getPerFacade().create(p);
+                        } else {
+                            if (p.getInstitution() != getInstitution()) {
+                                markTransfer(p, p.getInstitution(), institution, pi);
+                            }
+                        }
+
                     }
-                } catch (Exception e) {
-                }
 
 
-                try {
-                    pi.setActiveState((Boolean) rowObjects[40]);
-                } catch (Exception e) {
-                    pi.setActiveState(true);
+                    pi.setPerson(p);
+                    pi.setInstitution(attachedIns);
+                    pi.setPayCentre(getInstitution());
+                    pi.setNic(rowObjects[48].toString());
+
+                    pi.setEmpNo(rowObjects[0].toString());
+                    pi.setAddress1(rowObjects[18].toString());
+                    pi.setAddress2(rowObjects[19].toString());
+                    pi.setAddress3(rowObjects[20].toString());
+                    pi.setOffAddress1(rowObjects[21].toString());
+                    pi.setOffAddress2(rowObjects[22].toString());
+                    pi.setOffAddress3(rowObjects[23].toString());
+
+                    pi.setDesignation(findDesignation(rowObjects[8].toString()));
+
+                    pi.setName(rowObjects[1].toString() + " " + rowObjects[2].toString() + " " + rowObjects[3].toString());
+                    pi.setPayMonth(payMonth);
+                    pi.setPayYear(payYear);
+                    pi.setPaySet(insSet);
+
+
+                    if (rowObjects[4].toString().equals("") || rowObjects[50].toString().equals("")) {
+                        pi.setPermanent(Boolean.FALSE);
+                    } else {
+                        pi.setPermanent(Boolean.TRUE);
+                    }
+                    try {
+                        if (Integer.valueOf(rowObjects[4].toString()) == 0) {
+                            pi.setNopay(Boolean.TRUE);
+                        } else {
+                        }
+                    } catch (Exception e) {
+                    }
+
+
+                    try {
+                        pi.setActiveState((Boolean) rowObjects[40]);
+                    } catch (Exception e) {
+                        pi.setActiveState(true);
+                    }
+                    try {
+                        pi.setNopay((Boolean) rowObjects[31]);
+                    } catch (Exception e) {
+                        pi.setNopay(false);
+                    }
+                    if (newEntries) {
+                        getPiFacade().create(pi);
+                    }
+                    newPersonInstitutions.add(pi);
                 }
-                try {
-                    pi.setNopay((Boolean) rowObjects[31]);
-                } catch (Exception e) {
-                    pi.setNopay(false);
-                }
-                if (newEntries) {
-                    getPiFacade().create(pi);
-                }
-                newPersonInstitutions.add(pi);
             }
             if (newEntries) {
                 JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " recorded successfully. ");
@@ -956,6 +967,8 @@ public class DbfController implements Serializable {
                 JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " is listed successfully. If you are satisfied, please click the Save button to permanantly save the new set of data Replacing the old ones under " + institution.getName() + ".");
                 toGetRecordsagain = Boolean.TRUE;
             }
+
+
 
         } catch (Exception e) {
             System.out.println("Error " + e.getMessage());
