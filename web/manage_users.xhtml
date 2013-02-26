@@ -44,7 +44,7 @@
                             <h:outputLabel value="Previleges Restricted to" />
                             <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution!=null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}" />
                             <h:selectOneListbox id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}" value="#{userApproveController.institution}"  size="5">
-                                <f:selectItems value="#{institutionController.items}" var="ri" itemValue="#{ri}" itemLabel="#{ri.name}" />
+                                <f:selectItems value="#{institutionController.payCentres}" var="ri" itemValue="#{ri}" itemLabel="#{ri.name}" />
                             </h:selectOneListbox>
 
                             <h:outputLabel rendered="#{sessionController.sysAdmin}"  value="&nbsp;"/>
@@ -61,7 +61,7 @@
 
                     </h:panelGroup>
                 </h:panelGrid>
-            </h:form>        
+            </h:form>
         </p:panel>
         <p:panel header="You are not authrerized to view this page" rendered="#{!sessionController.sysAdmin and !sessionController.insAdmin}" >
         </p:panel>
