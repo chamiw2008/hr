@@ -54,8 +54,6 @@ public class UserApproveController implements Serializable {
         this.institution = institution;
     }
 
-    
-    
     public AreaFacade getAreaFacade() {
         return areaFacade;
     }
@@ -88,12 +86,12 @@ public class UserApproveController implements Serializable {
         return "person_image";
     }
 
-    public void removeInsRes(){
+    public void removeInsRes() {
         setInstitution(null);
         getSelectedUser().setRestrictedInstitution(null);
         getUserFacade().edit(selectedUser);
     }
-    
+
     public List<WebUser> getUsers() {
         String temSql;
         if (sessionController.getLoggedUser().getRestrictedInstitution() != null) {
@@ -188,6 +186,16 @@ public class UserApproveController implements Serializable {
         }
         selectedUser.setRole(role);
         selectedUser.setRestrictedInstitution(institution);
+
+        if (selectedUser.getRole() != null && "sysAdmin".equals(selectedUser.getRole().getName())) {
+            selectedUser.setRestrictedInstitution(null);
+        } else if (selectedUser.getRole() != null && "superUser".equals(selectedUser.getRole().getName())) {
+            selectedUser.setRestrictedInstitution(null);
+        } else {
+            selectedUser.setRestrictedInstitution(institution);
+        }
+
+
         userFacade.edit(selectedUser);
         //selectedUser = null;
 
