@@ -90,6 +90,15 @@
                                     <h:selectBooleanCheckbox id="chkOfficial" value="#{institutionController.current.official}" />
                                     <h:outputText id="lblPayCentre" value="Pay Centre" ></h:outputText>
                                     <h:selectBooleanCheckbox id="chkPayCentre" value="#{institutionController.current.payCentre}" />
+                                    
+                                    <h:outputText id="lblPayCentre" value="Instituion Mapped by" ></h:outputText>
+                                    <h:panelGroup >
+                                        <h:panelGrid columns="1" >
+                                            <p:selectBooleanCheckbox value="#{institutionController.current.insmapAddress}" label="Addresses" ></p:selectBooleanCheckbox>
+                                            <p:selectBooleanCheckbox value="#{institutionController.current.insmapSite}" label="Site" ></p:selectBooleanCheckbox>
+                                            <p:selectBooleanCheckbox value="#{institutionController.current.insmapSection}" label="Section" ></p:selectBooleanCheckbox>
+                                        </h:panelGrid>
+                                    </h:panelGroup>
                                     <h:outputText id="lblAddress" value="Address" ></h:outputText>
                                     <h:inputText id="txtAddress"  class="pdInputText" value="#{institutionController.current.address}" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
                                     <h:outputText id="lblTelephone" value="Telephone" ></h:outputText>

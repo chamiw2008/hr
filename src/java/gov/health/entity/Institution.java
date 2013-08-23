@@ -58,9 +58,41 @@ public class Institution implements Serializable {
     
     Boolean payCentre;
     
+    boolean insmapAddress;
+    boolean insmapSite;
+    boolean insmapSection;
+    
+    
     @ManyToOne
     Institution mappedToInstitution;
 
+    public boolean isInsmapAddress() {
+        return insmapAddress;
+    }
+
+    public void setInsmapAddress(boolean insmapAddress) {
+        this.insmapAddress = insmapAddress;
+    }
+
+    public boolean isInsmapSite() {
+        return insmapSite;
+    }
+
+    public void setInsmapSite(boolean insmapSite) {
+        this.insmapSite = insmapSite;
+    }
+
+    public boolean isInsmapSection() {
+        return insmapSection;
+    }
+
+    public void setInsmapSection(boolean insmapSection) {
+        this.insmapSection = insmapSection;
+    }
+
+    
+    
+    
     public Boolean getPayCentre() {
         return payCentre;
     }

@@ -850,8 +850,21 @@ public class DbfController implements Serializable {
                 PersonInstitution pi = new PersonInstitution();
                 Institution attachedIns;
 
-                String insName;
-                insName = rowObjects[21].toString() + " " + rowObjects[22].toString() + " " + rowObjects[23].toString();
+                String insName = "";
+                if (institution.isInsmapAddress() == true) {
+                    insName = rowObjects[21].toString() + " " + rowObjects[22].toString() + " " + rowObjects[23].toString();
+                }
+
+//                Add Site
+                if (institution.isInsmapSite() == true) {
+                    insName = insName + rowObjects[11].toString();
+                }
+
+//                Add Section
+                if (institution.isInsmapSection() == true) {
+                    insName = insName + rowObjects[13].toString();
+                }
+
 
                 String empNo = "";
 
