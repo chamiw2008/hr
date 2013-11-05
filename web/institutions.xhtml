@@ -70,8 +70,9 @@
                                         <f:selectItems value="#{institutionController.institutionTypes}" />
                                     </h:selectOneListbox>
                                     <h:outputText id="lblPi"  class="pdInputText" value="Super Institute"  ></h:outputText>
-                                    <p:autoComplete id="acPi" value="#{institutionController.current.superInstitution}" completeMethod="#{institutionController.completeOffcialInstitutions}" var="pi" itemLabel="#{pi.name}" itemValue="#{pi}" >
+                                    <p:autoComplete id="acPi" value="#{institutionController.current.superInstitution}"  disabled="#{institutionController.modifyControlDisable}" completeMethod="#{institutionController.completeOffcialInstitutions}" var="pi" itemLabel="#{pi.name}" itemValue="#{pi}" >
                                     </p:autoComplete>
+                                    
                                     <h:outputText id="lblPayCentre" value="Pay Centre" ></h:outputText>
                                     <h:selectBooleanCheckbox id="chkPayCentre" value="#{institutionController.current.payCentre}" />
                                     <h:outputText id="lblAddress" value="Address" ></h:outputText>

@@ -8,17 +8,31 @@
  */
 package gov.health.bean;
 
+import java.io.Serializable;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.event.NodeCollapseEvent;
+import org.primefaces.event.NodeExpandEvent;
+import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.event.NodeUnselectEvent;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
+
 import gov.health.facade.InstitutionFacade;
 import gov.health.entity.Institution;
 import gov.health.entity.InstitutionSet;
 import gov.health.entity.InstitutionType;
-import gov.health.entity.PersonInstitution;
 import gov.health.facade.InstitutionSetFacade;
 import gov.health.facade.InstitutionTypeFacade;
 import gov.health.facade.PersonInstitutionFacade;
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -61,6 +75,31 @@ public final class InstitutionController implements Serializable {
     String selectText = "";
     Integer offSel = 0;
 
+    TreeNode root;
+
+    TreeNode selectedNode;
+
+    public TreeNode getSelectedNode() {
+        return selectedNode;
+    }
+
+    public List<Institution> childInstitutions(Institution parent) {
+        Map m = new HashMap();
+        List<Institution> ins;
+        String sql;
+        if (parent == null) {
+            sql = "select ci from Institution ci where ci.retired=false and ci.superInstitution=null order by ci.name";
+            ins = getFacade().findBySQL(sql);
+        } else {
+            sql = "select ci from Institution ci where ci.retired=false and ci.superInstitution=:pi order by ci.name";
+            m.put("pi", parent);
+            ins = getFacade().findBySQL(sql, m);
+        }
+        System.out.println("sql is " + sql);
+        System.out.println("Institutions retreved are " + ins);
+        return ins;
+    }
+
     public List<Institution> completeOffcialInstitutions(String qry) {
         String temSql;
         temSql = "SELECT i FROM Institution i where i.retired=false and i.official = true and LOWER(i.name) like '%" + qry.toLowerCase() + "%' order by i.name";
@@ -102,7 +141,85 @@ public final class InstitutionController implements Serializable {
         this.offSel = offSel;
     }
 
+    public void setSelectedNode(TreeNode selectedNode) {
+        this.selectedNode = selectedNode;
+    }
+
+    public void onNodeExpand(NodeExpandEvent event) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Expanded", event.getTreeNode().toString());
+
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    public void onNodeCollapse(NodeCollapseEvent event) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Collapsed", event.getTreeNode().toString());
+
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    public void onNodeSelect(NodeSelectEvent event) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected", event.getTreeNode().toString());
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    public void onNodeUnselect(NodeUnselectEvent event) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Unselected", event.getTreeNode().toString());
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    public void createInsTree() {
+        root = new DefaultTreeNode("Root", null);
+
+        if (getSessionController().getLoggedUser() != null) {
+            if (getSessionController().getLoggedUser().getRestrictedInstitution() != null) {
+                TreeNode tn = new DefaultTreeNode(getSessionController().getLoggedUser().getRestrictedInstitution().getName(), root);
+                addChildInstituionNodes(getSessionController().getLoggedUser().getRestrictedInstitution(), tn);
+            } else {
+                System.out.println("Logged user and ins " + getSessionController().getLoggedUser().getRestrictedInstitution());
+                addChildInstituionNodes(null, root);
+            }
+        }
+
+    }
+
+    private boolean addChildInstituionNodes(Institution parent, TreeNode parentNode) {
+        if (parent == null) {
+            System.out.println("parent is null");
+        } else {
+            System.out.println("parent is " + parent.getName());
+        }
+        List<Institution> cis = childInstitutions(parent);
+        if (cis.isEmpty()) {
+            System.out.println("no children");
+            return false;
+        } else {
+            for (Institution i : cis) {
+                System.out.println("one child is " + i.getName());
+                TreeNode tn = new DefaultTreeNode(i.getName(), parentNode);
+                addChildInstituionNodes(i, tn);
+            }
+            return true;
+        }
+    }
+
     public InstitutionController() {
+//        createInsTree();
+//        root = new DefaultTreeNode("Root", null);
+//        TreeNode node0 = new DefaultTreeNode("Node 0", root);
+//        TreeNode node1 = new DefaultTreeNode("Node 1", root);
+//        TreeNode node2 = new DefaultTreeNode("Node 2", root);
+//
+//        TreeNode node00 = new DefaultTreeNode("Node 0.0", node0);
+//        TreeNode node01 = new DefaultTreeNode("Node 0.1", node0);
+//
+//        TreeNode node10 = new DefaultTreeNode("Node 1.0", node1);
+//        TreeNode node11 = new DefaultTreeNode("Node 1.1", node1);
+//
+//        TreeNode node000 = new DefaultTreeNode("Node 0.0.0", node00);
+//        TreeNode node001 = new DefaultTreeNode("Node 0.0.1", node00);
+//        TreeNode node010 = new DefaultTreeNode("Node 0.1.0", node01);
+//
+//        TreeNode node100 = new DefaultTreeNode("Node 1.0.0", node10);
     }
 
     public InstitutionFacade getEjbFacade() {
@@ -392,6 +509,14 @@ public final class InstitutionController implements Serializable {
 
     public void setOfficialInstitutions(List<Institution> officialInstitutions) {
         this.officialInstitutions = officialInstitutions;
+    }
+
+    public TreeNode getRoot() {
+        return root;
+    }
+
+    public void setRoot(TreeNode root) {
+        this.root = root;
     }
 
     @FacesConverter(forClass = Institution.class)

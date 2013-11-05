@@ -48,6 +48,8 @@ public class ConnetcionController implements Serializable {
     private SessionController sessionController;
     @ManagedProperty(value = "#{imageController}")
     private ImageController imageController;
+    @ManagedProperty(value = "#{institutionController}")
+    InstitutionController institutionController;
     @EJB
     AppImageFacade imageFacade;
     //
@@ -74,6 +76,16 @@ public class ConnetcionController implements Serializable {
     DataModel<Area> areas;
     WebUserRole role;
 
+    public InstitutionController getInstitutionController() {
+        return institutionController;
+    }
+
+    public void setInstitutionController(InstitutionController institutionController) {
+        this.institutionController = institutionController;
+    }
+
+    
+    
     public WebUserRole getRole() {
         return role;
     }
@@ -365,6 +377,7 @@ public class ConnetcionController implements Serializable {
                     sessionController.setLoggedUser(u);
                     sessionController.setLogged(Boolean.TRUE);
                     sessionController.setActivated(u.isActivated());
+                    institutionController.createInsTree();
                     JsfUtil.addSuccessMessage("Logged successfully");
                     return true;
                 }

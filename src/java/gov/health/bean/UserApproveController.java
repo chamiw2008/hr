@@ -194,7 +194,7 @@ public class UserApproveController implements Serializable {
         } else {
             selectedUser.setRestrictedInstitution(institution);
         }
-
+//        selectedUser.setRestrictedInstitution(institution);
 
         userFacade.edit(selectedUser);
         //selectedUser = null;
@@ -212,8 +212,6 @@ public class UserApproveController implements Serializable {
         selectedUser.setActivator(sessionController.loggedUser);
         selectedUser.setActivateComments(activateComments);
         userFacade.edit(selectedUser);
-
-
 
         selectedUser = null;
 
