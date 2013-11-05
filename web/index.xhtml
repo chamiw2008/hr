@@ -17,7 +17,7 @@
 
 
                 <p:panel>
-                    <p:tree value="#{institutionController.root}" var="node" dynamic="true" cache="false"  
+                    <p:tree  value="#{institutionController.root}" var="node" dynamic="true" cache="false"  
                             selectionMode="single"  selection="#{institutionController.selectedNode}" id="tree">  
                         <p:ajax event="expand"  listener="#{institutionController.onNodeExpand}" />  
                         <p:ajax event="collapse"  listener="#{institutionController.onNodeCollapse}" />  

@@ -169,12 +169,14 @@ public final class InstitutionController implements Serializable {
 
     public void createInsTree() {
         root = new DefaultTreeNode("Root", null);
-
+        root.setExpanded(true);
         if (getSessionController().getLoggedUser() != null) {
             if (getSessionController().getLoggedUser().getRestrictedInstitution() != null) {
                 TreeNode tn = new DefaultTreeNode(getSessionController().getLoggedUser().getRestrictedInstitution().getName(), root);
+                tn.setExpanded(true);
                 addChildInstituionNodes(getSessionController().getLoggedUser().getRestrictedInstitution(), tn);
             } else {
+                
                 System.out.println("Logged user and ins " + getSessionController().getLoggedUser().getRestrictedInstitution());
                 addChildInstituionNodes(null, root);
             }
@@ -196,6 +198,7 @@ public final class InstitutionController implements Serializable {
             for (Institution i : cis) {
                 System.out.println("one child is " + i.getName());
                 TreeNode tn = new DefaultTreeNode(i.getName(), parentNode);
+                tn.setExpanded(true);
                 addChildInstituionNodes(i, tn);
             }
             return true;
