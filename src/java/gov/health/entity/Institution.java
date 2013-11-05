@@ -66,6 +66,8 @@ public class Institution implements Serializable {
     @ManyToOne
     Institution mappedToInstitution;
 
+    
+    
     public boolean isInsmapAddress() {
         return insmapAddress;
     }

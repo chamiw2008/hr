@@ -51,6 +51,7 @@ public final class InstitutionController implements Serializable {
     SessionController sessionController;
     List<Institution> offItems;
     List<Institution> payCentres;
+    private List<Institution> officialInstitutions;
     private Institution current;
     private List<Institution> items = null;
     DataModel<InstitutionType> institutionTypes;
@@ -60,6 +61,12 @@ public final class InstitutionController implements Serializable {
     String selectText = "";
     Integer offSel = 0;
 
+    public List<Institution> completeOffcialInstitutions(String qry) {
+        String temSql;
+        temSql = "SELECT i FROM Institution i where i.retired=false and i.official = true and LOWER(i.name) like '%" + qry.toLowerCase() + "%' order by i.name";
+        return getFacade().findBySQL(temSql);
+    }
+
     public InstitutionSetFacade getInSetFacade() {
         return inSetFacade;
     }
@@ -67,8 +74,6 @@ public final class InstitutionController implements Serializable {
     public void setInSetFacade(InstitutionSetFacade inSetFacade) {
         this.inSetFacade = inSetFacade;
     }
-    
-    
 
     public List<Institution> getPayCentres() {
         String sql = "SELECT i FROM Institution i where i.retired=false and i.payCentre = true order by i.name";
@@ -80,8 +85,6 @@ public final class InstitutionController implements Serializable {
         this.payCentres = payCentres;
     }
 
-    
-    
     public PersonInstitutionFacade getPiFacade() {
         return piFacade;
     }
@@ -89,8 +92,6 @@ public final class InstitutionController implements Serializable {
     public void setPiFacade(PersonInstitutionFacade piFacade) {
         this.piFacade = piFacade;
     }
-    
-    
 
     public Integer getOffSel() {
         return offSel;
@@ -276,19 +277,22 @@ public final class InstitutionController implements Serializable {
     }
 
     public void saveSelected() {
-        
+
         if (selectedItemIndex > 0) {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));
         } else {
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
+            current.setOfficial(true);
             getFacade().create(current);
+
             InstitutionSet insSet = new InstitutionSet();
             insSet.setName("Default");
             insSet.setCreatedAt(Calendar.getInstance().getTime());
             insSet.setCreater(sessionController.loggedUser);
             insSet.setInstitution(current);
+
             inSetFacade.create(insSet);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
         }
@@ -299,7 +303,6 @@ public final class InstitutionController implements Serializable {
         selectedItemIndex = intValue(current.getId());
     }
 
-    
     public void addDirectly() {
         JsfUtil.addSuccessMessage("1");
         try {
@@ -322,7 +325,7 @@ public final class InstitutionController implements Serializable {
     }
 
     public void delete() {
-       
+
         if (current != null) {
             current.setRetired(true);
             current.setRetiredAt(Calendar.getInstance().getTime());
@@ -374,6 +377,21 @@ public final class InstitutionController implements Serializable {
     public void prepareModifyControlDisable() {
         selectControlDisable = false;
         modifyControlDisable = true;
+    }
+
+    public List<Institution> getOfficialInstitutions() {
+        String temSql;
+        if (getSelectText().equals("")) {
+            temSql = "SELECT i FROM Institution i where i.retired=false and i.official = true order by i.name";
+        } else {
+            temSql = "SELECT i FROM Institution i where i.retired=false and i.official = true and LOWER(i.name) like '%" + getSelectText().toLowerCase() + "%' order by i.name";
+        }
+        officialInstitutions = getFacade().findBySQL(temSql);
+        return officialInstitutions;
+    }
+
+    public void setOfficialInstitutions(List<Institution> officialInstitutions) {
+        this.officialInstitutions = officialInstitutions;
     }
 
     @FacesConverter(forClass = Institution.class)

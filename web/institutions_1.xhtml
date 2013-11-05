@@ -35,14 +35,27 @@
                                         <f:ajax execute="txtSelect"  event="keyup" render="lstSelect gpDetail" >
                                         </f:ajax>
                                     </h:inputText>
+
                                     <h:outputLabel value="&#160;">
                                     </h:outputLabel>
+
+
+
                                     <h:selectOneListbox  id="lstSelect"  disabled="#{institutionController.selectControlDisable}" size="10" value="#{institutionController.current}" style="min-width: 223px">
-                                        <f:selectItems  value="#{institutionController.officialInstitutions}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
+                                        <f:selectItems  value="#{institutionController.items}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
                                         <f:ajax render="gpDetail" execute="lstSelect" >                                
                                         </f:ajax>
                                     </h:selectOneListbox>
                                 </h:panelGrid>
+                                <p:panel>
+                                    <h:selectOneRadio id="optOffSel" value="#{institutionController.offSel}" >
+                                        <f:selectItem itemLabel="All" itemValue="0"/>
+                                        <f:selectItem itemLabel="Official" itemValue="1"/>
+                                        <f:selectItem itemLabel="Unofficial" itemValue="2"/>
+                                        <f:selectItem itemLabel="Unmapped" itemValue="3"/>
+                                        <f:ajax event="click" execute="optOffSel" render="lstSelect"/>
+                                    </h:selectOneRadio> 
+                                </p:panel>
                                 <h:panelGrid id="gpSelectButtons" columns="3"  >
                                     <h:commandButton id="btnAdd" value="#{labels.add}" disabled="#{institutionController.selectControlDisable}" action="#{institutionController.prepareAdd()}" styleClass="buttons" >
                                         <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail detailFocus" execute="btnEdit" >                                
@@ -69,11 +82,23 @@
                                     <h:selectOneListbox id="cmbCat1" value="#{institutionController.current.institutionType}"  disabled="#{institutionController.modifyControlDisable}" size="1">
                                         <f:selectItems value="#{institutionController.institutionTypes}" />
                                     </h:selectOneListbox>
-                                    <h:outputText id="lblPi"  class="pdInputText" value="Super Institute"  ></h:outputText>
-                                    <p:autoComplete id="acPi" value="#{institutionController.current.superInstitution}" completeMethod="#{institutionController.completeOffcialInstitutions}" var="pi" itemLabel="#{pi.name}" itemValue="#{pi}" >
-                                    </p:autoComplete>
+                                    <h:outputText id="lblOff" value="Official Name" ></h:outputText>
+                                    <h:selectOneListbox id="cmbOffIns" value="#{institutionController.current.mappedToInstitution}" size="1">
+                                        <f:selectItems value="#{institutionController.offItems}" var="offi" itemLabel="#{offi.name}" itemValue="#{offi}"/>
+                                    </h:selectOneListbox>
+                                    <h:outputText id="lblOffi" value="Official" ></h:outputText>
+                                    <h:selectBooleanCheckbox id="chkOfficial" value="#{institutionController.current.official}" />
                                     <h:outputText id="lblPayCentre" value="Pay Centre" ></h:outputText>
                                     <h:selectBooleanCheckbox id="chkPayCentre" value="#{institutionController.current.payCentre}" />
+                                    
+                                    <h:outputText id="lblMappedBy" value="Instituion Mapped by" ></h:outputText>
+                                    <h:panelGroup >
+                                        <h:panelGrid columns="1" >
+                                            <p:selectBooleanCheckbox value="#{institutionController.current.insmapAddress}" label="Addresses" ></p:selectBooleanCheckbox>
+                                            <p:selectBooleanCheckbox value="#{institutionController.current.insmapSite}" label="Site" ></p:selectBooleanCheckbox>
+                                            <p:selectBooleanCheckbox value="#{institutionController.current.insmapSection}" label="Section" ></p:selectBooleanCheckbox>
+                                        </h:panelGrid>
+                                    </h:panelGroup>
                                     <h:outputText id="lblAddress" value="Address" ></h:outputText>
                                     <h:inputText id="txtAddress"  class="pdInputText" value="#{institutionController.current.address}" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
                                     <h:outputText id="lblTelephone" value="Telephone" ></h:outputText>
@@ -86,6 +111,7 @@
                                     <h:inputText id="txtEmail"  class="pdInputText" value="#{institutionController.current.email}" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
                                     <h:outputText id="lblWebsite" value="Website" ></h:outputText>
                                     <h:inputText id="txtWebsite" class="pdInputText" value="#{institutionController.current.website}" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
+
                                 </h:panelGrid>
                                 <h:panelGrid id="gpDetailButtons" columns="2">
                                     <h:commandButton id="btnSave" value="#{labels.save}" disabled="#{institutionController.modifyControlDisable}" action="#{institutionController.saveSelected()}" styleClass="buttons">

@@ -46,8 +46,6 @@ public class ConnetcionController implements Serializable {
     AreaFacade areaFacade;
     @ManagedProperty(value = "#{sessionController}")
     private SessionController sessionController;
-    @ManagedProperty(value = "#{menu}")
-    private Menu menu;
     @ManagedProperty(value = "#{imageController}")
     private ImageController imageController;
     @EJB
@@ -164,7 +162,6 @@ public class ConnetcionController implements Serializable {
 
 
         if (login()) {
-            menu.createMenu();
             return "";
         } else {
             JsfUtil.addErrorMessage("Login Failure. Please try again");
@@ -521,13 +518,6 @@ public class ConnetcionController implements Serializable {
         return HOSecurity.decrypt(sessionController.getLoggedUser().getName());
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
-    }
 
     public Area getArea() {
         return area;

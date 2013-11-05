@@ -3,9 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-
-      xmlns:pou="http://primefaces.org/ui"
-
+      xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       >
 
@@ -40,40 +38,75 @@
     <!-- style="min-height:920px !important; height:auto !important;"   -->
     <h:body >
         <!--        style="width: 100%; min-height:700px !important; height:auto !important; padding: 1px; margin :0px;"-->
-        <pou:panel style="border: 0px; margin: 0px;padding: 0px;" >
-            <pou:panelGrid style="border: 0px; margin: 0px;padding: 0px;  " >
-                <pou:row>
-                    <pou:column colspan="2" style="margin: 0px; border: 0px;"  >
-                        <pou:panel style="margin: 0px; padding: 0px; border: 0px;" >
+        <p:panel style="border: 0px; margin: 0px;padding: 0px;" >
+            <p:panelGrid style="border: 0px; margin: 0px;padding: 0px;  " >
+                <p:row>
+                    <p:column colspan="2" style="margin: 0px; border: 0px;"  >
+                        <p:panel style="margin: 0px; padding: 0px; border: 0px;" >
 
                             <ui:insert  name="top">
-                                <pou:panelGrid columns="2" style="border: 0px; width: 100%; height: 75px;">
-                                    <pou:panel style="margin: 0px; padding: 0px; border: 0px; width: 20%; height: 70px;">
+                                <p:panelGrid columns="2" style="border: 0px; width: 100%; height: 75px;">
+                                    <p:panel style="margin: 0px; padding: 0px; border: 0px; width: 20%; height: 70px;">
                                         <h:graphicImage  class="pdLogo" library="image" name="logo.gif"  height="50px" ></h:graphicImage> 
-                                    </pou:panel>
-                                    <pou:panel style="margin: 1px; padding: 1px; border: 0px; width: 60%;">
+                                    </p:panel>
+                                    <p:panel style="margin: 1px; padding: 1px; border: 0px; width: 60%;">
                                         <h:outputLabel style="font-size: 2.0em;" >#{labels.topic}</h:outputLabel><br/>&nbsp;
                                         <h:outputLabel style="font-size: 1.0em;" >#{labels.subtopic}</h:outputLabel> 
-                                    </pou:panel>
-                                </pou:panelGrid>
+                                    </p:panel>
+                                </p:panelGrid>
 
                             </ui:insert>
-                        </pou:panel>
-                    </pou:column>
-                </pou:row>
-                <pou:row >
-                    <pou:column colspan="2" style="margin: 0px; padding: 0px; border: 0px;">
-                        <pou:panel  rendered="#{connetcionController.logged}" style="margin: 0px; padding: 0px; border: 0px;" >
+                        </p:panel>
+                    </p:column>
+                </p:row>
+                <p:row >
+                    <p:column colspan="2" style="margin: 0px; padding: 0px; border: 0px;">
+                        <p:panel  rendered="#{connetcionController.logged}" style="margin: 0px; padding: 0px; border: 0px;" >
                             <h:form>
-                                <pou:menubar  model="#{menu.model}" />
-                            </h:form>
-                        </pou:panel>
-                    </pou:column>
-                </pou:row>
-                <pou:row >
 
-                    <pou:column  style="width: 65%; vertical-align: text-top; border: 0px;">
-                        <pou:panel  style="width: 100%; border: 0px;" >
+
+                                <p:menubar styleClass="nonPrintBlock" style=" border: 0px;" >
+                                    <p:menuitem  ajax="false"  action="index" value="Home" ></p:menuitem>
+                                    <p:submenu label="View Data" >
+                                        <p:menuitem ajax="false" action="inst_summary" value="Institution Summery" ></p:menuitem>
+                                        <p:menuitem ajax="false" action="records_without_nic"  value="Records without NIC"  ></p:menuitem>
+                                        <p:menuitem ajax="false" action="records_without_designation" value="Records without Designations"  ></p:menuitem>
+                                    </p:submenu>
+                                    <p:submenu label="Upload Data"  >
+                                        <p:menuitem  ajax="false"  action="upload_dbf" value="Upload" ></p:menuitem>
+                                    </p:submenu>
+                                    <p:submenu label="Administration"  rendered="#{sessionController.sysAdmin}">
+                                        <p:menuitem  ajax="false"  action="institution_type" value="Institution Type"   ></p:menuitem>
+                                        <p:menuitem  ajax="false"  action="institutions" value="Institutions"  ></p:menuitem>
+                                        <p:menuitem  ajax="false"  action="institution_set" value="Institution Sets"  ></p:menuitem>
+                                        <p:menuitem  ajax="false"  action="designation" value="Designations"  ></p:menuitem>
+                                        <p:menuitem  ajax="false"  action="designation_category" value="Designation (Service) Type"  ></p:menuitem>
+                                        <p:menuitem  ajax="false"  action="register_user" value="Add Users"  ></p:menuitem>
+                                        <p:menuitem  ajax="false"  action="manage_users" value="Manage Users"  ></p:menuitem>
+                                        
+                                    </p:submenu>
+                                    <p:submenu label="Administration"  rendered="#{sessionController.insAdmin}">
+                                        <p:menuitem  ajax="false" action="institution_set"  value="Institution Sets"  ></p:menuitem>
+                                        <p:menuitem  ajax="false" action="map_institution"  value="Map Institution"  ></p:menuitem>
+                                        <p:menuitem  ajax="false"  action="register_user" value="Add Users"  ></p:menuitem>
+                                        <p:menuitem  ajax="false"  action="manage_users" value="Manage Users"  ></p:menuitem>
+                                        
+                                    </p:submenu>
+                                    <p:submenu label="Options"  >
+                                        <p:menuitem  ajax="false"  action="change_password" value="Change Password" ></p:menuitem>
+                                        <p:menuitem  ajax="false"  action="preferances" value="Preferances"  ></p:menuitem>
+                                    </p:submenu>
+                                </p:menubar>
+
+
+                            </h:form>
+                        </p:panel>
+                    </p:column>
+                </p:row>
+                <p:row >
+
+                    <p:column  style="width: 65%; vertical-align: text-top; border: 0px;">
+                        <p:panel  style="width: 100%; border: 0px;" >
                             <h:panelGroup rendered="#{sessionController.logged}" >
 
                                 <ui:insert name="content"   >
@@ -120,7 +153,7 @@
                                             </tr>
                                             <tr>
                                                 <td colspan="2"  class="pdTableHighlightRow">&nbsp;
-                                                    <pou:messages globalOnly="true" ></pou:messages>
+                                                    <p:messages globalOnly="true" ></p:messages>
                                                 </td>
                                             </tr>
 
@@ -131,57 +164,57 @@
                                 </ui:insert>
                             </h:panelGroup>
 
-                        </pou:panel>
-                    </pou:column>
-                    <pou:column style="width: 15%; margin: 0px; padding: 0px;">
+                        </p:panel>
+                    </p:column>
+                    <p:column style="width: 15%; margin: 0px; padding: 0px;">
                         <!--                        style="width: 100%; min-height:700px !important; height:auto !important; height:800px !important; border: 0px; padding: 0px; margin: 0px;"-->
-                        <pou:panel  >
+                        <p:panel  >
                             <ui:insert   name="right">
 
-                                <pou:panel rendered="#{connetcionController.logged}" header="Loggin" style="margin: 2px; padding: 2px; border: 0px;">
+                                <p:panel rendered="#{connetcionController.logged}" header="Loggin" style="margin: 2px; padding: 2px; border: 0px;">
                                     <h:form>
-                                        <pou:panel id="divActivated" rendered="#{connetcionController.activated}" style="margin:2px; padding: 0px; border: 0px;">
+                                        <p:panel id="divActivated" rendered="#{connetcionController.activated}" style="margin:2px; padding: 0px; border: 0px;">
                                             You are logged as #{connetcionController.displayName}
-                                            <pou:commandButton value="Logout" action="#{connetcionController.logout}" ajax="false"></pou:commandButton>
-                                        </pou:panel>
-                                        <pou:panel id="divNotActivated" rendered="#{!connetcionController.activated}" style="margin: 2px; padding: 0px; border: 0px;">
+                                            <p:commandButton value="Logout" action="#{connetcionController.logout}" ajax="false"></p:commandButton>
+                                        </p:panel>
+                                        <p:panel id="divNotActivated" rendered="#{!connetcionController.activated}" style="margin: 2px; padding: 0px; border: 0px;">
                                             Welcome to Health Office. Your account is yet to activate. Please contact administrator.
-                                            <pou:commandButton value="Logout" action="#{connetcionController.logout}" ajax="false"></pou:commandButton>
-                                        </pou:panel>
+                                            <p:commandButton value="Logout" action="#{connetcionController.logout}" ajax="false"></p:commandButton>
+                                        </p:panel>
                                     </h:form>
-                                </pou:panel>
+                                </p:panel>
 
-                                <pou:panel header="Theme" style="margin: 2px; padding: 2px; border: 0px;">
+                                <p:panel header="Theme" style="margin: 2px; padding: 2px; border: 0px;">
                                     <h:form>
-                                        <pou:themeSwitcher style="width:165px" id="defaultSwitcher" value="#{themeSwitcherBean.theme}">
+                                        <p:themeSwitcher style="width:165px" id="defaultSwitcher" value="#{themeSwitcherBean.theme}">
                                             <f:selectItem itemLabel="Choose Theme" itemValue="" />
                                             <f:selectItems value="#{themeSwitcherBean.themes}" />
-                                        </pou:themeSwitcher>
-                                        <pou:commandButton value="Set" action="#{themeSwitcherBean.saveTheme}"></pou:commandButton>
+                                        </p:themeSwitcher>
+                                        <p:commandButton value="Set" action="#{themeSwitcherBean.saveTheme}"></p:commandButton>
                                     </h:form>
-                                </pou:panel>
-                                
-                            </ui:insert>
-                        </pou:panel>
-                    </pou:column>
+                                </p:panel>
 
-                </pou:row>
-                <pou:row>
-                    <pou:column colspan="2">
-                        <pou:panel style="width: 100%; border: 0px;" >
+                            </ui:insert>
+                        </p:panel>
+                    </p:column>
+
+                </p:row>
+                <p:row>
+                    <p:column colspan="2">
+                        <p:panel style="width: 100%; border: 0px;" >
                             <ui:insert name="bottom">
-                                <pou:column colspan="2" style="width: 100%;" >
+                                <p:column colspan="2" style="width: 100%;" >
                                     &copy;&nbsp;Ministry of Health, Sri Lanka
-                                </pou:column>
+                                </p:column>
                             </ui:insert>
-                        </pou:panel>
-                    </pou:column>
-                </pou:row>
-                
-            </pou:panelGrid>
+                        </p:panel>
+                    </p:column>
+                </p:row>
+
+            </p:panelGrid>
 
 
-        </pou:panel>
+        </p:panel>
     </h:body>
 
 </html>
