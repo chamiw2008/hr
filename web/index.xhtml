@@ -15,6 +15,12 @@
 
             <p:panel header="Dashboard" >
 
+                <p:dataTable value="#{institutionController.myAllInstitutions}" var="i" >
+                    <p:column >
+                        #{i.name}
+                    </p:column>
+                
+                </p:dataTable>
 
                 <p:panel>
                     <p:tree  value="#{institutionController.root}" var="node" dynamic="true" cache="false"  
@@ -32,6 +38,7 @@
 
                 <p:panelGrid >
 
+                    
 
                     <p:row>
 

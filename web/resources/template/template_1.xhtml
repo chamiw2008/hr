@@ -37,6 +37,8 @@
 
     <!-- style="min-height:920px !important; height:auto !important;"   -->
     <h:body >
+
+
         <!--        style="width: 100%; min-height:700px !important; height:auto !important; padding: 1px; margin :0px;"-->
         <p:panel style="border: 0px; margin: 0px;padding: 0px;" >
             <p:panelGrid style="border: 0px; margin: 0px;padding: 0px;  " >
@@ -61,7 +63,7 @@
                 </p:row>
                 <p:row >
                     <p:column colspan="2" style="margin: 0px; padding: 0px; border: 0px;">
-                        <p:panel  rendered="#{connetcionController.logged}" style="margin: 0px; padding: 0px; border: 0px;" >
+                        <p:panel  rendered="#{sessionController.logged}" style="margin: 0px; padding: 0px; border: 0px;" >
                             <h:form>
 
 
@@ -83,14 +85,14 @@
                                         <p:menuitem  ajax="false"  action="designation_category" value="Designation (Service) Type"  ></p:menuitem>
                                         <p:menuitem  ajax="false"  action="register_user" value="Add Users"  ></p:menuitem>
                                         <p:menuitem  ajax="false"  action="manage_users" value="Manage Users"  ></p:menuitem>
-                                        
+
                                     </p:submenu>
                                     <p:submenu label="Administration"  rendered="#{sessionController.insAdmin}">
                                         <p:menuitem  ajax="false" action="institution_set"  value="Institution Sets"  ></p:menuitem>
                                         <p:menuitem  ajax="false" action="map_institution"  value="Map Institution"  ></p:menuitem>
                                         <p:menuitem  ajax="false"  action="register_user" value="Add Users"  ></p:menuitem>
                                         <p:menuitem  ajax="false"  action="manage_users" value="Manage Users"  ></p:menuitem>
-                                        
+
                                     </p:submenu>
                                     <p:submenu label="Options"  >
                                         <p:menuitem  ajax="false"  action="change_password" value="Change Password" ></p:menuitem>
@@ -136,16 +138,16 @@
                                             </tr>
                                             <tr>
                                                 <td class="pdLabel" align="right" width="40%">#{labels.UserName}</td>
-                                                <td align="left" width="60%"><h:inputText value="#{connetcionController.userName}" autocomplete="off"/></td>
+                                                <td align="left" width="60%"><h:inputText value="#{sessionController.userName}" autocomplete="off"/></td>
                                             </tr>
                                             <tr>
                                                 <td class="pdLabel" align="right">#{labels.Password}</td>
-                                                <td align="left"><h:inputSecret value="#{connetcionController.passord}"  autocomplete="off" /></td>
+                                                <td align="left"><h:inputSecret value="#{sessionController.passord}"  autocomplete="off" /></td>
                                             </tr>
                                             <tr>
                                                 <td align="left"></td>
                                                 <td align="left">
-                                                    <h:commandButton id="btnLogin" class="pdButton" type="submit" value="#{labels.Login}" action="#{connetcionController.loginAction()}"/>
+                                                    <h:commandButton id="btnLogin" class="pdButton" type="submit" value="#{labels.Login}" action="#{sessionController.loginAction()}"/>
                                                 </td>
                                             </tr>                  
                                             <tr>
@@ -171,15 +173,15 @@
                         <p:panel  >
                             <ui:insert   name="right">
 
-                                <p:panel rendered="#{connetcionController.logged}" header="Loggin" style="margin: 2px; padding: 2px; border: 0px;">
+                                <p:panel rendered="#{sessionController.logged}" header="Loggin" style="margin: 2px; padding: 2px; border: 0px;">
                                     <h:form>
-                                        <p:panel id="divActivated" rendered="#{connetcionController.activated}" style="margin:2px; padding: 0px; border: 0px;">
-                                            You are logged as #{connetcionController.displayName}
-                                            <p:commandButton value="Logout" action="#{connetcionController.logout}" ajax="false"></p:commandButton>
+                                        <p:panel id="divActivated" rendered="#{sessionController.activated}" style="margin:2px; padding: 0px; border: 0px;">
+                                            You are logged as #{sessionController.displayName}
+                                            <p:commandButton value="Logout" action="#{sessionController.logout}" ajax="false"></p:commandButton>
                                         </p:panel>
-                                        <p:panel id="divNotActivated" rendered="#{!connetcionController.activated}" style="margin: 2px; padding: 0px; border: 0px;">
+                                        <p:panel id="divNotActivated" rendered="#{!sessionController.activated}" style="margin: 2px; padding: 0px; border: 0px;">
                                             Welcome to Health Office. Your account is yet to activate. Please contact administrator.
-                                            <p:commandButton value="Logout" action="#{connetcionController.logout}" ajax="false"></p:commandButton>
+                                            <p:commandButton value="Logout" action="#{sessionController.logout}" ajax="false"></p:commandButton>
                                         </p:panel>
                                     </h:form>
                                 </p:panel>

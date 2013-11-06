@@ -22,10 +22,11 @@ import javax.persistence.Temporal;
 
 /**
  *
- * @author Dr. M. H. B. Ariyaratne, MBBS, PGIM Trainee for MSc(Biomedical Informatics)
+ * @author Dr. M. H. B. Ariyaratne, MBBS, PGIM Trainee for MSc(Biomedical
+ * Informatics)
  */
 @Entity
-public class Institution implements Serializable {
+public class Institution implements Serializable, Comparable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,24 +51,21 @@ public class Institution implements Serializable {
 
     @ManyToOne
     InstitutionType institutionType;
-    
+
     @ManyToOne
     Province province;
-    
+
     Boolean official;
-    
+
     Boolean payCentre;
-    
+
     boolean insmapAddress;
     boolean insmapSite;
     boolean insmapSection;
-    
-    
+
     @ManyToOne
     Institution mappedToInstitution;
 
-    
-    
     public boolean isInsmapAddress() {
         return insmapAddress;
     }
@@ -92,9 +90,6 @@ public class Institution implements Serializable {
         this.insmapSection = insmapSection;
     }
 
-    
-    
-    
     public Boolean getPayCentre() {
         return payCentre;
     }
@@ -118,11 +113,9 @@ public class Institution implements Serializable {
     public void setOfficial(Boolean official) {
         this.official = official;
     }
-    
-    
-       
+
     boolean outSide;
-    
+
     String address;
     String code;
     String telephone;
@@ -131,7 +124,7 @@ public class Institution implements Serializable {
     String email;
     String website;
     String comments;
-    
+
     Country country;
 
     public Country getCountry() {
@@ -142,8 +135,6 @@ public class Institution implements Serializable {
         this.country = country;
     }
 
-    
-    
     public String getAddress() {
         return address;
     }
@@ -184,7 +175,7 @@ public class Institution implements Serializable {
         this.fax = fax;
     }
 
-       public String getMobile() {
+    public String getMobile() {
         return mobile;
     }
 
@@ -223,16 +214,13 @@ public class Institution implements Serializable {
     public void setWebsite(String website) {
         this.website = website;
     }
-    
-   
-    
-    
+
     private static final long serialVersionUID = 1L;
     @OneToMany(mappedBy = "institution")
     private List<InstitutionContact> institutionContacts;
 
     public Institution() {
-       
+
     }
 
     public List<InstitutionContact> getInstitutionContacts() {
@@ -243,8 +231,6 @@ public class Institution implements Serializable {
         this.institutionContacts = institutionContacts;
     }
 
-    
-    
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -333,8 +319,6 @@ public class Institution implements Serializable {
         this.institutionType = institutionType;
     }
 
-   
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -354,8 +338,17 @@ public class Institution implements Serializable {
         return true;
     }
 
-   @Override
+    @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (o instanceof Institution) {
+            return this.getName().compareTo(((Institution) o).getName());
+        } else {
+            return 1;
+        }
     }
 }

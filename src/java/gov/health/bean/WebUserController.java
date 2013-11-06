@@ -16,8 +16,8 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -30,9 +30,9 @@ import javax.faces.model.ListDataModel;
  * @author Dr. M. H. B. Ariyaratne, MBBS, PGIM Trainee for MSc(Biomedical
  * Informatics)
  */
-@ManagedBean
+@Named
 @SessionScoped
-public final class WebUserController implements Serializable {
+public  class WebUserController implements Serializable {
 
     @EJB
     private SessionController sessionController;
@@ -261,7 +261,7 @@ public final class WebUserController implements Serializable {
             }
             WebUserController controller = (WebUserController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "webUserController");
-            return controller.ejbFacade.find(getKey(value));
+            return controller.getFacade().find(getKey(value));
         }
 
         java.lang.Long getKey(String value) {

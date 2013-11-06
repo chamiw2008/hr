@@ -24,7 +24,7 @@ import gov.health.facade.PersonInstitutionFacade;
 import gov.health.entity.TransferHistory;
 import gov.health.facade.TransferHistoryFacade;
 import java.io.ByteArrayInputStream;
-import javax.faces.bean.ManagedBean;
+
 import org.primefaces.model.UploadedFile;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -36,16 +36,22 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+
 import javax.faces.context.FacesContext;
+
+import javax.inject.Named;
+import javax.inject.Named;
+//import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+
 import org.apache.commons.io.IOUtils;
 
 /**
  *
  * @author buddhika
  */
-@ManagedBean
+@Named
 @SessionScoped
 public class DbfController implements Serializable {
 
@@ -79,7 +85,7 @@ public class DbfController implements Serializable {
     List<PersonInstitution> existingPersonInstitutions;
     List<PersonInstitution> previousPersonInstitutions;
     List<PersonInstitution> newPersonInstitutions;
-    @ManagedProperty(value = "#{sessionController}")
+    @Inject
     SessionController sessionController;
     Integer payYear = 0;
     Integer payMonth = 0;
@@ -843,7 +849,6 @@ public class DbfController implements Serializable {
 
             newPersonInstitutions = new ArrayList<PersonInstitution>();
 
-
             while ((rowObjects = reader.nextRecord()) != null) {
 
                 Person p = null;
@@ -864,7 +869,6 @@ public class DbfController implements Serializable {
                 if (institution.isInsmapSection() == true) {
                     insName = insName + rowObjects[13].toString();
                 }
-
 
                 String empNo = "";
 
@@ -919,7 +923,6 @@ public class DbfController implements Serializable {
 
                     }
 
-
                     pi.setPerson(p);
                     pi.setInstitution(attachedIns);
                     pi.setPayCentre(getInstitution());
@@ -940,7 +943,6 @@ public class DbfController implements Serializable {
                     pi.setPayYear(payYear);
                     pi.setPaySet(insSet);
 
-
                     if (rowObjects[4].toString().equals("") || rowObjects[50].toString().equals("")) {
                         pi.setPermanent(Boolean.FALSE);
                     } else {
@@ -953,7 +955,6 @@ public class DbfController implements Serializable {
                         }
                     } catch (Exception e) {
                     }
-
 
                     try {
                         pi.setActiveState((Boolean) rowObjects[40]);
@@ -980,8 +981,6 @@ public class DbfController implements Serializable {
                 JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " is listed successfully. If you are satisfied, please click the Save button to permanantly save the new set of data Replacing the old ones under " + institution.getName() + ".");
                 toGetRecordsagain = Boolean.TRUE;
             }
-
-
 
         } catch (Exception e) {
             System.out.println("Error " + e.getMessage());

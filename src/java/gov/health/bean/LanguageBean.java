@@ -8,8 +8,8 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
+import javax.enterprise.context.SessionScoped;
  
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
@@ -17,7 +17,7 @@ import javax.faces.event.ValueChangeEvent;
  *
  * @author Buddhika
  */
-@ManagedBean
+@Named
 @SessionScoped
 public class LanguageBean implements Serializable {
 

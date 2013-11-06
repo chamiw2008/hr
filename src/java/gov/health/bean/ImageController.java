@@ -18,8 +18,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import org.apache.commons.io.IOUtils;
 import org.primefaces.model.DefaultStreamedContent;
@@ -30,7 +30,7 @@ import org.primefaces.model.UploadedFile;
  *
  * @author buddhika
  */
-@ManagedBean
+@Named
 @SessionScoped
 public class ImageController implements Serializable {
 

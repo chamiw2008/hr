@@ -28,30 +28,34 @@ import gov.health.facade.InstitutionSetFacade;
 import gov.health.facade.InstitutionTypeFacade;
 import gov.health.facade.PersonInstitutionFacade;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
+import javax.inject.Inject;
 
 /**
  *
  * @author Dr. M. H. B. Ariyaratne, MBBS, PGIM Trainee for MSc(Biomedical
  * Informatics)
  */
-@ManagedBean
+@Named
 @SessionScoped
-public final class InstitutionController implements Serializable {
+public class InstitutionController implements Serializable {
 
     @EJB
     private InstitutionFacade ejbFacade;
@@ -61,26 +65,75 @@ public final class InstitutionController implements Serializable {
     PersonInstitutionFacade piFacade;
     @EJB
     InstitutionSetFacade inSetFacade;
-    @ManagedProperty(value = "#{sessionController}")
+    @Inject
     SessionController sessionController;
     List<Institution> offItems;
     List<Institution> payCentres;
     private List<Institution> officialInstitutions;
     private Institution current;
     private List<Institution> items = null;
-    DataModel<InstitutionType> institutionTypes;
+    List<InstitutionType> institutionTypes;
     private int selectedItemIndex;
     boolean selectControlDisable = false;
     boolean modifyControlDisable = true;
     String selectText = "";
     Integer offSel = 0;
 
+    List<Institution> selectedIns;
+    List<Institution> selectedPcs;
+
+    public List<Institution> getSelectedIns() {
+        selectedIns = new ArrayList<Institution>(getOwnAndAllChildInstitutions(null,current));
+        return selectedIns;
+    }
+
+    public void setSelectedIns(List<Institution> selectedIns) {
+        this.selectedIns = selectedIns;
+    }
+
+    public List<Institution> getSelectedPcs() {
+        return selectedPcs;
+    }
+
+    public void setSelectedPcs(List<Institution> selectedPcs) {
+        this.selectedPcs = selectedPcs;
+    }
+    
+    
+    
     TreeNode root;
 
     TreeNode selectedNode;
 
     public TreeNode getSelectedNode() {
         return selectedNode;
+    }
+
+    public List<Institution> getSlectedAllInstitutions(Institution i) {
+        return new ArrayList<Institution>(getOwnAndAllChildInstitutions(null, i));
+    }
+
+    public List<Institution> getMyAllInstitutions() {
+        return new ArrayList<Institution>(getOwnAndAllChildInstitutions(null, getSessionController().getLoggedUser().getRestrictedInstitution()));
+    }
+
+    public Set<Institution> getOwnAndAllChildInstitutions(Set<Institution> collection, Institution i) {
+        if (collection == null) {
+            collection = new TreeSet<Institution>();
+            if (i != null) {
+                collection.add(i);
+            }
+        }
+        List<Institution> ins = childInstitutions(i);
+        if (ins.isEmpty()) {
+            return collection;
+        } else {
+            for (Institution ci : ins) {
+                collection.add(ci);
+                getOwnAndAllChildInstitutions(collection, ci);
+            }
+        }
+        return collection;
     }
 
     public List<Institution> childInstitutions(Institution parent) {
@@ -157,9 +210,25 @@ public final class InstitutionController implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
 
+    private Institution findInstitution(String insName, boolean createNew) {
+        insName = insName.trim();
+        if (insName.equals("")) {
+            return null;
+        }
+        Institution ins = getFacade().findFirstBySQL("select d from Institution d where d.retired = false and lower(d.name) = '" + insName.toLowerCase() + "'");
+        if (ins == null && createNew == true) {
+            ins = new Institution();
+            ins.setName(insName);
+            ins.setCreatedAt(Calendar.getInstance().getTime());
+            ins.setCreater(sessionController.loggedUser);
+            ins.setOfficial(Boolean.FALSE);
+            getFacade().create(ins);
+        }
+        return ins;
+    }
+
     public void onNodeSelect(NodeSelectEvent event) {
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected", event.getTreeNode().toString());
-        FacesContext.getCurrentInstance().addMessage(null, message);
+        current = findInstitution(event.getTreeNode().toString(), false);
     }
 
     public void onNodeUnselect(NodeUnselectEvent event) {
@@ -176,7 +245,7 @@ public final class InstitutionController implements Serializable {
                 tn.setExpanded(true);
                 addChildInstituionNodes(getSessionController().getLoggedUser().getRestrictedInstitution(), tn);
             } else {
-                
+
                 System.out.println("Logged user and ins " + getSessionController().getLoggedUser().getRestrictedInstitution());
                 addChildInstituionNodes(null, root);
             }
@@ -249,13 +318,13 @@ public final class InstitutionController implements Serializable {
         this.institutionTypeFacade = institutionTypeFacade;
     }
 
-    public DataModel<InstitutionType> getInstitutionTypes() {
+    public List<InstitutionType> getInstitutionTypes() {
         String temSQL;
         temSQL = "SELECT i FROM InstitutionType i WHERE i.retired = false ORDER BY i.orderNo";
-        return new ListDataModel<InstitutionType>(getInstitutionTypeFacade().findBySQL(temSQL));
+        return getInstitutionTypeFacade().findBySQL(temSQL);
     }
 
-    public void setInstitutionTypes(DataModel<InstitutionType> institutionTypes) {
+    public void setInstitutionTypes(List<InstitutionType> institutionTypes) {
         this.institutionTypes = institutionTypes;
     }
 
@@ -531,7 +600,7 @@ public final class InstitutionController implements Serializable {
             }
             InstitutionController controller = (InstitutionController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "institutionController");
-            return controller.ejbFacade.find(getKey(value));
+            return controller.getEjbFacade().find(getKey(value));
         }
 
         java.lang.Long getKey(String value) {

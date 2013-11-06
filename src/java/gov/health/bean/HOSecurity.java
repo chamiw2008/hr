@@ -8,8 +8,8 @@
 package gov.health.bean;
 
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
+import javax.enterprise.context.SessionScoped;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.jasypt.util.text.BasicTextEncryptor;
 
@@ -18,7 +18,7 @@ import org.jasypt.util.text.BasicTextEncryptor;
  * @author Dr. M. H. B. Ariyaratne, MBBS, PGIM Trainee for MSc(Biomedical
  * Informatics)
  */
-@ManagedBean
+@Named
 @SessionScoped
 public class HOSecurity  implements Serializable {
 

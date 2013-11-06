@@ -16,26 +16,27 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
 
 /**
  *
  * @author Dr. M. H. B. Ariyaratne, MBBS, PGIM Trainee for MSc(Biomedical
  * Informatics)
  */
-@ManagedBean
+@Named
 @SessionScoped
-public final class InstitutionSetController implements Serializable {
+public  class InstitutionSetController implements Serializable {
 
     @EJB
     private InstitutionSetFacade ejbFacade;
-    @ManagedProperty(value = "#{sessionController}")
+    @Inject
     SessionController sessionController;
     private InstitutionSet current;
     private List<InstitutionSet> items = null;
@@ -191,7 +192,7 @@ public final class InstitutionSetController implements Serializable {
             }
             InstitutionSetController controller = (InstitutionSetController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "institutionSetController");
-            return controller.ejbFacade.find(getKey(value));
+            return controller.getEjbFacade().find(getKey(value));
         }
 
         java.lang.Long getKey(String value) {

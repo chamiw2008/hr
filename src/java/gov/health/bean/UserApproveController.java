@@ -14,16 +14,17 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 import javax.faces.bean.RequestScoped;
+import javax.inject.Inject;
 
 /**
  *
  * @author Buddhika
  */
-@ManagedBean
-@RequestScoped
+@Named
+@SessionScoped
 public class UserApproveController implements Serializable {
 
     List<WebUser> toApproveUsers;
@@ -38,9 +39,9 @@ public class UserApproveController implements Serializable {
     InstitutionFacade institutionFacade;
     //
     String activateComments;
-    @ManagedProperty(value = "#{sessionController}")
+    @Inject
     private SessionController sessionController;
-    @ManagedProperty(value = "#{imageController}")
+    @Inject
     private ImageController imageController;
     List<Institution> institutions;
     WebUserRole role;

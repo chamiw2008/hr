@@ -5,14 +5,14 @@
 package gov.health.bean;
 
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
+import javax.enterprise.context.SessionScoped;
 
 /**
  *
  * @author Buddhika
  */
-@ManagedBean
+@Named
 @SessionScoped
 public class TransferBean  implements Serializable {
 

@@ -20,24 +20,25 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
+import javax.inject.Inject;
 
 /**
  *
  * @author Dr. M. H. B. Ariyaratne, MBBS, PGIM Trainee for MSc(Biomedical
  * Informatics)
  */
-@ManagedBean
+@Named
 @SessionScoped
-public final class PersonController implements Serializable {
+public  class PersonController implements Serializable {
 
     @EJB
     private PersonFacade ejbFacade;
@@ -47,7 +48,7 @@ public final class PersonController implements Serializable {
     PersonContactFacade perConFacade;
     @EJB
     ContactTypeFacade ctFacade;
-    @ManagedProperty(value = "#{sessionController}")
+    @Inject
     SessionController sessionController;
     List<Person> lstItems;
     private Person current;
@@ -412,7 +413,7 @@ public final class PersonController implements Serializable {
             }
             PersonController controller = (PersonController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "personController");
-            return controller.ejbFacade.find(getKey(value));
+            return controller.getEjbFacade().find(getKey(value));
         }
 
         java.lang.Long getKey(String value) {

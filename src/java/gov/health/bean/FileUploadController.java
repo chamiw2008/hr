@@ -7,7 +7,8 @@ package gov.health.bean;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 import javax.faces.bean.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -23,8 +24,8 @@ import org.primefaces.model.UploadedFile;
  *
  * @author Buddhika
  */
-@ManagedBean
-@RequestScoped
+@Named
+@SessionScoped
 public class FileUploadController  implements Serializable {
 
     /**

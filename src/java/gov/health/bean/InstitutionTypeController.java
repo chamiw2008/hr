@@ -14,28 +14,29 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
+import javax.inject.Inject;
 
 /**
  *
  * @author Dr. M. H. B. Ariyaratne, MBBS, PGIM Trainee for MSc(Biomedical
  * Informatics)
  */
-@ManagedBean
+@Named
 @SessionScoped
-public final class InstitutionTypeController  implements Serializable {
+public class InstitutionTypeController implements Serializable {
 
     @EJB
-    private InstitutionTypeFacade ejbFacade;
-        @ManagedProperty(value = "#{sessionController}")
+    private InstitutionTypeFacade facade;
+    @Inject
     SessionController sessionController;
     List<InstitutionType> lstItems;
     private InstitutionType current;
@@ -57,8 +58,6 @@ public final class InstitutionTypeController  implements Serializable {
         this.sessionController = sessionController;
     }
 
-    
-    
     public List<InstitutionType> getLstItems() {
         return getFacade().findBySQL("Select d From InstitutionType d");
     }
@@ -89,7 +88,7 @@ public final class InstitutionTypeController  implements Serializable {
     }
 
     private InstitutionTypeFacade getFacade() {
-        return ejbFacade;
+        return facade;
     }
 
     public DataModel<InstitutionType> getItems() {
@@ -112,8 +111,10 @@ public final class InstitutionTypeController  implements Serializable {
         return valueInt;
     }
 
-    public void moveUp(){
-        if (current.getOrderNo()<=0) return;
+    public void moveUp() {
+        if (current.getOrderNo() <= 0) {
+            return;
+        }
         int temNo = current.getOrderNo();
         String temSQL;
         temSQL = "SELECT i FROM InstitutionType i WHERE i.retired = false AND i.orderNo < " + temNo + " ORDER BY i.orderNo DESC";
@@ -121,12 +122,10 @@ public final class InstitutionTypeController  implements Serializable {
         InstitutionType temI = lst.get(0);
         temI.setOrderNo(temNo);
         getFacade().edit(temI);
-        current.setOrderNo(current.getOrderNo() -1);
-        getFacade().edit(current);        
+        current.setOrderNo(current.getOrderNo() - 1);
+        getFacade().edit(current);
     }
-    
-    
-    
+
     public DataModel searchItems() {
         recreateModel();
         if (items == null) {
@@ -196,7 +195,7 @@ public final class InstitutionTypeController  implements Serializable {
         } else {
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
-            current.setOrderNo(temTotalCount+1);
+            current.setOrderNo(temTotalCount + 1);
             getFacade().create(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
         }
@@ -228,7 +227,7 @@ public final class InstitutionTypeController  implements Serializable {
     }
 
     public void delete() {
-        
+
         if (current != null) {
             current.setRetired(true);
             current.setRetiredAt(Calendar.getInstance().getTime());
@@ -284,13 +283,19 @@ public final class InstitutionTypeController  implements Serializable {
     @FacesConverter(forClass = InstitutionType.class)
     public static class InstitutionTypeControllerConverter implements Converter {
 
+        @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
             InstitutionTypeController controller = (InstitutionTypeController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "institutionTypeController");
-            return controller.ejbFacade.find(getKey(value));
+            if (controller != null && controller.getFacade() != null) {
+                return controller.getFacade().find(getKey(value));
+            } else {
+                return null;
+            }
+
         }
 
         java.lang.Long getKey(String value) {
@@ -300,11 +305,12 @@ public final class InstitutionTypeController  implements Serializable {
         }
 
         String getStringKey(java.lang.Long value) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append(value);
             return sb.toString();
         }
 
+        @Override
         public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
             if (object == null) {
                 return null;
@@ -318,4 +324,5 @@ public final class InstitutionTypeController  implements Serializable {
             }
         }
     }
+
 }

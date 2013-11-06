@@ -66,15 +66,16 @@
                                     <h:outputText id="lblCode" value="Code" ></h:outputText>
                                     <h:inputText id="txtCode"  class="pdInputText" value="#{institutionController.current.code }" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
                                     <h:outputText id="lblCat" value="#{labels.InstitutionType}" ></h:outputText>
-                                    <h:selectOneListbox id="cmbCat1" value="#{institutionController.current.institutionType}"  disabled="#{institutionController.modifyControlDisable}" size="1">
-                                        <f:selectItems value="#{institutionController.institutionTypes}" />
-                                    </h:selectOneListbox>
+                                    <h:selectOneMenu id="cmbCat1" value="#{institutionController.current.institutionType}"  disabled="#{institutionController.modifyControlDisable}" >
+                                        <f:selectItem itemLabel="Select Type"/>
+                                        <f:selectItems value="#{institutionTypeController.items}" var="it" itemLabel="#{it.name}" itemValue="#{it}" />
+                                    </h:selectOneMenu>
                                     <h:outputText id="lblPi"  class="pdInputText" value="Super Institute"  ></h:outputText>
                                     <p:autoComplete id="acPi" value="#{institutionController.current.superInstitution}"  disabled="#{institutionController.modifyControlDisable}" completeMethod="#{institutionController.completeOffcialInstitutions}" var="pi" itemLabel="#{pi.name}" itemValue="#{pi}" >
                                     </p:autoComplete>
                                     
                                     <h:outputText id="lblPayCentre" value="Pay Centre" ></h:outputText>
-                                    <h:selectBooleanCheckbox id="chkPayCentre" value="#{institutionController.current.payCentre}" />
+                                    <h:selectBooleanCheckbox id="chkPayCentre"  disabled="#{institutionController.modifyControlDisable}"  value="#{institutionController.current.payCentre}" />
                                     <h:outputText id="lblAddress" value="Address" ></h:outputText>
                                     <h:inputText id="txtAddress"  class="pdInputText" value="#{institutionController.current.address}" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
                                     <h:outputText id="lblTelephone" value="Telephone" ></h:outputText>
