@@ -8,10 +8,8 @@
  */
 package gov.health.bean;
 
-import java.io.Serializable;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 
 import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeExpandEvent;
@@ -35,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 
@@ -44,8 +41,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.inject.Inject;
 
 /**
@@ -82,8 +77,30 @@ public class InstitutionController implements Serializable {
     List<Institution> selectedIns;
     List<Institution> selectedPcs;
 
+    String insIds;
+
+    public String getInsIds() {
+        insIds = "";
+        int c = 0;
+        List<Institution> ins = getSelectedIns();
+        for (Institution i : ins) {
+            if (c + 1 == ins.size()) {
+                insIds = insIds + i.getId() + " ";
+            } else {
+                insIds = insIds + i.getId() + ", ";
+            }
+            c = c + 1;
+        }
+        insIds = " (" + insIds + ")";
+        return insIds;
+    }
+
+    public void setInsIds(String insIds) {
+        this.insIds = insIds;
+    }
+
     public List<Institution> getSelectedIns() {
-        selectedIns = new ArrayList<Institution>(getOwnAndAllChildInstitutions(null,current));
+        selectedIns = new ArrayList<Institution>(getOwnAndAllChildInstitutions(null, current));
         return selectedIns;
     }
 
@@ -98,9 +115,7 @@ public class InstitutionController implements Serializable {
     public void setSelectedPcs(List<Institution> selectedPcs) {
         this.selectedPcs = selectedPcs;
     }
-    
-    
-    
+
     TreeNode root;
 
     TreeNode selectedNode;
@@ -229,11 +244,12 @@ public class InstitutionController implements Serializable {
 
     public void onNodeSelect(NodeSelectEvent event) {
         current = findInstitution(event.getTreeNode().toString(), false);
+        JsfUtil.addSuccessMessage(current.getName());
+        System.out.println("current is " + current.getName());
     }
 
     public void onNodeUnselect(NodeUnselectEvent event) {
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Unselected", event.getTreeNode().toString());
-        FacesContext.getCurrentInstance().addMessage(null, message);
+        current = null;
     }
 
     public void createInsTree() {

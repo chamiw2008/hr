@@ -4,6 +4,9 @@
  */
 package gov.health.bean;
 
+import javax.faces.application.FacesMessage;
+
+import org.primefaces.event.FileUploadEvent;
 import gov.health.entity.Institution;
 import gov.health.entity.DbfFile;
 import gov.health.entity.PersonInstitution;
@@ -30,7 +33,6 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -40,8 +42,6 @@ import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 
 import javax.inject.Named;
-import javax.inject.Named;
-//import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
@@ -87,8 +87,8 @@ public class DbfController implements Serializable {
     List<PersonInstitution> newPersonInstitutions;
     @Inject
     SessionController sessionController;
-    Integer payYear = 0;
-    Integer payMonth = 0;
+    int payYear = 0;
+    int payMonth = 0;
     List<Integer> payYears;
     List<Integer> payMonths;
     List<InstitutionSet> insSets;
@@ -111,12 +111,23 @@ public class DbfController implements Serializable {
     int[] completedSet = new int[12];
     int setCount;
 
+    @Inject
+    InstitutionController institutionController;
+
+    public InstitutionController getInstitutionController() {
+        return institutionController;
+    }
+
+    public void setInstitutionController(InstitutionController institutionController) {
+        this.institutionController = institutionController;
+    }
+
     public int getSetCount() {
         if (getInstitution() == null) {
             return 0;
         }
         String sql;
-        sql = "select iset from InstitutionSet iset where iset.retired = false and iset.institution.id = " + getInstitution().getId() + " ";
+        sql = "select iset from InstitutionSet iset where iset.retired = false and iset.institution.id in " + getInstitutionController().getInsIds() + " ";
         try {
             setCount = getPiFacade().findBySQL(sql).size();
             return setCount;
@@ -213,7 +224,7 @@ public class DbfController implements Serializable {
             temPayMonth = i + 1;
             String sql;
 
-            sql = "select distinct pi.paySet from PersonInstitution pi where pi.retired = false and pi.payYear = " + temPayYear + " and pi.payMonth = " + temPayMonth + " and pi.payCentre.id = " + getInstitution().getId() + " ";
+            sql = "select distinct pi.paySet from PersonInstitution pi where pi.retired = false and pi.payYear = " + temPayYear + " and pi.payMonth = " + temPayMonth + " and pi.payCentre.id in " + getInstitutionController().getInsIds() + " ";
             System.out.println(sql);
             try {
                 completedSet[i] = getPiFacade().findBySQL(sql).size();
@@ -355,10 +366,10 @@ public class DbfController implements Serializable {
     }
 
     public List<DesignationSummeryRecord> getDesignationSummery() {
-        if (getInstitution() == null || getPayMonth() == null || getPayYear() == null) {
+        if (getInstitution() == null) {
             return new ArrayList<DesignationSummeryRecord>();
         }
-        String sql = "select pi.designation.name, count(pi) from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.payCentre.id = " + getInstitution().getId() + " group by pi.designation.name";
+        String sql = "select pi.designation.name, count(pi) from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.institution.id in " + getInstitutionController().getInsIds() + " group by pi.designation.name";
         List lst = getPiFacade().findGroupingBySql(sql);
         List<DesignationSummeryRecord> sums = new ArrayList<DesignationSummeryRecord>();
         Iterator<Object[]> itr = lst.iterator();
@@ -412,7 +423,6 @@ public class DbfController implements Serializable {
         if (getInstitution() == null || getInstitution().getId() == null || getInstitution().getId() == 0) {
             return null;
         }
-
         String sql;
         sql = "select s from InstitutionSet s where s.retired = false and s.institution.id = " + getInstitution().getId();
         insSets = getInsetFacade().findBySQL(sql);
@@ -460,28 +470,25 @@ public class DbfController implements Serializable {
         this.payYears = payYears;
     }
 
-    public Integer getPayMonth() {
-        if (payMonth == null || payMonth == 0) {
-            return Calendar.getInstance().get(Calendar.MONTH);
-        }
+    public int getPayMonth() {
         return payMonth;
     }
 
-    public void setPayMonth(Integer payMonth) {
+    public void setPayMonth(int payMonth) {
         if (this.payMonth != payMonth) {
             setToGetRecordsagain(Boolean.TRUE);
         }
         this.payMonth = payMonth;
     }
 
-    public Integer getPayYear() {
-        if (payYear == null || payYear == 0) {
+    public int getPayYear() {
+        if (payYear == 0) {
             return Calendar.getInstance().get(Calendar.YEAR);
         }
         return payYear;
     }
 
-    public void setPayYear(Integer payYear) {
+    public void setPayYear(int payYear) {
         if (this.payYear != payYear) {
             setToGetRecordsagain(Boolean.TRUE);
         }
@@ -512,7 +519,7 @@ public class DbfController implements Serializable {
 //        this.dbfFiles = dbfFiles;
 //    }
     public List<PersonInstitution> getExistingPersonInstitutions() {
-        if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear() == null) {
+        if (getInstitution() == null || getInsSet() == null) {
             return new ArrayList<PersonInstitution>();
         }
         if (getToGetRecordsagain()) {
@@ -525,18 +532,18 @@ public class DbfController implements Serializable {
     }
 
     public List<PersonInstitution> getPersonInstitutionsWithoutNic() {
-        if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear() == null) {
+        if (getInstitution() == null || getInsSet() == null) {
             return new ArrayList<PersonInstitution>();
         }
-        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " and pi.person is null order by pi.name");
+        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id in " + getInstitutionController().getInsIds() + " and pi.person is null order by pi.name");
         return existingPersonInstitutions;
     }
 
     public List<PersonInstitution> getPersonInstitutionsWithoutDesignations() {
-        if (getInstitution() == null || getInsSet() == null || getPayMonth() == null || getPayYear() == null) {
+        if (getInstitution() == null || getInsSet() == null) {
             return new ArrayList<PersonInstitution>();
         }
-        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " and pi.designation is null order by pi.name");
+        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id in " + getInstitutionController().getInsIds() + " and pi.designation is null order by pi.name");
         return existingPersonInstitutions;
     }
 
@@ -788,7 +795,208 @@ public class DbfController implements Serializable {
         thFacade.create(hx);
     }
 
+    public void handleFileUpload(FileUploadEvent event) {
+        FacesMessage msg = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+        InputStream in;
+        String temNic;
+        Boolean newEntries = false;
+        if (sessionController.getLoggedUser().getRestrictedInstitution() != null) {
+            setInstitution(sessionController.getLoggedUser().getRestrictedInstitution());
+        } else {
+            if (getInstitution() == null) {
+                JsfUtil.addErrorMessage("Please select an institution");
+                return;
+            }
+        }
+        if (getInstitution() == null) {
+            JsfUtil.addErrorMessage("Please select an institute");
+            return;
+        }
+        if (event.getFile() == null) {
+            JsfUtil.addErrorMessage("Please select the dbf file to upload");
+            return;
+        }
+//        if (payYear == null || payYear == 0) {
+//            JsfUtil.addErrorMessage("Please select a year");
+//            return ;
+//        }
+//        if (payMonth == null || payMonth == 0) {
+//            JsfUtil.addErrorMessage("Please select a Month");
+//            return ;
+//        }
+        if (insSet == null) {
+            JsfUtil.addErrorMessage("Please select a Set");
+            return;
+        }
+
+        if (getExistingPersonInstitutions().size() > 0) {
+            newEntries = false;
+        } else {
+            newEntries = true;
+        }
+
+        try {
+            in = event.getFile().getInputstream();
+            DBFReader reader = new DBFReader(in);
+            if (!isCorrectDbfFile(reader)) {
+                JsfUtil.addErrorMessage("But the file you selected is not the correct file. Please make sure you selected the correct file named PYREMPMA.DBF. If you are sure that you selected the correct file, you may be using an old version.");
+                return;
+            }
+
+            int numberOfFields = reader.getFieldCount();
+
+            System.out.println("Number of fields is " + numberOfFields);
+            for (int i = 0; i < numberOfFields; i++) {
+                DBFField field = reader.getField(i);
+                System.out.println("Data Field " + i + " is " + field.getName());
+            }
+
+            Object[] rowObjects;
+
+            newPersonInstitutions = new ArrayList<PersonInstitution>();
+
+            while ((rowObjects = reader.nextRecord()) != null) {
+
+                Person p = null;
+                PersonInstitution pi = new PersonInstitution();
+                Institution attachedIns;
+
+                String insName = "";
+                if (institution.isInsmapAddress() == true) {
+                    insName = rowObjects[21].toString() + " " + rowObjects[22].toString() + " " + rowObjects[23].toString();
+                }
+
+//                Add Site
+                if (institution.isInsmapSite() == true) {
+                    insName = insName + rowObjects[11].toString();
+                }
+
+//                Add Section
+                if (institution.isInsmapSection() == true) {
+                    insName = insName + rowObjects[13].toString();
+                }
+
+                String empNo = "";
+
+                try {
+                    empNo = rowObjects[0].toString();
+                } catch (Exception e) {
+                    empNo = "999999.0";
+                }
+
+                if (empNo != "999999.0") {
+
+                    if (insName.trim().equals("")) {
+                        attachedIns = getInstitution();
+                    } else {
+                        attachedIns = findInstitution(insName);
+                    }
+
+                    temNic = rowObjects[48].toString();
+
+                    if ("".equals(temNic.trim())) {
+                        pi.setPerson(null);
+                    } else {
+                        p = getPerFacade().findFirstBySQL("select p from Person p where p.retired = false and p.nic = '" + temNic + "'");
+                        if (p == null) {
+                            p = new Person();
+                            p.setCreatedAt(Calendar.getInstance().getTime());
+                            p.setCreater(sessionController.getLoggedUser());
+                            p.setInstitution(attachedIns);
+                            p.setTitle(rowObjects[1].toString());
+                            p.setInitials(rowObjects[3].toString());
+                            p.setSurname(rowObjects[2].toString());
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                            try {
+                                p.setDob(dateFormat.parse(rowObjects[7].toString()));
+                            } catch (Exception e) {
+//                            p.setDob(null);
+                            }
+                            try {
+                                p.setNic(rowObjects[48].toString());
+                            } catch (Exception e) {
+                            }
+                            try {
+                                p.setName(p.getTitle() + " " + p.getInitials() + " " + p.getSurname());
+                            } catch (Exception e) {
+                            }
+                            getPerFacade().create(p);
+                        } else {
+                            if (p.getInstitution() != getInstitution()) {
+                                markTransfer(p, p.getInstitution(), institution, pi);
+                            }
+                        }
+
+                    }
+
+                    pi.setPerson(p);
+                    pi.setInstitution(attachedIns);
+                    pi.setPayCentre(getInstitution());
+                    pi.setNic(rowObjects[48].toString());
+
+                    pi.setEmpNo(rowObjects[0].toString());
+                    pi.setAddress1(rowObjects[18].toString());
+                    pi.setAddress2(rowObjects[19].toString());
+                    pi.setAddress3(rowObjects[20].toString());
+                    pi.setOffAddress1(rowObjects[21].toString());
+                    pi.setOffAddress2(rowObjects[22].toString());
+                    pi.setOffAddress3(rowObjects[23].toString());
+
+                    pi.setDesignation(findDesignation(rowObjects[8].toString()));
+
+                    pi.setName(rowObjects[1].toString() + " " + rowObjects[2].toString() + " " + rowObjects[3].toString());
+                    pi.setPayMonth(payMonth);
+                    pi.setPayYear(payYear);
+                    pi.setPaySet(insSet);
+
+                    if (rowObjects[4].toString().equals("") || rowObjects[50].toString().equals("")) {
+                        pi.setPermanent(Boolean.FALSE);
+                    } else {
+                        pi.setPermanent(Boolean.TRUE);
+                    }
+                    try {
+                        if (Integer.valueOf(rowObjects[4].toString()) == 0) {
+                            pi.setNopay(Boolean.TRUE);
+                        } else {
+                        }
+                    } catch (Exception e) {
+                    }
+
+                    try {
+                        pi.setActiveState((Boolean) rowObjects[40]);
+                    } catch (Exception e) {
+                        pi.setActiveState(true);
+                    }
+                    try {
+                        pi.setNopay((Boolean) rowObjects[31]);
+                    } catch (Exception e) {
+                        pi.setNopay(false);
+                    }
+                    if (newEntries) {
+                        getPiFacade().create(pi);
+                    }
+                    newPersonInstitutions.add(pi);
+                }
+            }
+            if (newEntries) {
+                JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " recorded successfully. ");
+                newPersonInstitutions = new ArrayList<PersonInstitution>();
+                getSummeryCounts(newPersonInstitutions);
+                toGetRecordsagain = Boolean.TRUE;
+            } else {
+                JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " is listed successfully. If you are satisfied, please click the Save button to permanantly save the new set of data Replacing the old ones under " + institution.getName() + ".");
+                toGetRecordsagain = Boolean.TRUE;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error " + e.getMessage());
+        }
+        return;
+    }
+
     public String extractData() {
+        System.out.println("extracting date");
         InputStream in;
         String temNic;
         Boolean newEntries = false;
@@ -808,14 +1016,14 @@ public class DbfController implements Serializable {
             JsfUtil.addErrorMessage("Please select the dbf file to upload");
             return "";
         }
-        if (payYear == null || payYear == 0) {
-            JsfUtil.addErrorMessage("Please select a year");
-            return "";
-        }
-        if (payMonth == null || payMonth == 0) {
-            JsfUtil.addErrorMessage("Please select a Month");
-            return "";
-        }
+//        if (payYear == null || payYear == 0) {
+//            JsfUtil.addErrorMessage("Please select a year");
+//            return "";
+//        }
+//        if (payMonth == null || payMonth == 0) {
+//            JsfUtil.addErrorMessage("Please select a Month");
+//            return "";
+//        }
         if (insSet == null) {
             JsfUtil.addErrorMessage("Please select a Set");
             return "";

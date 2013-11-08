@@ -32,10 +32,10 @@ import javax.inject.Inject;
  */
 @Named
 @SessionScoped
-public class InstitutionTypeController implements Serializable {
+public  class InstitutionTypeController  implements Serializable {
 
     @EJB
-    private InstitutionTypeFacade facade;
+    private InstitutionTypeFacade ejbFacade;
     @Inject
     SessionController sessionController;
     List<InstitutionType> lstItems;
@@ -45,17 +45,8 @@ public class InstitutionTypeController implements Serializable {
     boolean selectControlDisable = false;
     boolean modifyControlDisable = true;
     String selectText = "";
-    int temTotalCount;
 
     public InstitutionTypeController() {
-    }
-
-    public SessionController getSessionController() {
-        return sessionController;
-    }
-
-    public void setSessionController(SessionController sessionController) {
-        this.sessionController = sessionController;
     }
 
     public List<InstitutionType> getLstItems() {
@@ -75,30 +66,22 @@ public class InstitutionTypeController implements Serializable {
     }
 
     public InstitutionType getCurrent() {
-//        JsfUtil.addSuccessMessage("Got current");
-//        if (current == null) {
-//            current = new InstitutionType();
-//        }
+        if (current == null) {
+            current = new InstitutionType();
+        }
         return current;
     }
 
     public void setCurrent(InstitutionType current) {
-//        JsfUtil.addSuccessMessage("Setted current");
         this.current = current;
     }
 
     private InstitutionTypeFacade getFacade() {
-        return facade;
+        return ejbFacade;
     }
 
     public DataModel<InstitutionType> getItems() {
-        String temSQL;
-        temSQL = "SELECT i FROM InstitutionType i WHERE i.retired = false ORDER BY i.orderNo";
-//        items = new ListDataModel(getFacade().findAll("name", true));
-        items = new ListDataModel(getFacade().findBySQL(temSQL));
-        temTotalCount = items.getRowCount();
-//        JsfUtil.addSuccessMessage( "Total Records " +  items.getRowCount() );
-//        JsfUtil.addSuccessMessage(items.toString());
+        items = new ListDataModel(getFacade().findAll("name", true));
         return items;
     }
 
@@ -109,21 +92,6 @@ public class InstitutionTypeController implements Serializable {
                     "The long value " + value + " is not within range of the int type");
         }
         return valueInt;
-    }
-
-    public void moveUp() {
-        if (current.getOrderNo() <= 0) {
-            return;
-        }
-        int temNo = current.getOrderNo();
-        String temSQL;
-        temSQL = "SELECT i FROM InstitutionType i WHERE i.retired = false AND i.orderNo < " + temNo + " ORDER BY i.orderNo DESC";
-        List<InstitutionType> lst = getFacade().findBySQL(temSQL);
-        InstitutionType temI = lst.get(0);
-        temI.setOrderNo(temNo);
-        getFacade().edit(temI);
-        current.setOrderNo(current.getOrderNo() - 1);
-        getFacade().edit(current);
     }
 
     public DataModel searchItems() {
@@ -189,13 +157,13 @@ public class InstitutionTypeController implements Serializable {
     }
 
     public void saveSelected() {
+                  
         if (selectedItemIndex > 0) {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));
         } else {
             current.setCreatedAt(Calendar.getInstance().getTime());
             current.setCreater(sessionController.loggedUser);
-            current.setOrderNo(temTotalCount + 1);
             getFacade().create(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
         }
@@ -227,7 +195,7 @@ public class InstitutionTypeController implements Serializable {
     }
 
     public void delete() {
-
+       
         if (current != null) {
             current.setRetired(true);
             current.setRetiredAt(Calendar.getInstance().getTime());
@@ -280,22 +248,34 @@ public class InstitutionTypeController implements Serializable {
         modifyControlDisable = true;
     }
 
+    public InstitutionTypeFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public void setEjbFacade(InstitutionTypeFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public SessionController getSessionController() {
+        return sessionController;
+    }
+
+    public void setSessionController(SessionController sessionController) {
+        this.sessionController = sessionController;
+    }
+    
+    
+
     @FacesConverter(forClass = InstitutionType.class)
     public static class InstitutionTypeControllerConverter implements Converter {
 
-        @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
             InstitutionTypeController controller = (InstitutionTypeController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "institutionTypeController");
-            if (controller != null && controller.getFacade() != null) {
-                return controller.getFacade().find(getKey(value));
-            } else {
-                return null;
-            }
-
+            return controller.getEjbFacade().find(getKey(value));
         }
 
         java.lang.Long getKey(String value) {
@@ -305,12 +285,11 @@ public class InstitutionTypeController implements Serializable {
         }
 
         String getStringKey(java.lang.Long value) {
-            StringBuilder sb = new StringBuilder();
+            StringBuffer sb = new StringBuffer();
             sb.append(value);
             return sb.toString();
         }
 
-        @Override
         public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
             if (object == null) {
                 return null;
@@ -324,5 +303,4 @@ public class InstitutionTypeController implements Serializable {
             }
         }
     }
-
 }

@@ -345,7 +345,13 @@ public class Institution implements Serializable, Comparable {
 
     @Override
     public int compareTo(Object o) {
+        if (o == null) {
+            return 1;
+        }
         if (o instanceof Institution) {
+            if (this.getName() == null) {
+                return 1;
+            }
             return this.getName().compareTo(((Institution) o).getName());
         } else {
             return 1;

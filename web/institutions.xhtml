@@ -66,10 +66,12 @@
                                     <h:outputText id="lblCode" value="Code" ></h:outputText>
                                     <h:inputText id="txtCode"  class="pdInputText" value="#{institutionController.current.code }" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
                                     <h:outputText id="lblCat" value="#{labels.InstitutionType}" ></h:outputText>
-                                    <h:selectOneMenu id="cmbCat1" value="#{institutionController.current.institutionType}"  disabled="#{institutionController.modifyControlDisable}" >
+                                   
+                                    <p:selectOneMenu required="true" id="cmbCat" value="#{institutionController.current.institutionType}"  disabled="#{institutionController.modifyControlDisable}" >
                                         <f:selectItem itemLabel="Select Type"/>
-                                        <f:selectItems value="#{institutionTypeController.items}" var="it" itemLabel="#{it.name}" itemValue="#{it}" />
-                                    </h:selectOneMenu>
+                                        <f:selectItems  value="#{institutionTypeController.lstItems}" var="itype" itemLabel="#{itype.name}" itemValue="#{itype}" />
+                                    </p:selectOneMenu>
+                                    
                                     <h:outputText id="lblPi"  class="pdInputText" value="Super Institute"  ></h:outputText>
                                     <p:autoComplete id="acPi" value="#{institutionController.current.superInstitution}"  disabled="#{institutionController.modifyControlDisable}" completeMethod="#{institutionController.completeOffcialInstitutions}" var="pi" itemLabel="#{pi.name}" itemValue="#{pi}" >
                                     </p:autoComplete>
@@ -91,8 +93,8 @@
                                 </h:panelGrid>
                                 <h:panelGrid id="gpDetailButtons" columns="2">
                                     <h:commandButton id="btnSave" value="#{labels.save}" disabled="#{institutionController.modifyControlDisable}" action="#{institutionController.saveSelected()}" styleClass="buttons">
-                                        <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail selectFocus"  execute="gpDetail" >
-                                        </f:ajax>
+                                        <!--<f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail selectFocus"  execute="gpDetail" >-->
+                                        <!--</f:ajax>-->
                                     </h:commandButton>
                                     <h:commandButton id ="btnCancel" value="#{labels.cancel}" disabled="#{institutionController.modifyControlDisable}" action="#{institutionController.cancelSelect()}" styleClass="buttons">
                                         <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail selectFocus" execute="gpDetail" >                                

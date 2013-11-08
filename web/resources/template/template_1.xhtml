@@ -38,6 +38,15 @@
     <!-- style="min-height:920px !important; height:auto !important;"   -->
     <h:body >
 
+        <p:ajaxStatus style="position: absolute; width:128px;height:128px;position:fixed;right:5px;top:5px">  
+            <f:facet name="start">  
+                <p:graphicImage library="image" name="ajaxloading.gif" />  
+            </f:facet>  
+
+            <f:facet name="complete">  
+                <h:outputText value="" />  
+            </f:facet>  
+        </p:ajaxStatus>  
 
         <!--        style="width: 100%; min-height:700px !important; height:auto !important; padding: 1px; margin :0px;"-->
         <p:panel style="border: 0px; margin: 0px;padding: 0px;" >
