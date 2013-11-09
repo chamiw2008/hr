@@ -28,21 +28,21 @@
                                 <h:outputText id="lblSelect" value="Contact Types" >
                                 </h:outputText>
 
-                                <h:inputText id="txtSelect" value="#{contactTypeController.selectText}" disabled="#{contactTypeController.selectControlDisable}"  style="min-width: 200px" >
+                                <p:inputText id="txtSelect" value="#{contactTypeController.selectText}" disabled="#{contactTypeController.selectControlDisable}"  style="min-width: 200px" >
                                     <f:ajax  event="keyup" render="lstSelect txtName" >
                                     </f:ajax>
-                                </h:inputText>
+                                </p:inputText>
 
                                 <h:outputLabel value="&#160;">
                                 </h:outputLabel>
 
 
 
-                                <h:selectOneListbox id="lstSelect"  disabled="#{contactTypeController.selectControlDisable}" size="10" value="#{contactTypeController.current}" style="min-width: 223px">
+                                <p:selectOneListbox id="lstSelect"  disabled="#{contactTypeController.selectControlDisable}"  value="#{contactTypeController.current}" style="min-width: 223px">
                                     <f:selectItems value="#{contactTypeController.items}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
                                     <f:ajax render="txtName" execute="lstSelect" >                                
                                     </f:ajax>
-                                </h:selectOneListbox>
+                                </p:selectOneListbox>
 
                             </h:panelGrid>
 
@@ -69,7 +69,7 @@
                         <h:panelGrid id="gpDetail" columns="1">
                             <h:panelGrid id="gpDetailText" columns="2">
                                 <h:outputText id="lblName" value="#{labels.ContactType}" ></h:outputText>
-                                <h:inputText id="txtName" value="#{contactTypeController.current.name}" disabled="#{contactTypeController.modifyControlDisable}" ></h:inputText>
+                                <p:inputText id="txtName" value="#{contactTypeController.current.name}" disabled="#{contactTypeController.modifyControlDisable}" ></p:inputText>
                             </h:panelGrid>
                             <h:panelGrid id="gpDetailButtons" columns="2">
                                 <h:commandButton id="btnSave" value="#{labels.save}" disabled="#{contactTypeController.modifyControlDisable}" action="#{contactTypeController.saveSelected()}" styleClass="buttons">

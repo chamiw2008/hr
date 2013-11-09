@@ -31,17 +31,17 @@
                                     <h:outputText id="lblSelect" value="#{labels.Institutions}" >
                                     </h:outputText>
 
-                                    <h:inputText id="txtSelect" value="#{institutionController.selectText}" disabled="#{institutionController.selectControlDisable}"  style="min-width: 200px" >
+                                    <p:inputText id="txtSelect" value="#{institutionController.selectText}" disabled="#{institutionController.selectControlDisable}"  style="min-width: 200px" >
                                         <f:ajax execute="txtSelect"  event="keyup" render="lstSelect gpDetail" >
                                         </f:ajax>
-                                    </h:inputText>
+                                    </p:inputText>
                                     <h:outputLabel value="&#160;">
                                     </h:outputLabel>
-                                    <h:selectOneListbox  id="lstSelect"  disabled="#{institutionController.selectControlDisable}" size="10" value="#{institutionController.current}" style="min-width: 223px">
+                                    <p:selectOneListbox  id="lstSelect"  disabled="#{institutionController.selectControlDisable}"  value="#{institutionController.current}" style="min-width: 223px">
                                         <f:selectItems  value="#{institutionController.officialInstitutions}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
                                         <f:ajax render="gpDetail" execute="lstSelect" >                                
                                         </f:ajax>
-                                    </h:selectOneListbox>
+                                    </p:selectOneListbox>
                                 </h:panelGrid>
                                 <h:panelGrid id="gpSelectButtons" columns="3"  >
                                     <h:commandButton id="btnAdd" value="#{labels.add}" disabled="#{institutionController.selectControlDisable}" action="#{institutionController.prepareAdd()}" styleClass="buttons" >
@@ -62,9 +62,9 @@
                             <h:panelGrid id="gpDetail" columns="1">
                                 <h:panelGrid id="gpDetailText" columns="2">
                                     <h:outputText id="lblName" value="#{labels.Institution}" ></h:outputText>
-                                    <h:inputText id="txtName" value="#{institutionController.current.name}" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
+                                    <p:inputText id="txtName" value="#{institutionController.current.name}" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
                                     <h:outputText id="lblCode" value="Code" ></h:outputText>
-                                    <h:inputText id="txtCode"  class="pdInputText" value="#{institutionController.current.code }" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
+                                    <p:inputText id="txtCode"  class="pdInputText" value="#{institutionController.current.code }" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
                                     <h:outputText id="lblCat" value="#{labels.InstitutionType}" ></h:outputText>
                                    
                                     <p:selectOneMenu required="true" id="cmbCat" value="#{institutionController.current.institutionType}"  disabled="#{institutionController.modifyControlDisable}" >
@@ -79,17 +79,17 @@
                                     <h:outputText id="lblPayCentre" value="Pay Centre" ></h:outputText>
                                     <h:selectBooleanCheckbox id="chkPayCentre"  disabled="#{institutionController.modifyControlDisable}"  value="#{institutionController.current.payCentre}" />
                                     <h:outputText id="lblAddress" value="Address" ></h:outputText>
-                                    <h:inputText id="txtAddress"  class="pdInputText" value="#{institutionController.current.address}" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
+                                    <p:inputText id="txtAddress"  class="pdInputText" value="#{institutionController.current.address}" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
                                     <h:outputText id="lblTelephone" value="Telephone" ></h:outputText>
-                                    <h:inputText id="txtTelephone"  class="pdInputText" value="#{institutionController.current.telephone }" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
+                                    <p:inputText id="txtTelephone"  class="pdInputText" value="#{institutionController.current.telephone }" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
                                     <h:outputText id="lblMobile" value="Mobile" ></h:outputText>
-                                    <h:inputText id="txtMobile"  class="pdInputText" value="#{institutionController.current.mobile }" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
+                                    <p:inputText id="txtMobile"  class="pdInputText" value="#{institutionController.current.mobile }" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
                                     <h:outputText id="lblFax" value="Fax" ></h:outputText>
-                                    <h:inputText id="txtFax"  class="pdInputText" value="#{institutionController.current.fax}" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
+                                    <p:inputText id="txtFax"  class="pdInputText" value="#{institutionController.current.fax}" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
                                     <h:outputText id="lblEmail" value="Email" ></h:outputText>
-                                    <h:inputText id="txtEmail"  class="pdInputText" value="#{institutionController.current.email}" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
+                                    <p:inputText id="txtEmail"  class="pdInputText" value="#{institutionController.current.email}" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
                                     <h:outputText id="lblWebsite" value="Website" ></h:outputText>
-                                    <h:inputText id="txtWebsite" class="pdInputText" value="#{institutionController.current.website}" disabled="#{institutionController.modifyControlDisable}" ></h:inputText>
+                                    <p:inputText id="txtWebsite" class="pdInputText" value="#{institutionController.current.website}" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
                                 </h:panelGrid>
                                 <h:panelGrid id="gpDetailButtons" columns="2">
                                     <h:commandButton id="btnSave" value="#{labels.save}" disabled="#{institutionController.modifyControlDisable}" action="#{institutionController.saveSelected()}" styleClass="buttons">

@@ -15,28 +15,28 @@
             <p:panel header="Creating a new user" rendered="#{sessionController.sysAdmin or sessionController.insAdmin}">
                 <p:panelGrid columns="2" >
                     <h:outputLabel value="Name" />
-                    <h:inputText value="#{sessionController.newPersonName}" />
+                    <p:inputText value="#{sessionController.newPersonName}" />
                     <h:outputLabel value="Telephone" />
-                    <h:inputText value="#{sessionController.telNo}" />
+                    <p:inputText value="#{sessionController.telNo}" />
                     <h:outputLabel value="Email" />
-                    <h:inputText value="#{sessionController.email}" />
+                    <p:inputText value="#{sessionController.email}" />
 
                     <h:outputLabel value="Role" />
-                    <h:selectOneListbox id="cmnSysAdminList" rendered="#{sessionController.sysAdmin}"  value="#{sessionController.role}" >
+                    <p:selectOneListbox id="cmnSysAdminList" rendered="#{sessionController.sysAdmin}"  value="#{sessionController.role}" >
                         <f:selectItems value="#{webUserRoleController.items}" var="adminRole" itemLabel="#{adminRole.name}" itemValue="#{adminRole}"  />
-                    </h:selectOneListbox>
+                    </p:selectOneListbox>
 
-                    <h:selectOneListbox rendered="#{sessionController.insAdmin}"  id="cmnInsAdminList" value="#{sessionController.role}" >
+                    <p:selectOneListbox rendered="#{sessionController.insAdmin}"  id="cmnInsAdminList" value="#{sessionController.role}" >
                         <f:selectItems value="#{webUserRoleController.lstInsAdminRoles}" var="insRole" itemLabel="#{insRole.name}" itemValue="#{insRole}" />
-                    </h:selectOneListbox>
+                    </p:selectOneListbox>
 
                     <h:outputLabel value="Previleges Restricted to" />
                     <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution!=null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}" />
-                    <h:selectOneListbox id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}" value="#{sessionController.institution}"  size="5">
+                    <p:selectOneListbox id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}" value="#{sessionController.institution}"  p:selectOneListbox>
                         <f:selectItems value="#{institutionController.payCentres}" var="ri" itemValue="#{ri}" itemLabel="#{ri.name}" />
-                    </h:selectOneListbox>
+                    </p:selectOneListbox>
                     <h:outputLabel value="User name (Case Insensitive)" />
-                    <h:inputText value="#{sessionController.newUserName}" />
+                    <p:inputText value="#{sessionController.newUserName}" />
                     <h:outputLabel value="Password (Case sensitive)" />
                     <h:inputSecret value="#{sessionController.newPassword}" />
                     <h:outputLabel value="Re-enter password" />

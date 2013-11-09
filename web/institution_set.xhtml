@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:pou="http://primefaces.org/ui"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core">
 
@@ -14,56 +14,56 @@
             <ui:define name="content">
 
                 <h:form>
-                    <pou:panelGrid >
+                    <p:panelGrid >
 
-                        <pou:row>
-                            <pou:column>
+                        <p:row>
+                            <p:column>
                                 <h:outputLabel value="Institution"/>
-                            </pou:column>
+                            </p:column>
 
-                            <pou:column>
-                                <h:selectOneListbox id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}"  value="#{institutionSetController.institution}" >
-                                    <f:selectItems value="#{institutionController.items}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}"/>
+                            <p:column>
+                                <p:selectOneMenu id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}"  value="#{institutionSetController.institution}" >
+                                    <f:selectItems value="#{institutionController.payCentres}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}"/>
                                     <f:ajax execute="cmbIns" event="change" render="cmbSet"/>
-                                </h:selectOneListbox>
+                                </p:selectOneMenu>
                                 <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution!=null}" value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
-                            </pou:column>
+                            </p:column>
 
 
-                        </pou:row>
+                        </p:row>
 
-                        <pou:row>
-                            <pou:column>
+                        <p:row>
+                            <p:column>
                                 <h:outputLabel value="Sets"/>
-                            </pou:column>
+                            </p:column>
 
-                            <pou:column>
-                                <h:selectOneListbox id="cmbSet"  value="#{institutionSetController.toRemove}" >
+                            <p:column>
+                                <p:selectOneListbox id="cmbSet"  value="#{institutionSetController.toRemove}" >
                                     <f:selectItems  value="#{institutionSetController.items}" var="sets" itemValue="#{sets}" itemLabel="#{sets.name}"/>
-                                </h:selectOneListbox>
-                            </pou:column>
+                                </p:selectOneListbox>
+                            </p:column>
 
-                             <pou:column>
-                                 <h:commandButton value="Remove Selected Set" action="#{institutionSetController.delete()}" />
-                            </pou:column>
+                             <p:column>
+                                 <p:commandButton ajax="false" value="Remove Selected Set" action="#{institutionSetController.delete()}" />
+                            </p:column>
 
-                        </pou:row>
+                        </p:row>
 
-                        <pou:row>
-                            <pou:column>
+                        <p:row>
+                            <p:column>
                                 <h:outputLabel value="Set Name to add"/>
-                            </pou:column>
-                            <pou:column>
-                                <h:inputText value="#{institutionSetController.newName}"/>
-                            </pou:column>
-                            <pou:column>
-                                <h:commandButton value="Add New Set" action="#{institutionSetController.addDirectly()}" />
-                            </pou:column>
+                            </p:column>
+                            <p:column>
+                                <p:inputText value="#{institutionSetController.newName}"/>
+                            </p:column>
+                            <p:column>
+                                <p:commandButton ajax="false" value="Add New Set" action="#{institutionSetController.addDirectly()}" />
+                            </p:column>
 
 
-                        </pou:row>                    
+                        </p:row>                    
 
-                    </pou:panelGrid>
+                    </p:panelGrid>
 
                 </h:form>
             </ui:define>

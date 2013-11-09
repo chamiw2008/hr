@@ -3,8 +3,8 @@
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 template="./resources/template/template_1.xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
-
-                xmlns:f="http://java.sun.com/jsf/core">
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
 
 
 
@@ -33,7 +33,7 @@
                 </tr>
                 <tr>
                     <td class="pdLabel" align="right" width="40%">Username:</td>
-                    <td align="left" width="60%"><h:inputText value="#{sessionController.userName}"/></td>
+                    <td align="left" width="60%"><p:inputText value="#{sessionController.userName}"/></td>
                 </tr>
                 <tr>
                     <td class="pdLabel" align="right">Password:</td>

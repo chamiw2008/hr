@@ -4,40 +4,40 @@
                 template="./resources/template/template_1.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:pou="http://primefaces.org/ui"
+                xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="content">
 
         <h:form enctype="multipart/form-data">
-            <pou:growl ></pou:growl>
-            <pou:panel header="Records without Designations" >
-                <pou:panelGrid columns="4" >
+            <p:growl ></p:growl>
+            <p:panel header="Records without Designations" >
+                <p:panelGrid columns="4" >
                     <h:outputText value="Institution"/>
                     <h:outputText value="Set"/>
                     <h:outputText value="Year"/>
                     <h:outputText value="Month"/>
 
-                    <pou:panel id="cmbLoc" style="border: 0px;margin: 0px;padding: 0px;">
-                        <h:selectOneListbox rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}" size="1" >
+                    <p:panel id="cmbLoc" style="border: 0px;margin: 0px;padding: 0px;">
+                        <p:selectOneMenu rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}"  >
                             <f:selectItems value="#{institutionController.offItems}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
                             <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls" />
-                        </h:selectOneListbox>
+                        </p:selectOneMenu>
                         <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
-                    </pou:panel>
+                    </p:panel>
 
 
-                    <h:selectOneListbox id="cmbSet" value="#{dbfController.insSet}" size="1">
+                    <p:selectOneMenu id="cmbSet" value="#{dbfController.insSet}" >
                         <f:selectItems value="#{dbfController.insSets}" var="insset" itemValue="#{insset}" itemLabel="#{insset.name}" />
                         <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="tabTbls" />
-                    </h:selectOneListbox>
+                    </p:selectOneMenu>
 
-                    <h:selectOneListbox id="cmbYear" value="#{dbfController.payYear}" size="1">
+                    <p:selectOneMenu id="cmbYear" value="#{dbfController.payYear}" >
                         <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
                         <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="tabTbls" />
-                    </h:selectOneListbox>
+                    </p:selectOneMenu>
 
-                    <h:selectOneListbox id="cmbMonth" value="#{dbfController.payMonth}" size="1" >
+                    <p:selectOneMenu id="cmbMonth" value="#{dbfController.payMonth}"  >
                         <f:selectItem itemValue="1" itemLabel="January" />
                         <f:selectItem itemValue="2" itemLabel="February" />
                         <f:selectItem itemValue="3" itemLabel="March" />
@@ -51,27 +51,27 @@
                         <f:selectItem itemValue="11" itemLabel="November" />
                         <f:selectItem itemValue="12" itemLabel="December" />
                         <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="tabTbls" />
-                    </h:selectOneListbox>
-                </pou:panelGrid>
-            </pou:panel>
-            <pou:dataTable id="tabTbls" value="#{dbfController.personInstitutionsWithoutDesignations}" var="exPi">
-                <pou:column>
+                    </p:selectOneMenu>
+                </p:panelGrid>
+            </p:panel>
+            <p:dataTable id="tabTbls" value="#{dbfController.personInstitutionsWithoutDesignations}" var="exPi">
+                <p:column>
                     <f:facet name="header">Employee Id</f:facet>
                     <h:outputLabel value="#{exPi.empNo}"/>
-                </pou:column>
-                <pou:column>
+                </p:column>
+                <p:column>
                     <f:facet name="header">Name</f:facet>
                     <h:outputLabel value="#{exPi.name}"/>
-                </pou:column> 
-                <pou:column>
+                </p:column> 
+                <p:column>
                     <f:facet name="header">Designation</f:facet>
                     <h:outputLabel value="#{exPi.designation.name}"/>
-                </pou:column>  
-                <pou:column>
+                </p:column>  
+                <p:column>
                     <f:facet name="header">NIC</f:facet>
                     <h:outputLabel value="#{exPi.nic}"/>
-                </pou:column>           
-            </pou:dataTable>
+                </p:column>           
+            </p:dataTable>
 
 
 

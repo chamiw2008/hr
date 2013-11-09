@@ -23,7 +23,7 @@
                                 <h:outputText id="lblSelect" value="#{labels.Designations}" >
                                 </h:outputText>
 
-                                <p:selectOneListbox converter="desingationConverter" id="lstSelect"  value="#{designationController.current}" style="min-width: 223px">
+                                <p:selectOneListbox  id="lstSelect"  value="#{designationController.current}" style="min-width: 223px">
                                     <f:selectItems value="#{designationController.lstItems}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
                                     <f:ajax event="change" render="txtName gpDetail  lstCatSelect " execute="lstSelect" >                                
                                     </f:ajax>
@@ -46,11 +46,12 @@
                         <h:panelGrid id="gpDetail" columns="1">
                             <h:panelGrid id="gpDetailText" columns="2">
                                 <h:outputText id="lblName" value="#{labels.Designation}" ></h:outputText>
-                                <h:inputText id="txtName" value="#{designationController.current.name}"  ></h:inputText>
+                                <p:inputText id="txtName" value="#{designationController.current.name}"  ></p:inputText>
                                 <h:outputText id="lblCatName" value="Service Type" ></h:outputText>
-                                <h:selectOneListbox id="lstCatSelect"  size="1" value="#{designationController.current.category}" style="min-width: 223px">
+                                <p:selectOneMenu id="lstCatSelect"   value="#{designationController.current.category}" style="min-width: 223px">
+                                    <f:selectItem itemLabel="Please select service" />
                                     <f:selectItems value="#{designationCategoryController.lstItems}" var="myCatItem" itemValue="#{myCatItem}" itemLabel="#{myCatItem.name}" ></f:selectItems>
-                                </h:selectOneListbox>
+                                </p:selectOneMenu>
                             </h:panelGrid>
                             <h:panelGrid id="gpDetailButtons" columns="2">
                                 <h:commandButton id="btnSave" value="#{labels.save}"  action="#{designationController.saveSelected()}" styleClass="buttons">

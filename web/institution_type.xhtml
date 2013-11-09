@@ -28,19 +28,19 @@
                                 <h:outputText id="lblSelect" value="#{labels.InstitutionTypes}" >
                                 </h:outputText>
 
-                                <h:inputText id="txtSelect" value="#{institutionTypeController.selectText}" readonly="#{institutionTypeController.selectControlDisable}"  style="min-width: 200px" >
+                                <p:inputText id="txtSelect" value="#{institutionTypeController.selectText}" readonly="#{institutionTypeController.selectControlDisable}"  style="min-width: 200px" >
                                     <f:ajax  event="keyup" render="lstSelect gpDetail" >
                                     </f:ajax>
-                                </h:inputText>
+                                </p:inputText>
 
                                 <h:outputLabel value="&#160;">
                                 </h:outputLabel>
 
-                                <h:selectOneListbox id="lstSelect"  readonly="#{institutionTypeController.selectControlDisable}" size="10" value="#{institutionTypeController.current}" style="min-width: 223px">
+                                <p:selectOneListbox id="lstSelect"  disabled=#{institutionTypeController.selectControlDisable}"  value="#{institutionTypeController.current}" style="min-width: 223px">
                                     <f:selectItems value="#{institutionTypeController.items}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
                                     <f:ajax render="txtName" execute="lstSelect" >                                
                                     </f:ajax>
-                                </h:selectOneListbox>
+                                </p:selectOneListbox>
 
                             </h:panelGrid>
 
@@ -69,9 +69,9 @@
                         <h:panelGrid id="gpDetail" columns="1">
                             <h:panelGrid id="gpDetailText" columns="2">
                                 <h:outputText id="lblName" value="#{labels.InstitutionType}" ></h:outputText>
-                                <h:inputText class="pdInputText" id="txtName" value="#{institutionTypeController.current.name}" readonly="#{institutionTypeController.modifyControlDisable}" ></h:inputText>
+                                <p:inputText class="pdInputText" id="txtName" value="#{institutionTypeController.current.name}" readonly="#{institutionTypeController.modifyControlDisable}" ></p:inputText>
                                 <h:outputText id="lblComments" value="Comments" ></h:outputText>
-                                <h:inputText class="pdInputText" id="txtComments" value="#{institutionTypeController.current.description}" readonly="#{institutionTypeController.modifyControlDisable}" ></h:inputText>
+                                <p:inputText class="pdInputText" id="txtComments" value="#{institutionTypeController.current.description}" readonly="#{institutionTypeController.modifyControlDisable}" ></p:inputText>
 
                             </h:panelGrid>
                             <h:panelGrid id="gpDetailButtons" columns="2">

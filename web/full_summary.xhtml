@@ -3,37 +3,37 @@
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 template="./resources/template/template_1.xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:pou="http://primefaces.org/ui"
+                xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="content">
 
         <h:form  rendered="#{sessionController.loggedUser.systemAdmin}">
             
-            <pou:growl ></pou:growl>
+            <p:growl ></p:growl>
             <h:panelGrid columns="2" >
                 <h:outputText value="Institution"/>
-                <h:selectOneListbox id="cmbLoc" value="#{dbfController.institution}" >
+                <p:selectOneListbox id="cmbLoc" value="#{dbfController.institution}" >
                     <f:selectItems value="#{institutionController.items}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
-                </h:selectOneListbox>
+                </p:selectOneListbox>
                 <h:commandButton value="Display" />
             </h:panelGrid>
-            <pou:panel header="Employee Data">
-                <pou:dataTable value="#{dbfController.existingPersonInstitutions}" var="exPi">
-                    <pou:column>
+            <p:panel header="Employee Data">
+                <p:dataTable value="#{dbfController.existingPersonInstitutions}" var="exPi">
+                    <p:column>
                         <f:facet name="header">Employee Id</f:facet>
                         <h:outputLabel value="#{exPi.empNo}"/>
-                    </pou:column>
-                    <pou:column>
+                    </p:column>
+                    <p:column>
                         <f:facet name="header">Name</f:facet>
                         <h:outputLabel value="#{exPi.person.name}"/>
-                    </pou:column> 
-                    <pou:column>
+                    </p:column> 
+                    <p:column>
                         <f:facet name="header">Designation</f:facet>
                         <h:outputLabel value="#{exPi.designation.name}"/>
-                    </pou:column>                 
-                </pou:dataTable>
-            </pou:panel>
+                    </p:column>                 
+                </p:dataTable>
+            </p:panel>
         </h:form>
     </ui:define>
 </ui:composition>

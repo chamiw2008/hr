@@ -39,11 +39,11 @@
 
 
 
-                                <h:selectOneListbox  id="lstSelect"  disabled="#{personController.selectControlDisable}" value="#{personController.current}" style="min-width: 223px;" size="10">
+                                <p:selectOneListbox  id="lstSelect"  disabled="#{personController.selectControlDisable}" value="#{personController.current}" style="min-width: 223px;" >
                                     <f:selectItems value="#{personController.items}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
                                     <f:ajax render="gpDetail" execute="lstSelect" >                                
                                     </f:ajax>
-                                </h:selectOneListbox>
+                                </p:selectOneListbox>
 
                             </h:panelGrid>
 
@@ -68,19 +68,19 @@
                         <h:panelGrid id="gpDetail" columns="1">
                             <h:panelGrid id="gpDetailText" columns="2">
                                 <h:outputText id="lblName" value="Person" ></h:outputText>
-                                <h:inputText id="txtName" value="#{personController.current.name}" disabled="#{personController.modifyControlDisable}" ></h:inputText>
+                                <p:inputText id="txtName" value="#{personController.current.name}" disabled="#{personController.modifyControlDisable}" ></p:inputText>
                                 <h:outputText id="lblCode" value="Code" ></h:outputText>
-                                <h:inputText id="txtCode" value="#{personController.current.givenName}" disabled="#{personController.modifyControlDisable}" ></h:inputText>
-                                <h:selectOneListbox rendered="#{personController.current.id!=null}" id="cmbCon" value="#{personController.currentContact.contactType}" size="1">
+                                <p:inputText id="txtCode" value="#{personController.current.givenName}" disabled="#{personController.modifyControlDisable}" ></p:inputText>
+                                <p:selectOneMenu rendered="#{personController.current.id!=null}" id="cmbCon" value="#{personController.currentContact.contactType}">
                                     <f:selectItems value="#{contactTypeController.items}"/>
                                     <f:ajax execute="cmbCon" event="change"/>
                                     <f:ajax execute="cmbCon" event="focus"/>
-                                </h:selectOneListbox>
+                                </p:selectOneMenu>
 
                                 <h:panelGroup rendered="#{personController.current.id!=null}">
-                                    <h:inputText id="txtCon" value="#{personController.currentContact.name}">
+                                    <p:inputText id="txtCon" value="#{personController.currentContact.name}">
                                         <f:ajax execute="txtCon" event="keyup"/>
-                                    </h:inputText>
+                                    </p:inputText>
                                     <h:commandButton id="btnCon" action="#{personController.addContact}" value="Add Contact" >
                                         <f:ajax execute="btnCon" render="dtCon txtCon cmbCon" />
                                     </h:commandButton> 
@@ -96,9 +96,9 @@
                                     </p:column>
                                 </p:dataTable>
                                 <h:outputText id="lblProvince" value="Institution" ></h:outputText>
-                                <h:selectOneListbox id="cmbProvince" value="#{personController.current.institution}" disabled="#{personController.modifyControlDisable}" style="height: 200px;width: 250px;">
+                                <p:selectOneListbox id="cmbProvince" value="#{personController.current.institution}" disabled="#{personController.modifyControlDisable}" style="height: 200px;width: 250px;">
                                     <f:selectItems value="#{personController.institutions}" var="p" itemValue="#{p}" itemLabel="#{p.name}" />
-                                </h:selectOneListbox>
+                                </p:selectOneListbox>
 
                             </h:panelGrid>
                             <h:panelGrid id="gpDetailButtons" columns="2">

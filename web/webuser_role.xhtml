@@ -28,21 +28,21 @@
                                 <h:outputText id="lblSelect" value="User Roles" >
                                 </h:outputText>
 
-                                <h:inputText id="txtSelect" value="#{webUserRoleController.selectText}" disabled="#{webUserRoleController.selectControlDisable}"  style="min-width: 200px" >
+                                <p:inputText id="txtSelect" value="#{webUserRoleController.selectText}" disabled="#{webUserRoleController.selectControlDisable}"  style="min-width: 200px" >
                                     <f:ajax  event="keyup" render="lstSelect txtName" >
                                     </f:ajax>
-                                </h:inputText>
+                                </p:inputText>
 
                                 <h:outputLabel value="&#160;">
                                 </h:outputLabel>
 
 
 
-                                <h:selectOneListbox id="lstSelect"  disabled="#{webUserRoleController.selectControlDisable}" size="10" value="#{webUserRoleController.current}" style="min-width: 223px">
+                                <p:selectOneListbox id="lstSelect"  disabled="#{webUserRoleController.selectControlDisable}"  value="#{webUserRoleController.current}" style="min-width: 223px">
                                     <f:selectItems value="#{webUserRoleController.items}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
                                     <f:ajax render="gpDetail" execute="lstSelect" >                                
                                     </f:ajax>
-                                </h:selectOneListbox>
+                                </p:selectOneListbox>
 
                             </h:panelGrid>
 
@@ -69,7 +69,7 @@
                         <h:panelGrid id="gpDetail" columns="1">
                             <h:panelGrid id="gpDetailText" columns="2">
                                 <h:outputText id="lblName" value="WebUserRole" ></h:outputText>
-                                <h:inputText id="txtName" value="#{webUserRoleController.current.name}" disabled="#{webUserRoleController.modifyControlDisable}" ></h:inputText>
+                                <p:inputText id="txtName" value="#{webUserRoleController.current.name}" disabled="#{webUserRoleController.modifyControlDisable}" ></p:inputText>
                             </h:panelGrid>
 
                             <h:panelGrid columns="5" >

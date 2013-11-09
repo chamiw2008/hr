@@ -3,34 +3,34 @@
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 template="./resources/template/template_1.xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:pou="http://primefaces.org/ui"
+                xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="content">
 
         <h:form>
 
-            <pou:panel header="Institution Summery" >
-                <pou:panelGrid columns="3" >
+            <p:panel header="Institution Summery" >
+                <p:panelGrid columns="3" >
                     <h:outputText value="Institution"/>
                     <h:outputText value="Year"/>
                     <h:outputText value="Month"/>
 
-                    <pou:panel id="cmbLoc" style="border: 0px;margin: 0px;padding: 0px;">
-                        <h:selectOneListbox rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}" size="1" >
+                    <p:panel id="cmbLoc" style="border: 0px;margin: 0px;padding: 0px;">
+                        <p:selectOneMenu rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}"  >
                             <f:selectItems value="#{institutionController.offItems}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
                             <f:ajax event="change" execute="cmbLoc  cmbYear cmbMonth" render=" tabTbls" />
-                        </h:selectOneListbox>
+                        </p:selectOneMenu>
                         <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
-                    </pou:panel>
+                    </p:panel>
 
 
-                    <h:selectOneListbox id="cmbYear" value="#{dbfController.payYear}" size="1">
+                    <p:selectOneMenu id="cmbYear" value="#{dbfController.payYear}" >
                         <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
                         <f:ajax event="change" execute="cmbLoc  cmbYear cmbMonth" render="tabTbls" />
-                    </h:selectOneListbox>
+                    </p:selectOneMenu>
 
-                    <h:selectOneListbox id="cmbMonth" value="#{dbfController.payMonth}" size="1" >
+                    <p:selectOneListbox id="cmbMonth" value="#{dbfController.payMonth}" >
                         <f:selectItem itemValue="1" itemLabel="January" />
                         <f:selectItem itemValue="2" itemLabel="February" />
                         <f:selectItem itemValue="3" itemLabel="March" />
@@ -44,23 +44,23 @@
                         <f:selectItem itemValue="11" itemLabel="November" />
                         <f:selectItem itemValue="12" itemLabel="December" />
                         <f:ajax event="change" execute="cmbLoc  cmbYear cmbMonth" render=" tabTbls" />
-                    </h:selectOneListbox>
-                </pou:panelGrid>
-            </pou:panel>
+                    </p:selectOneListbox>
+                </p:panelGrid>
+            </p:panel>
 
 
 
-            <pou:dataTable id="tabTbls" value="#{dbfController.designationSummery}" var="exPi">
-                <pou:column>
+            <p:dataTable id="tabTbls" value="#{dbfController.designationSummery}" var="exPi">
+                <p:column>
                     <f:facet name="header">Designation</f:facet>
                     <h:outputLabel rendered="#{exPi.designationName.trim()!=''}" value="#{exPi.designationName}"/>
                     <h:outputLabel rendered="#{exPi.designationName.trim()==''}" value="No Designation Entered"/>
-                </pou:column>
-                <pou:column>
+                </p:column>
+                <p:column>
                     <f:facet name="header">Count</f:facet>
                     <h:outputLabel value="#{exPi.count}"/>
-                </pou:column> 
-            </pou:dataTable>
+                </p:column> 
+            </p:dataTable>
 
         </h:form>
     </ui:define>

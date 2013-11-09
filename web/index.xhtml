@@ -46,12 +46,12 @@
                                     <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
                                 </p:panel>
                                 <!--Year-->
-                                <h:selectOneListbox id="cmbYear" value="#{dbfController.payYear}" size="1">
+                                <p:selectOneMenu id="cmbYear" value="#{dbfController.payYear}" >
                                     <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
                                     <f:ajax event="change" execute="cmbYear cmbMonth :#{p:component('tblDes')} :#{p:component('panPay')}" render="tblDes" />
-                                </h:selectOneListbox>
+                                </p:selectOneMenu>
                                 <!--Month-->
-                                <h:selectOneListbox id="cmbMonth" value="#{dbfController.payMonth}" size="1" >
+                                <p:selectOneMenu id="cmbMonth" value="#{dbfController.payMonth}"  >
                                     <f:selectItem itemValue="1" itemLabel="January" />
                                     <f:selectItem itemValue="2" itemLabel="February" />
                                     <f:selectItem itemValue="3" itemLabel="March" />
@@ -65,7 +65,7 @@
                                     <f:selectItem itemValue="11" itemLabel="November" />
                                     <f:selectItem itemValue="12" itemLabel="December" />
                                     <f:ajax event="change" execute="cmbLoc  cmbYear cmbMonth :#{p:component('tblDes')} :#{p:component('panPay')}" render="tblDes" />
-                                </h:selectOneListbox>
+                                </p:selectOneMenu>
 
                             </p:column>
                         </p:row>

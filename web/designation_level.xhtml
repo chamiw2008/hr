@@ -28,21 +28,21 @@
                                 <h:outputText id="lblSelect" value="#{labels.Designations}" >
                                 </h:outputText>
 
-                                <h:inputText id="txtSelect" value="#{designationController.selectText}" disabled="#{designationController.selectControlDisable}"  style="min-width: 200px" >
+                                <p:inputText id="txtSelect" value="#{designationController.selectText}" disabled="#{designationController.selectControlDisable}"  style="min-width: 200px" >
                                     <f:ajax  event="keyup" render="lstSelect txtName" >
                                     </f:ajax>
-                                </h:inputText>
+                                </p:inputText>
 
                                 <h:outputLabel value="&#160;">
                                 </h:outputLabel>
 
 
 
-                                <h:selectOneListbox id="lstSelect"  disabled="#{designationController.selectControlDisable}" size="10" value="#{designationController.current}" style="min-width: 223px">
+                                <p:selectOneListbox id="lstSelect"  disabled="#{designationController.selectControlDisable}"  value="#{designationController.current}" style="min-width: 223px">
                                     <f:selectItems value="#{designationController.items}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
                                     <f:ajax render="txtName" execute="lstSelect" >                                
                                     </f:ajax>
-                                </h:selectOneListbox>
+                                </p:selectOneListbox>
 
                             </h:panelGrid>
 
@@ -69,7 +69,7 @@
                         <h:panelGrid id="gpDetail" columns="1">
                             <h:panelGrid id="gpDetailText" columns="2">
                                 <h:outputText id="lblName" value="#{labels.Designation}" ></h:outputText>
-                                <h:inputText id="txtName" value="#{designationController.current.name}" disabled="#{designationController.modifyControlDisable}" ></h:inputText>
+                                <p:inputText id="txtName" value="#{designationController.current.name}" disabled="#{designationController.modifyControlDisable}" ></p:inputText>
                             </h:panelGrid>
                             <h:panelGrid id="gpDetailButtons" columns="2">
                                 <h:commandButton id="btnSave" value="#{labels.save}" disabled="#{designationController.modifyControlDisable}" action="#{designationController.saveSelected()}" styleClass="buttons">
