@@ -48,14 +48,14 @@
                             </p:selectOneListbox>
 
                             <h:outputLabel rendered="#{sessionController.sysAdmin}"  value="&nbsp;"/>
-                            <h:commandButton rendered="#{sessionController.sysAdmin}" value="Remove Institution Restriction" action="#{userApproveController.removeInsRes}" />
+                            <p:commandButton ajax=false rendered="#{sessionController.sysAdmin}" value="Remove Institution Restriction" action="#{userApproveController.removeInsRes}" />
 
 
                         </h:panelGrid>
 
 
                         <h:panelGroup>
-                            <h:commandButton value="Save" action="#{userApproveController.saveUser}"></h:commandButton>
+                            <p:commandButton ajax=false value="Save" action="#{userApproveController.saveUser}"></p:commandButton ajax=false>
                         </h:panelGroup>
 
 

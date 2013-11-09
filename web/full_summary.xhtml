@@ -16,7 +16,7 @@
                 <p:selectOneListbox id="cmbLoc" value="#{dbfController.institution}" >
                     <f:selectItems value="#{institutionController.items}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
                 </p:selectOneListbox>
-                <h:commandButton value="Display" />
+                <p:commandButton ajax=false value="Display" />
             </h:panelGrid>
             <p:panel header="Employee Data">
                 <p:dataTable value="#{dbfController.existingPersonInstitutions}" var="exPi">

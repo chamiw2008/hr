@@ -45,18 +45,18 @@
                             </h:panelGrid>
 
                             <h:panelGrid id="gpSelectButtons" columns="3"  >
-                                <h:commandButton id="btnAdd" value="#{labels.add}" readonly="#{institutionTypeController.selectControlDisable}" action="#{institutionTypeController.prepareAdd()}" styleClass="buttons" >
+                                <p:commandButton id="btnAdd" value="#{labels.add}" readonly="#{institutionTypeController.selectControlDisable}" action="#{institutionTypeController.prepareAdd()}" styleClass="buttons" >
                                     <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail detailFocus" execute="btnEdit" >                                
                                     </f:ajax>
-                                </h:commandButton>
-                                <h:commandButton id ="btnEdit" value="#{labels.edit}" readonly="#{institutionTypeController.selectControlDisable}" action="#{institutionTypeController.prepareEdit()}"  styleClass="buttons">
+                                </p:commandButton>
+                                <p:commandButton id ="btnEdit" value="#{labels.edit}" readonly="#{institutionTypeController.selectControlDisable}" action="#{institutionTypeController.prepareEdit()}"  styleClass="buttons">
                                     <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail detailFocus" execute="lstSelect" >
                                     </f:ajax>
-                                </h:commandButton>
-                                <h:commandButton id="btnDelete"  action="#{institutionTypeController.delete()}"  value="#{labels.delete}" readonly="#{institutionTypeController.selectControlDisable}" styleClass="buttons">
+                                </p:commandButton>
+                                <p:commandButton id="btnDelete"  action="#{institutionTypeController.delete()}"  value="#{labels.delete}" readonly="#{institutionTypeController.selectControlDisable}" styleClass="buttons">
                                     <f:ajax render="lstSelect gpDetail" execute="lstSelect btnDelete" >
                                     </f:ajax>                                
-                                </h:commandButton>
+                                </p:commandButton>
                             </h:panelGrid>
                             <p:confirmDialog appendToBody="true" message="#{labels.areYouSureYouWantToDelete}" header="#{labels.initiatingDestroyProcess}" severity="alert" widgetVar="confirmation">  
                                 <p:commandButton value="#{labels.yes}" oncomplete="confirmation.hide()" action="#{institutionTypeController.delete()}" update="lstSelect gpDetail"  />  
@@ -75,14 +75,14 @@
 
                             </h:panelGrid>
                             <h:panelGrid id="gpDetailButtons" columns="2">
-                                <h:commandButton id="btnSave" value="#{labels.save}" readonly="#{institutionTypeController.modifyControlDisable}" action="#{institutionTypeController.saveSelected()}" styleClass="buttons">
+                                <p:commandButton id="btnSave" value="#{labels.save}" readonly="#{institutionTypeController.modifyControlDisable}" action="#{institutionTypeController.saveSelected()}" styleClass="buttons">
                                     <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail selectFocus"  execute="gpDetail    " >
                                     </f:ajax>
-                                </h:commandButton>
-                                <h:commandButton id ="btnCancel" value="#{labels.cancel}" readonly="#{institutionTypeController.modifyControlDisable}" action="#{institutionTypeController.cancelSelect()}" styleClass="buttons">
+                                </p:commandButton>
+                                <p:commandButton id ="btnCancel" value="#{labels.cancel}" readonly="#{institutionTypeController.modifyControlDisable}" action="#{institutionTypeController.cancelSelect()}" styleClass="buttons">
                                     <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail selectFocus" execute=" gpDetail    " >                                
                                     </f:ajax>
-                                </h:commandButton>
+                                </p:commandButton>
                             </h:panelGrid >
                         </h:panelGrid>
                     </p:panel>

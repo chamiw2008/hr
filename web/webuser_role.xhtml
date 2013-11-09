@@ -47,16 +47,16 @@
                             </h:panelGrid>
 
                             <h:panelGrid id="gpSelectButtons" columns="3"  >
-                                <h:commandButton id="btnAdd" value="Add" disabled="#{webUserRoleController.selectControlDisable}" action="#{webUserRoleController.prepareAdd()}" styleClass="buttons" >
+                                <p:commandButton id="btnAdd" value="Add" disabled="#{webUserRoleController.selectControlDisable}" action="#{webUserRoleController.prepareAdd()}" styleClass="buttons" >
                                     <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail detailFocus" execute="btnEdit" >                                
                                     </f:ajax>
-                                </h:commandButton>
-                                <h:commandButton id ="btnEdit" value="Edit" disabled="#{webUserRoleController.selectControlDisable}" action="#{webUserRoleController.prepareEdit()}"  styleClass="buttons">
+                                </p:commandButton>
+                                <p:commandButton id ="btnEdit" value="Edit" disabled="#{webUserRoleController.selectControlDisable}" action="#{webUserRoleController.prepareEdit()}"  styleClass="buttons">
                                     <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail detailFocus" execute="lstSelect" >
                                     </f:ajax>
-                                </h:commandButton>
-                                <h:commandButton id="btnDelete" onclick="confirmation.show()" value="Delete" disabled="#{webUserRoleController.selectControlDisable}" styleClass="buttons">
-                                </h:commandButton>
+                                </p:commandButton>
+                                <p:commandButton ajax=false id="btnDelete" onclick="confirmation.show()" value="Delete" disabled="#{webUserRoleController.selectControlDisable}" styleClass="buttons">
+                                </p:commandButton>
                             </h:panelGrid>
                             <p:confirmDialog appendToBody="true" message="Are you sure you want to delete" header="Initiating destroy process" severity="alert" widgetVar="confirmation">  
                                 <p:commandButton value="Yes" oncomplete="confirmation.hide()" action="#{webUserRoleController.delete()}" update="lstSelect txtName"  />  
@@ -141,14 +141,14 @@
 
 
                             <h:panelGrid id="gpDetailButtons" columns="2">
-                                <h:commandButton id="btnSave" value="Save" disabled="#{webUserRoleController.modifyControlDisable}" action="#{webUserRoleController.saveSelected()}" styleClass="buttons">
+                                <p:commandButton id="btnSave" value="Save" disabled="#{webUserRoleController.modifyControlDisable}" action="#{webUserRoleController.saveSelected()}" styleClass="buttons">
                                     <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail selectFocus"  execute="gpDetail" >
                                     </f:ajax>
-                                </h:commandButton>
-                                <h:commandButton id ="btnCancel" value="Cancel" disabled="#{webUserRoleController.modifyControlDisable}" action="#{webUserRoleController.cancelSelect()}" styleClass="buttons">
+                                </p:commandButton>
+                                <p:commandButton id ="btnCancel" value="Cancel" disabled="#{webUserRoleController.modifyControlDisable}" action="#{webUserRoleController.cancelSelect()}" styleClass="buttons">
                                     <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect txtName selectFocus" execute="gpDetail" >                                
                                     </f:ajax>
-                                </h:commandButton>
+                                </p:commandButton>
                             </h:panelGrid>
                         </h:panelGrid>
                     </p:panel>

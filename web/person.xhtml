@@ -81,9 +81,9 @@
                                     <p:inputText id="txtCon" value="#{personController.currentContact.name}">
                                         <f:ajax execute="txtCon" event="keyup"/>
                                     </p:inputText>
-                                    <h:commandButton id="btnCon" action="#{personController.addContact}" value="Add Contact" >
+                                    <p:commandButton id="btnCon" action="#{personController.addContact}" value="Add Contact" >
                                         <f:ajax execute="btnCon" render="dtCon txtCon cmbCon" />
-                                    </h:commandButton> 
+                                    </p:commandButton> 
                                 </h:panelGroup>
 
                                 <h:outputLabel  rendered="#{personController.current.id!=null}"> </h:outputLabel>

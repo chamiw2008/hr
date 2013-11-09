@@ -87,7 +87,7 @@
             <h:form>
                 <f:facet name="header" >
                     <h:outputLabel value="Summery" />
-                    <h:commandButton style="float: right;" value="Refresh" />
+                    <p:commandButton ajax=false style="float: right;" value="Refresh" />
                 </f:facet>
                 <p:panelGrid columns="2" >
                     <h:outputLabel value="Records without NIC"/>
@@ -119,7 +119,7 @@
         <p:panel >
             <h:form>
                 <p:panel rendered="#{dbfController.newPersonInstitutions.size()>0}" header="Replace Existing Data With new Data">
-                    <h:commandButton value="Replace" action="#{dbfController.replaceData}"/>
+                    <p:commandButton ajax=false value="Replace" action="#{dbfController.replaceData}"/>
                 </p:panel>
 
                 <p:tabView id="tabTbls"  dynamic="true" activeIndex="#{dbfController.activeTab}">

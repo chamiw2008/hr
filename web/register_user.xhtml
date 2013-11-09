@@ -42,7 +42,7 @@
                     <h:outputLabel value="Re-enter password" />
                     <h:inputSecret value="#{sessionController.newPasswordConfirm}" />
                 </p:panelGrid>
-                <h:commandButton id="btnReg" class="pdButton" type="submit" value="Register" action="#{sessionController.registeUser}" />
+                <p:commandButton ajax=false id="btnReg" class="pdButton" type="submit" value="Register" action="#{sessionController.registeUser}" />
                 <p:messages globalOnly="true"  ></p:messages>
             </p:panel>
         </h:form>
