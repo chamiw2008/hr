@@ -52,7 +52,7 @@
                                         <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail detailFocus" execute="lstSelect" >
                                         </f:ajax>
                                     </p:commandButton>
-                                    <p:commandButton ajax=false id="btnDelete" onclick="if (!confirm('Are you sure you want to delete this record?')) return false" action="#{institutionController.delete()}"  value="#{labels.delete}" disabled="#{institutionController.selectControlDisable}" styleClass="buttons">
+                                    <p:commandButton ajax="false" id="btnDelete" onclick="if (!confirm('Are you sure you want to delete this record?')) return false" action="#{institutionController.delete()}"  value="#{labels.delete}" disabled="#{institutionController.selectControlDisable}" styleClass="buttons">
                                     </p:commandButton>
                                 </h:panelGrid>
                             </p:panel>

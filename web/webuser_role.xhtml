@@ -55,7 +55,7 @@
                                     <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail detailFocus" execute="lstSelect" >
                                     </f:ajax>
                                 </p:commandButton>
-                                <p:commandButton ajax=false id="btnDelete" onclick="confirmation.show()" value="Delete" disabled="#{webUserRoleController.selectControlDisable}" styleClass="buttons">
+                                <p:commandButton ajax="false" id="btnDelete" onclick="confirmation.show()" value="Delete" disabled="#{webUserRoleController.selectControlDisable}" styleClass="buttons">
                                 </p:commandButton>
                             </h:panelGrid>
                             <p:confirmDialog appendToBody="true" message="Are you sure you want to delete" header="Initiating destroy process" severity="alert" widgetVar="confirmation">  

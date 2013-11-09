@@ -35,7 +35,7 @@
                                     <f:ajax render="btnAdd  btnDelete btnSave   lstSelect txtName detailFocus " execute="" >                                
                                     </f:ajax>
                                 </p:commandButton>
-                                <p:commandButton ajax=false id="btnDelete" onclick="if (!confirm('Are you sure you want to delete this record?'))
+                                <p:commandButton ajax="false" id="btnDelete" onclick="if (!confirm('Are you sure you want to delete this record?'))
                                             return false"  value="#{labels.delete}" action="#{designationController.delete()}" styleClass="buttons">
                                 </p:commandButton>
                             </h:panelGrid>

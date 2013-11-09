@@ -117,6 +117,7 @@
                 <p:row >
 
                     <p:column  style="width: 65%; vertical-align: text-top; border: 0px;">
+                        
                         <p:panel  style="width: 100%; border: 0px;" >
                             <h:panelGroup rendered="#{sessionController.logged}" >
 
@@ -151,12 +152,12 @@
                                             </tr>
                                             <tr>
                                                 <td class="pdLabel" align="right">#{labels.Password}</td>
-                                                <td align="left"><h:inputSecret value="#{sessionController.passord}"  autocomplete="off" /></td>
+                                                <td align="left"><p:password value="#{sessionController.passord}"  autocomplete="off" /></td>
                                             </tr>
                                             <tr>
                                                 <td align="left"></td>
                                                 <td align="left">
-                                                    <p:commandButton ajax=false id="btnLogin" class="pdButton" type="submit" value="#{labels.Login}" action="#{sessionController.loginAction()}"/>
+                                                    <p:commandButton  ajax="false" id="btnLogin" value="#{labels.Login}" action="#{sessionController.loginAction}"/>
                                                 </td>
                                             </tr>                  
                                             <tr>
@@ -176,6 +177,8 @@
                             </h:panelGroup>
 
                         </p:panel>
+                    
+                    
                     </p:column>
                     <p:column style="width: 15%; margin: 0px; padding: 0px;">
                         <!--                        style="width: 100%; min-height:700px !important; height:auto !important; height:800px !important; border: 0px; padding: 0px; margin: 0px;"-->
