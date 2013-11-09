@@ -69,7 +69,7 @@ public class DesignationCategoryController  implements Serializable {
     
     
     public List<DesignationCategory> getLstItems() {
-        return getFacade().findBySQL("Select d From DesignationCategory d");
+        return getFacade().findBySQL("Select d From DesignationCategory d where d.retired=false");
     }
 
     public void setLstItems(List<DesignationCategory> lstItems) {

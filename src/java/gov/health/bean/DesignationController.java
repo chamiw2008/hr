@@ -35,7 +35,7 @@ import javax.inject.Inject;
  */
 @Named
 @SessionScoped
-public  class DesignationController implements Serializable {
+public class DesignationController implements Serializable {
 
     @EJB
     private DesignationFacade facade;
@@ -239,7 +239,7 @@ public  class DesignationController implements Serializable {
     }
 
     public List<Designation> getLstItems() {
-        return getFacade().findBySQL("Select d From Designation d");
+        return getFacade().findBySQL("Select d From Designation d where d.retired=false");
     }
 
     public void setLstItems(List<Designation> lstItems) {
@@ -258,7 +258,7 @@ public  class DesignationController implements Serializable {
         if (current != null) {
             if (current.getMappedToDesignation() != null) {
                 oldDesignation = current.getMappedToDesignation();
-            }else{
+            } else {
                 oldDesignation = current;
             }
         }
@@ -266,23 +266,9 @@ public  class DesignationController implements Serializable {
     }
 
     public List<Designation> getItems() {
-//        items = getFacade().findAll("name", true);
         if (items == null) {
-            if (getOffSel() == 0) {
-                sql = "SELECT i FROM Designation i where i.retired=false order by i.name";
-                items = getAllDesignations();
-            } else if (getOffSel() == 1) {
-                items = getOfficialDesignations();
-                sql = "SELECT i FROM Designation i where i.retired=false and i.official = true order by i.name";
-            } else if (getOffSel() == 2) {
-                items = getUnOfficialDesignations();
-                sql = "SELECT i FROM Designation i where i.retired=false and i.official = false order by i.name";
-            } else if (getOffSel() == 3) {
-                items = getUnmappedDesignations();
-                sql = "SELECT i FROM Designation i where i.retired=false and i.official = false and i.mappedToDesignation is null order by i.name";
-            } else {
-                sql = "SELECT i FROM Designation i where i.retired=false order by i.name";
-            }
+            sql = "SELECT i FROM Designation i where i.retired=false and i.official = true order by i.name";
+            getFacade().findBySQL(sql);
         }
         return items;
     }
@@ -354,6 +340,7 @@ public  class DesignationController implements Serializable {
 
     public void saveSelected() {
         String msg;
+        current.setOfficial(Boolean.TRUE);
         if (current.getId() != null && current.getId() != 0) {
             getFacade().edit(current);
             msg = new MessageProvider().getValue("savedOldSuccessfully");
@@ -411,6 +398,44 @@ public  class DesignationController implements Serializable {
     public void setSelectText(String selectText) {
         this.selectText = selectText;
         searchItems();
+    }
+
+    @FacesConverter("desingationConverter")
+    public static class DesignationConverter implements Converter {
+
+        public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
+            if (value == null || value.length() == 0) {
+                return null;
+            }
+            DesignationController controller = (DesignationController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "designationController");
+            return controller.facade.find(getKey(value));
+        }
+
+        java.lang.Long getKey(String value) {
+            java.lang.Long key;
+            key = Long.valueOf(value);
+            return key;
+        }
+
+        String getStringKey(java.lang.Long value) {
+            StringBuffer sb = new StringBuffer();
+            sb.append(value);
+            return sb.toString();
+        }
+
+        public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
+            if (object == null) {
+                return null;
+            }
+            if (object instanceof Designation) {
+                Designation o = (Designation) object;
+                return getStringKey(o.getId());
+            } else {
+                throw new IllegalArgumentException("object " + object + " is of type "
+                        + object.getClass().getName() + "; expected type: " + DesignationController.class.getName());
+            }
+        }
     }
 
     @FacesConverter(forClass = Designation.class)
