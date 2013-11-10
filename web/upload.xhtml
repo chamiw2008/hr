@@ -51,14 +51,14 @@
                         </h:selectOneMenu>
                         <h:outputText value="Set"/>
 
-                        <h:selectOneMenu  disabled="true"    id="cmbSet" value="#{dbfController.insSet}"      >
-                            <!--<f:selectItem itemLabel="Select Set"/>-->
+                        <h:selectOneMenu  disabled="true"    id="cmbSet" value="#{dbfController.insSet}" >
+                            <f:selectItem itemLabel="Set Not Selected"/>
                             <f:selectItems value="#{dbfController.insSets}" var="insset" itemValue="#{insset}" itemLabel="#{insset.name}" />
                             <f:ajax event="change" execute="cmbSet" render=":#{p:component('cmbSet')}  " />
                         </h:selectOneMenu>
                         <h:outputText value="Select the file and Upload"/>
                         <p:fileUpload value="#{dbfController.file}" mode="simple" ></p:fileUpload>
-                        <p:commandButton value="Upload and Replace" ajax="false" actionListener="#{dbfController.extractData}" ></p:commandButton>
+                        <p:commandButton value="Upload and Replace" ajax="false" action="#{dbfController.uploadAndReplaceData}" ></p:commandButton>
                     </p:panelGrid>
                 </h:form>
             </p:panel>

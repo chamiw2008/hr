@@ -3,27 +3,40 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
 
     <body>
 
         <ui:composition template="./resources/template/template_1.xhtml">
             <ui:define name="content">
-                <p:panel >
-                    <f:facet name="header" >
-                    </f:facet>
 
-                    <p:selectOneMenu value="#{institutionController.payCentre}" >
-                        <f:selectItem itemLabel="Select a pay centre" />
-                        <f:selectItems value="#{institutionController.payCentres}" var="ps" itemLabel="#{ps.name}" itemValue="#{ps}" ></f:selectItems>
-                    </p:selectOneMenu>
-                    
-                    <p:selectBooleanCheckbox value="#{institutionController.payCentre.insmapSite}" label="Consider Paycentre Field in Deciding Institution" ></p:selectBooleanCheckbox>
-                    <p:selectBooleanCheckbox value="#{institutionController.payCentre.insmapSite}" label="Consider Site Field in Deciding Institution" ></p:selectBooleanCheckbox>
-                    <p:selectBooleanCheckbox value="#{institutionController.payCentre.insmapSite}" label="Consider Section Field in Deciding Institution" ></p:selectBooleanCheckbox>
-                    <p:selectBooleanCheckbox value="#{institutionController.payCentre.insmapSite}" label="Consider Address Field in Deciding Institution" ></p:selectBooleanCheckbox>
+                <h:form>
 
-                </p:panel>
+                    <p:panel >
+                        <f:facet name="header" >
+                        </f:facet>
+                        <h:outputLabel value="Paycenter" ></h:outputLabel>
+                        <p:selectOneMenu id="cmbPs" value="#{institutionController.payCentre}" >
+                            <f:selectItem itemLabel="Select a pay centre" />
+                            <f:selectItems value="#{institutionController.payCentres}" var="ps" itemLabel="#{ps.name}" itemValue="#{ps}" ></f:selectItems>
+                            <f:ajax event="change" execute="cmbPs" render="chkSite chkSection chkMap" />
+                        </p:selectOneMenu>
+
+                        <br/>
+
+                        <p:selectBooleanCheckbox id="chkSite"  rendered="#{institutionController.payCentre ne null}" value="#{institutionController.payCentre.insmapSite}" itemLabel="Consider Site Field in Deciding Institution" ></p:selectBooleanCheckbox>
+                        <br/>
+                        <p:selectBooleanCheckbox  id="chkSection"  rendered="#{institutionController.payCentre ne null}" value="#{institutionController.payCentre.insmapSection}" itemLabel="Consider Section Field in Deciding Institution" ></p:selectBooleanCheckbox>
+                        <br/>
+                        <p:selectBooleanCheckbox  id="chkMap"  rendered="#{institutionController.payCentre ne null}" value="#{institutionController.payCentre.insmapAddress}" itemLabel="Consider Address Field in Deciding Institution" ></p:selectBooleanCheckbox>
+                        <br/>
+                        <p:commandButton ajax="false" value="Update" action="#{institutionController.savePayCentre()}" ></p:commandButton>
+
+                    </p:panel>
+
+
+                </h:form>
             </ui:define>
 
         </ui:composition>

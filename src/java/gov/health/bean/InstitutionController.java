@@ -79,6 +79,20 @@ public class InstitutionController implements Serializable {
     
     Institution payCentre;
 
+    public void savePayCentre(){
+        if(payCentre==null){
+            JsfUtil.addErrorMessage("Please select a pay centre");
+            return;
+        }
+        if(payCentre.getId()==null || payCentre.getId()==0){
+            getFacade().create(payCentre);
+            JsfUtil.addSuccessMessage("Saved");
+        }else{
+            getFacade().edit(payCentre);
+            JsfUtil.addSuccessMessage("Updated");
+        }
+    }
+    
     public Institution getPayCentre() {
         return payCentre;
     }
