@@ -31,6 +31,8 @@
                         <br/>
                         <p:selectBooleanCheckbox  id="chkMap"  rendered="#{institutionController.payCentre ne null}" value="#{institutionController.payCentre.insmapAddress}" itemLabel="Consider Address Field in Deciding Institution" ></p:selectBooleanCheckbox>
                         <br/>
+                        <p:selectBooleanCheckbox  id="chkPc"  rendered="#{institutionController.payCentre ne null}" value="#{institutionController.payCentre.insMapToPaycentre}" itemLabel="Map Directly to Paycentre" ></p:selectBooleanCheckbox>
+                        <br/>
                         <p:commandButton ajax="false" value="Update" action="#{institutionController.savePayCentre()}" ></p:commandButton>
 
                         

@@ -19,10 +19,7 @@
                     <p:panel>
                         <p:tree  value="#{institutionController.root}" var="node" dynamic="true" cache="false"  
                                  selectionMode="single"  selection="#{institutionController.selectedNode}" id="tree">  
-                            <p:ajax event="expand" update=":#{p:component('tblIns')}  :#{p:component('tblDes')} :#{p:component('panPay')}"  listener="#{institutionController.onNodeExpand}" />  
-                            <p:ajax event="collapse"  update=":#{p:component('tblIns')} :#{p:component('tblDes')} :#{p:component('panPay')}"   listener="#{institutionController.onNodeCollapse}" />  
                             <p:ajax event="select"  update=":#{p:component('tblIns')}  :#{p:component('tblDes')} :#{p:component('panPay')}"   listener="#{institutionController.onNodeSelect}" />  
-                            <p:ajax event="unselect"  update=":#{p:component('tblIns')}  :#{p:component('tblDes')} :#{p:component('panPay')}"   listener="#{institutionController.onNodeUnselect}" />  
                             <p:treeNode>  
                                 <h:outputText value="#{node}" />  
                             </p:treeNode>  

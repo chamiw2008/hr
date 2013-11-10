@@ -258,6 +258,7 @@ public class DbfController implements Serializable {
     }
 
     public void getSummeryCounts(List<PersonInstitution> pis) {
+        System.out.println("getting summery counts");
         withoutNicCount = 0L;
         withoutDesignationCount = 0L;
         withoutMappedDesignationCount = 0L;
@@ -477,7 +478,7 @@ public class DbfController implements Serializable {
     }
 
     public Integer getPayMonth() {
-        if (payMonth == null) {
+        if (payMonth == null || payMonth==0) {
             payMonth = Calendar.getInstance().get(Calendar.MONTH);
         }
         return payMonth;
@@ -521,21 +522,46 @@ public class DbfController implements Serializable {
         this.sessionController = sessionController;
     }
 
+    List<PersonInstitution> selectedPersonInstitutions;
+
+    public List<PersonInstitution> getSelectedPersonInstitutions() {
+        if (selectedPersonInstitutions != null) {
+            return selectedPersonInstitutions;
+        }
+        Map m = new HashMap();
+        m.put("y", getPayYear());
+        m.put("m", getPayMonth());
+        String jpql = "select pi from PersonInstitution pi where pi.retired = false and pi.payYear =:y and pi.payMonth =:m and pi.payCentre.id in " +  getInstitutionController().getInsIds() + " order by pi.institution.name";
+        System.out.println("JPQL is " + jpql);
+        selectedPersonInstitutions = getPiFacade().findBySQL(jpql,m);
+        System.out.println("selected Person Institutes are " + selectedPersonInstitutions);
+        getSummeryCounts(selectedPersonInstitutions);
+        return selectedPersonInstitutions;
+    }
+
+    public void setSelectedPersonInstitutions(List<PersonInstitution> selectedPersonInstitutions) {
+        this.selectedPersonInstitutions = selectedPersonInstitutions;
+    }
+
     public List<PersonInstitution> getExistingPersonInstitutions() {
         System.out.println("existing pis");
         if (existingPersonInstitutions != null) {
             return existingPersonInstitutions;
         }
-        if (getInstitution() == null || getInsSet() == null ) {
+        if (getInstitution() == null || getInsSet() == null) {
             return new ArrayList<PersonInstitution>();
         }
+        Map m = new HashMap();
+        m.put("s", getInsSet());
         existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " order by pi.institution.name");
         getSummeryCounts(existingPersonInstitutions);
         return existingPersonInstitutions;
     }
 
-    private void recreateModel() {
+    public void recreateModel() {
+        System.out.println("recreating model");
         existingPersonInstitutions = null;
+        selectedPersonInstitutions=null;
     }
 
     public List<PersonInstitution> getPersonInstitutionsWithoutNic() {
@@ -1070,18 +1096,19 @@ public class DbfController implements Serializable {
                 Institution attachedIns;
 
                 String insName = "";
-                if (institution.isInsmapAddress() == true) {
-                    insName = rowObjects[21].toString() + " " + rowObjects[22].toString() + " " + rowObjects[23].toString();
-                }
 
+                if (!institution.isInsMapToPaycentre()) {
+                    if (institution.isInsmapAddress() == true) {
+                        insName = rowObjects[21].toString() + " " + rowObjects[22].toString() + " " + rowObjects[23].toString();
+                    }
 //                Add Site
-                if (institution.isInsmapSite() == true) {
-                    insName = insName + rowObjects[11].toString();
-                }
-
+                    if (institution.isInsmapSite() == true) {
+                        insName = insName + rowObjects[11].toString();
+                    }
 //                Add Section
-                if (institution.isInsmapSection() == true) {
-                    insName = insName + rowObjects[13].toString();
+                    if (institution.isInsmapSection() == true) {
+                        insName = insName + rowObjects[13].toString();
+                    }
                 }
 
                 String empNo = "";
@@ -1094,10 +1121,14 @@ public class DbfController implements Serializable {
 
                 if (!"999999.0".equals(empNo)) {
 
-                    if (insName.trim().equals("")) {
+                    if (institution.isInsMapToPaycentre()) {
                         attachedIns = getInstitution();
                     } else {
-                        attachedIns = findInstitution(insName);
+                        if (insName.trim().equals("")) {
+                            attachedIns = null;
+                        } else {
+                            attachedIns = findInstitution(insName);
+                        }
                     }
 
                     temNic = rowObjects[48].toString();
@@ -1196,7 +1227,7 @@ public class DbfController implements Serializable {
             for (PersonInstitution pi : newPersonInstitutions) {
                 getPiFacade().create(pi);
             }
-            
+
             recreateModel();
             newPersonInstitutions = new ArrayList<PersonInstitution>();
             JsfUtil.addSuccessMessage("Data Replaced Successfully");

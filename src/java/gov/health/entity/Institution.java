@@ -62,6 +62,7 @@ public class Institution implements Serializable, Comparable {
     boolean insmapAddress;
     boolean insmapSite;
     boolean insmapSection;
+    boolean insMapToPaycentre;
 
     @ManyToOne
     Institution mappedToInstitution;
@@ -69,6 +70,16 @@ public class Institution implements Serializable, Comparable {
     @ManyToOne
     Institution institution;
 
+    public boolean isInsMapToPaycentre() {
+        return insMapToPaycentre;
+    }
+
+    public void setInsMapToPaycentre(boolean insMapToPaycentre) {
+        this.insMapToPaycentre = insMapToPaycentre;
+    }
+
+    
+    
     public Institution getInstitution() {
         return institution;
     }

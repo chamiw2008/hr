@@ -263,7 +263,25 @@ public class InstitutionController implements Serializable {
         this.offSel = offSel;
     }
 
+    
+    @Inject
+    DbfController dbfController;
+
+    public DbfController getDbfController() {
+        return dbfController;
+    }
+
+    public void setDbfController(DbfController dbfController) {
+        this.dbfController = dbfController;
+    }
+    
+    
+    
     public void setSelectedNode(TreeNode selectedNode) {
+        if(this.selectedNode!=selectedNode){
+            getDbfController().recreateModel();
+            getDbfController().getSelectedPersonInstitutions();
+        }
         this.selectedNode = selectedNode;
     }
 
@@ -298,8 +316,9 @@ public class InstitutionController implements Serializable {
 
     public void onNodeSelect(NodeSelectEvent event) {
         current = findInstitution(event.getTreeNode().toString(), false);
+        getDbfController().recreateModel();
+        getDbfController().getSelectedPersonInstitutions();
         JsfUtil.addSuccessMessage(current.getName());
-        System.out.println("current is " + current.getName());
     }
 
     public void onNodeUnselect(NodeUnselectEvent event) {
