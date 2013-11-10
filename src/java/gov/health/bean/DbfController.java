@@ -416,7 +416,7 @@ public class DbfController implements Serializable {
 
     public void setInsSet(InstitutionSet insSet) {
         if (this.insSet != insSet) {
-            setToGetRecordsagain(Boolean.TRUE);
+            recreateModel();
         }
         this.insSet = insSet;
     }
@@ -477,29 +477,30 @@ public class DbfController implements Serializable {
     }
 
     public Integer getPayMonth() {
-        if(payMonth==null){
-            payMonth=Calendar.getInstance().get(Calendar.MONTH);
+        if (payMonth == null) {
+            payMonth = Calendar.getInstance().get(Calendar.MONTH);
         }
         return payMonth;
     }
 
     public void setPayMonth(Integer payMonth) {
         if (this.payMonth != payMonth) {
-            setToGetRecordsagain(Boolean.TRUE);
+            recreateModel();
         }
         this.payMonth = payMonth;
     }
 
     public Integer getPayYear() {
-        if (payYear==null || payYear == 0) {
+        if (payYear == null || payYear == 0) {
             payYear = Calendar.getInstance().get(Calendar.YEAR);
         }
+        recreateModel();
         return payYear;
     }
 
     public void setPayYear(Integer payYear) {
         if (this.payYear != payYear) {
-            setToGetRecordsagain(Boolean.TRUE);
+            recreateModel();
         }
         this.payYear = payYear;
     }
@@ -520,24 +521,21 @@ public class DbfController implements Serializable {
         this.sessionController = sessionController;
     }
 
-//    public List<DbfFile> getDbfFiles() {
-//        return dbfFiles;
-//    }
-//
-//    public void setDbfFiles(List<DbfFile> dbfFiles) {
-//        this.dbfFiles = dbfFiles;
-//    }
     public List<PersonInstitution> getExistingPersonInstitutions() {
-        if (getInstitution() == null || getInsSet() == null) {
+        System.out.println("existing pis");
+        if (existingPersonInstitutions != null) {
+            return existingPersonInstitutions;
+        }
+        if (getInstitution() == null || getInsSet() == null ) {
             return new ArrayList<PersonInstitution>();
         }
-        if (getToGetRecordsagain()) {
-            existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " order by pi.institution.name");
-            getSummeryCounts(existingPersonInstitutions);
-            setToGetRecordsagain(Boolean.FALSE);
-        } else {
-        }
+        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " order by pi.institution.name");
+        getSummeryCounts(existingPersonInstitutions);
         return existingPersonInstitutions;
+    }
+
+    private void recreateModel() {
+        existingPersonInstitutions = null;
     }
 
     public List<PersonInstitution> getPersonInstitutionsWithoutNic() {
@@ -687,15 +685,10 @@ public class DbfController implements Serializable {
     }
 
     public void setInstitution(Institution institution) {
-        this.institution = institution;
         if (this.institution != institution) {
-            setToGetRecordsagain(Boolean.TRUE);
+            recreateModel();
         }
-//        if (institution == null && institution.getId() != null) {
-//            prepareImages("Select ai from AppImage ai Where ai.institution.id = " + institution.getId());
-//        } else {
-//            dbfFiles = null;
-//        }
+        this.institution = institution;
     }
 
     public PersonFacade getPerFacade() {
@@ -1193,7 +1186,7 @@ public class DbfController implements Serializable {
                     newPersonInstitutions.add(pi);
                 }
             }
-           
+
             for (PersonInstitution pi : existingPersonInstitutions) {
                 pi.setRetired(true);
                 pi.setRetiredAt(Calendar.getInstance().getTime());
@@ -1203,7 +1196,8 @@ public class DbfController implements Serializable {
             for (PersonInstitution pi : newPersonInstitutions) {
                 getPiFacade().create(pi);
             }
-            getExistingPersonInstitutions();
+            
+            recreateModel();
             newPersonInstitutions = new ArrayList<PersonInstitution>();
             JsfUtil.addSuccessMessage("Data Replaced Successfully");
 
