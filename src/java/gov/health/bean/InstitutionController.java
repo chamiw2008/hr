@@ -8,7 +8,6 @@
  */
 package gov.health.bean;
 
-
 import javax.faces.application.FacesMessage;
 
 import org.primefaces.event.NodeCollapseEvent;
@@ -76,23 +75,40 @@ public class InstitutionController implements Serializable {
 
     List<Institution> selectedIns;
     List<Institution> selectedPcs;
-    
+
+    List<Institution> paycentreInstitutions;
+
     Institution payCentre;
 
-    public void savePayCentre(){
-        if(payCentre==null){
+    public List<Institution> getPaycentreInstitutions() {
+        if (getPayCentre() == null) {
+            return new ArrayList<Institution>();
+        }
+        String jpql = "select mi from Institution mi where mi.retired=false and mi.institution=:i order by mi.name";
+        Map m = new HashMap();
+        m.put("i", getPayCentre());
+        paycentreInstitutions = getFacade().findBySQL(jpql, m);
+        return paycentreInstitutions;
+    }
+
+    public void setPaycentreInstitutions(List<Institution> paycentreInstitutions) {
+        this.paycentreInstitutions = paycentreInstitutions;
+    }
+
+    public void savePayCentre() {
+        if (payCentre == null) {
             JsfUtil.addErrorMessage("Please select a pay centre");
             return;
         }
-        if(payCentre.getId()==null || payCentre.getId()==0){
+        if (payCentre.getId() == null || payCentre.getId() == 0) {
             getFacade().create(payCentre);
             JsfUtil.addSuccessMessage("Saved");
-        }else{
+        } else {
             getFacade().edit(payCentre);
             JsfUtil.addSuccessMessage("Updated");
         }
     }
-    
+
     public Institution getPayCentre() {
         return payCentre;
     }
@@ -100,8 +116,6 @@ public class InstitutionController implements Serializable {
     public void setPayCentre(Institution payCentre) {
         this.payCentre = payCentre;
     }
-    
-    
 
     String insIds;
 
@@ -404,9 +418,6 @@ public class InstitutionController implements Serializable {
         return ejbFacade;
     }
 
-    
-    
-    
     public List<Institution> getItems() {
         String temSql;
         if (items != null) {
