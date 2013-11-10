@@ -29,12 +29,14 @@
 
                         <h:outputText value="Year"/>
                         <h:selectOneMenu    id="cmbYear" value="#{dbfController.payYear}" >
+                            <f:selectItem itemLabel="Select Year" />
                             <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
                             <f:ajax event="change" execute="cmbYear" render=":#{p:component('cmbSet')} :#{p:component('tblEx')} :#{p:component('gridSummery')}" />
                         </h:selectOneMenu>
 
                         <h:outputText value="Month"/>
                         <h:selectOneMenu    id="cmbMonth" value="#{dbfController.payMonth}"  >
+                            <f:selectItem itemLabel="Select Month" />
                             <f:selectItem itemValue="1" itemLabel="January" />
                             <f:selectItem itemValue="2" itemLabel="February" />
                             <f:selectItem itemValue="3" itemLabel="March" />
