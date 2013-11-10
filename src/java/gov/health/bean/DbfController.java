@@ -4,6 +4,7 @@
  */
 package gov.health.bean;
 
+import com.linuxense.javadbf.DBFException;
 import javax.faces.application.FacesMessage;
 
 import org.primefaces.event.FileUploadEvent;
@@ -39,6 +40,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 
 import javax.faces.context.FacesContext;
@@ -525,7 +528,7 @@ public class DbfController implements Serializable {
             return new ArrayList<PersonInstitution>();
         }
         if (getToGetRecordsagain()) {
-            existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " order by pi.institution.name = ");
+            existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " order by pi.institution.name");
             getSummeryCounts(existingPersonInstitutions);
             setToGetRecordsagain(Boolean.FALSE);
         } else {
@@ -745,6 +748,15 @@ public class DbfController implements Serializable {
 
     private Boolean isCorrectDbfFile(DBFReader reader) {
         Boolean correct = true;
+        try {
+            System.out.println("field count is " + reader.getFieldCount());
+            for(int i=0;i<reader.getFieldCount();i++){
+                System.out.println("field " + i + " is " + reader.getField(i).getName());
+            }
+        } catch (DBFException ex) {
+            Logger.getLogger(DbfController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         try {
             if (!reader.getField(0).getName().equalsIgnoreCase("F1_EMPNO")) {
                 correct = false;
@@ -1025,12 +1037,7 @@ public class DbfController implements Serializable {
             JsfUtil.addErrorMessage("Please select a Set");
             return "";
         }
-
-        if (getExistingPersonInstitutions().size() > 0) {
-            newEntries = false;
-        } else {
-            newEntries = true;
-        }
+        newEntries = getExistingPersonInstitutions().size() <= 0;
 
         try {
 

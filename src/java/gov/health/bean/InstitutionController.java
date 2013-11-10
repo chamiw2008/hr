@@ -76,6 +76,18 @@ public class InstitutionController implements Serializable {
 
     List<Institution> selectedIns;
     List<Institution> selectedPcs;
+    
+    Institution payCentre;
+
+    public Institution getPayCentre() {
+        return payCentre;
+    }
+
+    public void setPayCentre(Institution payCentre) {
+        this.payCentre = payCentre;
+    }
+    
+    
 
     String insIds;
 

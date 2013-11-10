@@ -66,6 +66,8 @@ public class Institution implements Serializable, Comparable {
     @ManyToOne
     Institution mappedToInstitution;
 
+    
+    
     public boolean isInsmapAddress() {
         return insmapAddress;
     }
