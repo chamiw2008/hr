@@ -92,8 +92,8 @@ public class DbfController implements Serializable {
     List<PersonInstitution> newPersonInstitutions;
     @Inject
     SessionController sessionController;
-    int payYear = 0;
-    int payMonth = 0;
+    Integer payYear = 0;
+    Integer payMonth = 0;
     List<Integer> payYears;
     List<Integer> payMonths;
     List<InstitutionSet> insSets;
@@ -467,6 +467,7 @@ public class DbfController implements Serializable {
             payYears.add(2011);
             payYears.add(2012);
             payYears.add(2013);
+            payYears.add(2014);
         }
         return payYears;
     }
@@ -475,25 +476,28 @@ public class DbfController implements Serializable {
         this.payYears = payYears;
     }
 
-    public int getPayMonth() {
+    public Integer getPayMonth() {
+        if(payMonth==null){
+            payMonth=Calendar.getInstance().get(Calendar.MONTH);
+        }
         return payMonth;
     }
 
-    public void setPayMonth(int payMonth) {
+    public void setPayMonth(Integer payMonth) {
         if (this.payMonth != payMonth) {
             setToGetRecordsagain(Boolean.TRUE);
         }
         this.payMonth = payMonth;
     }
 
-    public int getPayYear() {
-        if (payYear == 0) {
-            return Calendar.getInstance().get(Calendar.YEAR);
+    public Integer getPayYear() {
+        if (payYear==null || payYear == 0) {
+            payYear = Calendar.getInstance().get(Calendar.YEAR);
         }
         return payYear;
     }
 
-    public void setPayYear(int payYear) {
+    public void setPayYear(Integer payYear) {
         if (this.payYear != payYear) {
             setToGetRecordsagain(Boolean.TRUE);
         }
@@ -998,10 +1002,9 @@ public class DbfController implements Serializable {
                 toGetRecordsagain = Boolean.TRUE;
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println("Error " + e.getMessage());
         }
-        return;
     }
 
     public String uploadAndReplaceData() {
@@ -1030,14 +1033,15 @@ public class DbfController implements Serializable {
             JsfUtil.addErrorMessage("Please select the dbf file to upload");
             return "";
         }
-//        if (payYear == null || payYear == 0) {
-//            JsfUtil.addErrorMessage("Please select a year");
-//            return "";
-//        }
-//        if (payMonth == null || payMonth == 0) {
-//            JsfUtil.addErrorMessage("Please select a Month");
-//            return "";
-//        }
+        System.out.println("Pay year is " + payYear);
+        if (payYear == null || payYear == 0) {
+            JsfUtil.addErrorMessage("Please select a year");
+            return "";
+        }
+        if (payMonth == null || payMonth == 0) {
+            JsfUtil.addErrorMessage("Please select a Month");
+            return "";
+        }
         if (insSet == null) {
             JsfUtil.addErrorMessage("Please select a Set");
             return "";

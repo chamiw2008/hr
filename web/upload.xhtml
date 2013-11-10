@@ -26,11 +26,7 @@
                         <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
 
                         <h:outputText value="Year"/>
-                        <h:selectOneMenu  disabled="true"    id="cmbYear" value="#{dbfController.payYear}" >
-                            <!--<f:selectItem itemLabel="Select Year"/>-->
-                            <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
-                            <f:ajax event="change" execute="cmbYear" render=":#{p:component('cmbSet')}  " />
-                        </h:selectOneMenu>
+                        <h:outputText  id="cmbYear" value="#{dbfController.payYear}" ></h:outputText>
 
                         <h:outputText value="Month"/>
                         <h:selectOneMenu   disabled="true"   id="cmbMonth" value="#{dbfController.payMonth}"  >
