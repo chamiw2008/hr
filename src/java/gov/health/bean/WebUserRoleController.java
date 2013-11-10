@@ -20,6 +20,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
 /**
  *
  * @author Dr. M. H. B. Ariyaratne, MBBS, PGIM Trainee for MSc(Biomedical
@@ -29,7 +30,7 @@ import javax.faces.convert.FacesConverter;
 @SessionScoped
 public  class WebUserRoleController implements Serializable {
     
-    @EJB
+    @Inject
     private SessionController sessionController;
     @EJB
     private WebUserRoleFacade ejbFacade;

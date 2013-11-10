@@ -32,7 +32,7 @@
 
                     <h:outputLabel value="Previleges Restricted to" />
                     <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution!=null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}" />
-                    <p:selectOneListbox id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}" value="#{sessionController.institution}"  p:selectOneListbox>
+                    <p:selectOneListbox id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}" value="#{sessionController.institution}" >
                         <f:selectItems value="#{institutionController.payCentres}" var="ri" itemValue="#{ri}" itemLabel="#{ri.name}" />
                     </p:selectOneListbox>
                     <h:outputLabel value="User name (Case Insensitive)" />
@@ -42,7 +42,7 @@
                     <h:outputLabel value="Re-enter password" />
                     <h:inputSecret value="#{sessionController.newPasswordConfirm}" />
                 </p:panelGrid>
-                <p:commandButton ajax="false" id="btnReg" class="pdButton" type="submit" value="Register" action="#{sessionController.registeUser}" />
+                <p:commandButton ajax="false" id="btnReg"  type="submit" value="Register" action="#{sessionController.registeUser}" />
                 <p:messages globalOnly="true"  ></p:messages>
             </p:panel>
         </h:form>
