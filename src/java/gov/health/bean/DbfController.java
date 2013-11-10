@@ -750,13 +750,13 @@ public class DbfController implements Serializable {
         Boolean correct = true;
         try {
             System.out.println("field count is " + reader.getFieldCount());
-            for(int i=0;i<reader.getFieldCount();i++){
+            for (int i = 0; i < reader.getFieldCount(); i++) {
                 System.out.println("field " + i + " is " + reader.getField(i).getName());
             }
         } catch (DBFException ex) {
             Logger.getLogger(DbfController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         try {
             if (!reader.getField(0).getName().equalsIgnoreCase("F1_EMPNO")) {
                 correct = false;
@@ -1004,12 +1004,12 @@ public class DbfController implements Serializable {
         return;
     }
 
-    public String uploadAndReplaceData(){
+    public String uploadAndReplaceData() {
         extractData();
         replaceData();
         return "upload_view";
     }
-    
+
     public String extractData() {
         System.out.println("extracting date");
         InputStream in;
@@ -1309,21 +1309,80 @@ public class DbfController implements Serializable {
         if (insName.equals("")) {
             return null;
         }
-        Institution ins = getInsFacade().findFirstBySQL("select d from Institution d where d.retired = false and lower(d.name) = '" + insName.toLowerCase() + "'");
-        if (ins == null) {
-            ins = new Institution();
-            ins.setName(insName);
-            ins.setCreatedAt(Calendar.getInstance().getTime());
-            ins.setCreater(sessionController.loggedUser);
-            ins.setOfficial(Boolean.FALSE);
-            getInsFacade().create(ins);
-        } else {
-            if (ins.getOfficial().equals(Boolean.FALSE)) {
-                if (ins.getMappedToInstitution() != null) {
-                    return ins.getMappedToInstitution();
-                }
-            }
+        Map m = new HashMap();
+        m.put("i", getInstitution());
+
+        Institution ins;
+
+        //Get Exact Match for that percerticular institute
+        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.institution=:i and d.mappedToInstitution not null and d.retired = false and d.name = '" + insName + "'", m);
+        if (ins != null) {
+            return ins.getMappedToInstitution();
         }
+
+        //Get CapitalSimple Match for that percerticular institute
+        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.institution=:i and d.mappedToInstitution not null and d.retired = false and upper(d.name) = '" + insName.toUpperCase() + "'", m);
+        if (ins != null) {
+            Institution i = new Institution();
+            i.setName(insName);
+            i.setCreatedAt(Calendar.getInstance().getTime());
+            i.setCreater(sessionController.loggedUser);
+            i.setOfficial(Boolean.FALSE);
+            i.setInstitution(institution);
+            i.setMappedToInstitution(ins.getMappedToInstitution());
+            getInsFacade().create(i);
+            return ins.getMappedToInstitution();
+        }
+
+        //Get Exact Match for any other institute
+        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.retired = false  and d.mappedToInstitution not null and  d.name = '" + insName + "'");
+        if (ins != null) {
+            Institution i = new Institution();
+            i.setName(insName);
+            i.setCreatedAt(Calendar.getInstance().getTime());
+            i.setCreater(sessionController.loggedUser);
+            i.setOfficial(Boolean.FALSE);
+            i.setInstitution(institution);
+            i.setMappedToInstitution(ins.getMappedToInstitution());
+            getInsFacade().create(i);
+            return ins;
+        }
+
+        //Get Capital/Simple Match for any other institute
+        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.retired = false  and d.mappedToInstitution not null and  upper(d.name) = '" + insName.toUpperCase() + "'");
+        if (ins != null) {
+            Institution i = new Institution();
+            i.setName(insName);
+            i.setCreatedAt(Calendar.getInstance().getTime());
+            i.setCreater(sessionController.loggedUser);
+            i.setOfficial(Boolean.FALSE);
+            i.setInstitution(institution);
+            i.setMappedToInstitution(ins.getMappedToInstitution());
+            getInsFacade().create(i);
+            return ins;
+        }
+
+        //Get Exact Match for that percerticular institute without mapped institution
+        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.institution=:i and d.retired = false and d.name = '" + insName + "'", m);
+        if (ins != null) {
+            return ins;
+        }
+
+        //Get Case Insensitive Match for that percerticular institute without mapped institution
+        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.institution=:i and d.retired = false and upper(d.name) = '" + insName.toUpperCase() + "'", m);
+        if (ins != null) {
+            return ins;
+        }
+
+        
+        ins = new Institution();
+        ins.setName(insName);
+        ins.setCreatedAt(Calendar.getInstance().getTime());
+        ins.setCreater(sessionController.loggedUser);
+        ins.setOfficial(Boolean.FALSE);
+        ins.setInstitution(institution);
+        getInsFacade().create(ins);
+
         return ins;
     }
 }
