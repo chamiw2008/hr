@@ -37,7 +37,8 @@
 
     <!-- style="min-height:920px !important; height:auto !important;"   -->
     <h:body >
-
+        
+        <p:growl id="growl" autoUpdate="true"/>
         <p:ajaxStatus style="position: absolute; width:128px;height:128px;position:fixed;right:5px;top:5px">  
             <f:facet name="start">  
                 <p:graphicImage library="image" name="ajaxloading.gif" />  
@@ -147,12 +148,12 @@
                                                 <td colspan="2" class="pdLabel">&nbsp;</td>
                                             </tr>
                                             <tr>
-                                                <td class="pdLabel" align="right" width="40%">#{labels.UserName}</td>
-                                                <td align="left" width="60%"><p:inputText value="#{sessionController.userName}" autocomplete="off"/></td>
+                                                <td class="pdLabel" align="right" width="40%">#{labels.userName}</td>
+                                                <td align="left" width="60%"><p:inputText value="#{sessionController.userName}" autocomplete="off" required="true" requiredMessage="Please enter the user name"/></td>
                                             </tr>
                                             <tr>
-                                                <td class="pdLabel" align="right">#{labels.Password}</td>
-                                                <td align="left"><p:password value="#{sessionController.passord}"  autocomplete="off" /></td>
+                                                <td class="pdLabel" align="right">#{labels.password}</td>
+                                                <td align="left"><p:password value="#{sessionController.passord}"  autocomplete="off" required="true" requiredMessage="Please enter the password" /></td>
                                             </tr>
                                             <tr>
                                                 <td align="left"></td>

@@ -28,7 +28,7 @@
                                 <h:outputText id="lblSelect" value="Service Type" >
                                 </h:outputText>
 
-                                <p:inputText id="txtSelect" value="Service Type" disabled="#{designationCategoryController.selectControlDisable}"  style="min-width: 200px" >
+                                <p:inputText id="txtSelect" value="#{designationCategoryController.selectText}" disabled="#{designationCategoryController.selectControlDisable}"  style="min-width: 200px" >
                                     <f:ajax  event="keyup" render="lstSelect txtName" >
                                     </f:ajax>
                                 </p:inputText>

@@ -21,8 +21,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.inject.Inject;
 
 /**
@@ -40,7 +38,7 @@ public class DesignationCategoryController  implements Serializable {
     SessionController sessionController;
     List<DesignationCategory> lstItems;
     private DesignationCategory current;
-    private DataModel<DesignationCategory> items = null;
+    private List<DesignationCategory> items = null;
     private int selectedItemIndex;
     boolean selectControlDisable = false;
     boolean modifyControlDisable = true;
@@ -99,8 +97,8 @@ public class DesignationCategoryController  implements Serializable {
         return ejbFacade;
     }
 
-    public DataModel<DesignationCategory> getItems() {
-        items = new ListDataModel(getFacade().findAll("name", true));
+    public List<DesignationCategory> getItems() {
+        items = getFacade().findAll("name", true);
         return items;
     }
 
@@ -113,17 +111,19 @@ public class DesignationCategoryController  implements Serializable {
         return valueInt;
     }
 
-    public DataModel searchItems() {
+    List<DesignationCategory> searchItems;
+    
+    public List<DesignationCategory> getSearchItems() {
         recreateModel();
-        if (items == null) {
+        if (searchItems == null) {
             if (selectText.equals("")) {
-                items = new ListDataModel(getFacade().findAll("name", true));
+                searchItems = getFacade().findAll("name", true);
             } else {
-                items = new ListDataModel(getFacade().findAll("name", "%" + selectText + "%",
-                        true));
-                if (items.getRowCount() > 0) {
-                    items.setRowIndex(0);
-                    current = (DesignationCategory) items.getRowData();
+                String jpql;
+                jpql="select c from DesignationCategory c where c.retired=false and upper(c.name) like '%" + getSelectText().toUpperCase() + "%' order by c.name";
+                searchItems = getFacade().findAll(jpql);
+                if (searchItems.size() > 0) {
+                    current = (DesignationCategory) searchItems.get(0);
                     Long temLong = current.getId();
                     selectedItemIndex = intValue(temLong);
                 } else {
@@ -132,24 +132,22 @@ public class DesignationCategoryController  implements Serializable {
                 }
             }
         }
-        return items;
-
+        return searchItems;
     }
 
     public DesignationCategory searchItem(String itemName, boolean createNewIfNotPresent) {
-        DesignationCategory searchedItem = null;
-        items = new ListDataModel(getFacade().findAll("name", itemName, true));
-        if (items.getRowCount() > 0) {
-            items.setRowIndex(0);
-            searchedItem = (DesignationCategory) items.getRowData();
+        DesignationCategory d = null;
+        List<DesignationCategory> ds = getFacade().findAll("name", itemName, true);
+        if (ds.size() > 0) {
+            d = (DesignationCategory) items.get(0);
         } else if (createNewIfNotPresent) {
-            searchedItem = new DesignationCategory();
-            searchedItem.setName(itemName);
-            searchedItem.setCreatedAt(Calendar.getInstance().getTime());
-            searchedItem.setCreater(sessionController.loggedUser);
-            getFacade().create(searchedItem);
+            d = new DesignationCategory();
+            d.setName(itemName);
+            d.setCreatedAt(Calendar.getInstance().getTime());
+            d.setCreater(sessionController.loggedUser);
+            getFacade().create(d);
         }
-        return searchedItem;
+        return d;
     }
 
     private void recreateModel() {
@@ -252,7 +250,6 @@ public class DesignationCategoryController  implements Serializable {
 
     public void setSelectText(String selectText) {
         this.selectText = selectText;
-        searchItems();
     }
 
     public void prepareSelectControlDisable() {
@@ -268,6 +265,7 @@ public class DesignationCategoryController  implements Serializable {
     @FacesConverter(forClass = DesignationCategory.class)
     public static class DesignationCategoryControllerConverter implements Converter {
 
+        @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
@@ -284,11 +282,12 @@ public class DesignationCategoryController  implements Serializable {
         }
 
         String getStringKey(java.lang.Long value) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append(value);
             return sb.toString();
         }
 
+        @Override
         public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
             if (object == null) {
                 return null;
