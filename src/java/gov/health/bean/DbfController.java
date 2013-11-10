@@ -1190,6 +1190,206 @@ public class DbfController implements Serializable {
                     newPersonInstitutions.add(pi);
                 }
             }
+           
+            for (PersonInstitution pi : existingPersonInstitutions) {
+                pi.setRetired(true);
+                pi.setRetiredAt(Calendar.getInstance().getTime());
+                pi.setRetirer(sessionController.loggedUser);
+                getPiFacade().edit(pi);
+            }
+            for (PersonInstitution pi : newPersonInstitutions) {
+                getPiFacade().create(pi);
+            }
+            getExistingPersonInstitutions();
+            newPersonInstitutions = new ArrayList<PersonInstitution>();
+            JsfUtil.addSuccessMessage("Data Replaced Successfully");
+
+        } catch (Exception e) {
+            System.out.println("Error " + e.getMessage());
+        }
+        return "";
+    }
+
+    public String extractDataOld() {
+        System.out.println("extracting date");
+        InputStream in;
+        String temNic;
+        Boolean newEntries = false;
+        if (sessionController.getLoggedUser().getRestrictedInstitution() != null) {
+            setInstitution(sessionController.getLoggedUser().getRestrictedInstitution());
+        } else {
+            if (getInstitution() == null) {
+                JsfUtil.addErrorMessage("Please select an institution");
+                return "";
+            }
+        }
+        if (getInstitution() == null) {
+            JsfUtil.addErrorMessage("Please select an institute");
+            return "";
+        }
+        if (file == null) {
+            JsfUtil.addErrorMessage("Please select the dbf file to upload");
+            return "";
+        }
+//        if (payYear == null || payYear == 0) {
+//            JsfUtil.addErrorMessage("Please select a year");
+//            return "";
+//        }
+//        if (payMonth == null || payMonth == 0) {
+//            JsfUtil.addErrorMessage("Please select a Month");
+//            return "";
+//        }
+        if (insSet == null) {
+            JsfUtil.addErrorMessage("Please select a Set");
+            return "";
+        }
+        newEntries = getExistingPersonInstitutions().size() <= 0;
+
+        try {
+
+            in = file.getInputstream();
+            DBFReader reader = new DBFReader(in);
+
+            if (!isCorrectDbfFile(reader)) {
+                JsfUtil.addErrorMessage("But the file you selected is not the correct file. Please make sure you selected the correct file named PYREMPMA.DBF. If you are sure that you selected the correct file, you may be using an old version.");
+                return "";
+            }
+
+            int numberOfFields = reader.getFieldCount();
+
+            System.out.println("Number of fields is " + numberOfFields);
+            for (int i = 0; i < numberOfFields; i++) {
+                DBFField field = reader.getField(i);
+                System.out.println("Data Field " + i + " is " + field.getName());
+            }
+
+            Object[] rowObjects;
+
+            newPersonInstitutions = new ArrayList<PersonInstitution>();
+
+            while ((rowObjects = reader.nextRecord()) != null) {
+
+                Person p = null;
+                PersonInstitution pi = new PersonInstitution();
+                Institution attachedIns;
+
+                String insName = "";
+                if (institution.isInsmapAddress() == true) {
+                    insName = rowObjects[21].toString() + " " + rowObjects[22].toString() + " " + rowObjects[23].toString();
+                }
+
+//                Add Site
+                if (institution.isInsmapSite() == true) {
+                    insName = insName + rowObjects[11].toString();
+                }
+
+//                Add Section
+                if (institution.isInsmapSection() == true) {
+                    insName = insName + rowObjects[13].toString();
+                }
+
+                String empNo = "";
+
+                try {
+                    empNo = rowObjects[0].toString();
+                } catch (Exception e) {
+                    empNo = "999999.0";
+                }
+
+                if (!"999999.0".equals(empNo)) {
+
+                    if (insName.trim().equals("")) {
+                        attachedIns = getInstitution();
+                    } else {
+                        attachedIns = findInstitution(insName);
+                    }
+
+                    temNic = rowObjects[48].toString();
+
+                    if ("".equals(temNic.trim())) {
+                        pi.setPerson(null);
+                    } else {
+                        p = getPerFacade().findFirstBySQL("select p from Person p where p.retired = false and p.nic = '" + temNic + "'");
+                        if (p == null) {
+                            p = new Person();
+                            p.setCreatedAt(Calendar.getInstance().getTime());
+                            p.setCreater(sessionController.getLoggedUser());
+                            p.setInstitution(attachedIns);
+                            p.setTitle(rowObjects[1].toString());
+                            p.setInitials(rowObjects[3].toString());
+                            p.setSurname(rowObjects[2].toString());
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                            try {
+                                p.setDob(dateFormat.parse(rowObjects[7].toString()));
+                            } catch (Exception e) {
+//                            p.setDob(null);
+                            }
+                            try {
+                                p.setNic(rowObjects[48].toString());
+                            } catch (Exception e) {
+                            }
+                            try {
+                                p.setName(p.getTitle() + " " + p.getInitials() + " " + p.getSurname());
+                            } catch (Exception e) {
+                            }
+                            getPerFacade().create(p);
+                        } else {
+                            if (p.getInstitution() != getInstitution()) {
+                                markTransfer(p, p.getInstitution(), institution, pi);
+                            }
+                        }
+
+                    }
+
+                    pi.setPerson(p);
+                    pi.setInstitution(attachedIns);
+                    pi.setPayCentre(getInstitution());
+                    pi.setNic(rowObjects[48].toString());
+
+                    pi.setEmpNo(rowObjects[0].toString());
+                    pi.setAddress1(rowObjects[18].toString());
+                    pi.setAddress2(rowObjects[19].toString());
+                    pi.setAddress3(rowObjects[20].toString());
+                    pi.setOffAddress1(rowObjects[21].toString());
+                    pi.setOffAddress2(rowObjects[22].toString());
+                    pi.setOffAddress3(rowObjects[23].toString());
+
+                    pi.setDesignation(findDesignation(rowObjects[8].toString()));
+
+                    pi.setName(rowObjects[1].toString() + " " + rowObjects[2].toString() + " " + rowObjects[3].toString());
+                    pi.setPayMonth(payMonth);
+                    pi.setPayYear(payYear);
+                    pi.setPaySet(insSet);
+
+                    if (rowObjects[4].toString().equals("") || rowObjects[50].toString().equals("")) {
+                        pi.setPermanent(Boolean.FALSE);
+                    } else {
+                        pi.setPermanent(Boolean.TRUE);
+                    }
+                    try {
+                        if (Integer.valueOf(rowObjects[4].toString()) == 0) {
+                            pi.setNopay(Boolean.TRUE);
+                        } else {
+                        }
+                    } catch (Exception e) {
+                    }
+
+                    try {
+                        pi.setActiveState((Boolean) rowObjects[40]);
+                    } catch (Exception e) {
+                        pi.setActiveState(true);
+                    }
+                    try {
+                        pi.setNopay((Boolean) rowObjects[31]);
+                    } catch (Exception e) {
+                        pi.setNopay(false);
+                    }
+                    if (newEntries) {
+                        getPiFacade().create(pi);
+                    }
+                    newPersonInstitutions.add(pi);
+                }
+            }
             if (newEntries) {
                 JsfUtil.addSuccessMessage("Date in the file " + file.getFileName() + " recorded successfully. ");
                 newPersonInstitutions = new ArrayList<PersonInstitution>();
@@ -1374,7 +1574,6 @@ public class DbfController implements Serializable {
             return ins;
         }
 
-        
         ins = new Institution();
         ins.setName(insName);
         ins.setCreatedAt(Calendar.getInstance().getTime());
