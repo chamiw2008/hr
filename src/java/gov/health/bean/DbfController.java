@@ -1004,6 +1004,12 @@ public class DbfController implements Serializable {
         return;
     }
 
+    public String uploadAndReplaceData(){
+        extractData();
+        replaceData();
+        return "upload_view";
+    }
+    
     public String extractData() {
         System.out.println("extracting date");
         InputStream in;

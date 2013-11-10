@@ -58,7 +58,7 @@
                         </h:selectOneMenu>
                         <h:outputText value="Select the file and Upload"/>
                         <p:fileUpload value="#{dbfController.file}" mode="simple" ></p:fileUpload>
-                        <p:commandButton value="Upload" ajax="false" actionListener="#{dbfController.extractData}" ></p:commandButton>
+                        <p:commandButton value="Upload and Replace" ajax="false" actionListener="#{dbfController.extractData}" ></p:commandButton>
                     </p:panelGrid>
                 </h:form>
             </p:panel>
