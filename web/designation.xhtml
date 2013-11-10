@@ -7,12 +7,11 @@
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:p="http://primefaces.org/ui">
     <ui:define name="content">
-        <h:outputLabel value="New Branch" />
         <h:form  > <!-- removed this part :  -->
             <p:growl autoUpdate="true" />
             <p:focus id="selectFocus" context="gpSelect" />
             <p:focus id="detailFocus" context="gpDetail" />
-            <p:panel header="#{labels.ManageDesignations}" >
+            <p:panel header="#{labels.manageDesignations}" >
                 <h:panelGrid id ="gpVeda" columns="2" >
 
                     <h:panelGrid id="gpSelect" columns="1"  >
@@ -20,7 +19,7 @@
 
                             <h:panelGrid id="gpSelectText" columns="2" >
 
-                                <h:outputText id="lblSelect" value="#{labels.Designations}" >
+                                <h:outputText id="lblSelect" value="#{labels.designations}" >
                                 </h:outputText>
 
                                 <p:selectOneListbox  id="lstSelect"  value="#{designationController.current}" style="min-width: 223px">
@@ -45,7 +44,7 @@
                     <p:panel>
                         <h:panelGrid id="gpDetail" columns="1">
                             <h:panelGrid id="gpDetailText" columns="2">
-                                <h:outputText id="lblName" value="#{labels.Designation}" ></h:outputText>
+                                <h:outputText id="lblName" value="#{labels.designation}" ></h:outputText>
                                 <p:inputText id="txtName" value="#{designationController.current.name}"  ></p:inputText>
                                 <h:outputText id="lblCatName" value="Service Type" ></h:outputText>
                                 <p:selectOneMenu id="lstCatSelect"   value="#{designationController.current.category}" style="min-width: 223px">

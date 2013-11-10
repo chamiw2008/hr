@@ -56,11 +56,11 @@
                                     </f:ajax>
                                 </p:commandButton>
                                 <p:commandButton ajax="false" id="btnDelete" onclick="confirmation.show()" value="#{labels.delete}" disabled="#{contactTypeController.selectControlDisable}" styleClass="buttons">
-                                </p:commandButton ajax="false">
+                                </p:commandButton >
                             </h:panelGrid>
                             <p:confirmDialog appendToBody="true" message="#{labels.areYouSureYouWantToDelete}" header="#{labels.initiatingDestroyProcess}" severity="alert" widgetVar="confirmation">  
                                 <p:commandButton value="#{labels.yes}" oncomplete="confirmation.hide()" action="#{contactTypeController.delete()}" update="lstSelect txtName"  />  
-                                <p:commandButton value="#{labels.No}" onclick="confirmation.hide()" type="button" />   
+                                <p:commandButton value="#{labels.no}" onclick="confirmation.hide()" type="button" />   
                             </p:confirmDialog>
                         </p:panel>
                     </h:panelGrid  >
@@ -68,7 +68,7 @@
                     <p:panel>
                         <h:panelGrid id="gpDetail" columns="1">
                             <h:panelGrid id="gpDetailText" columns="2">
-                                <h:outputText id="lblName" value="#{labels.ContactType}" ></h:outputText>
+                                <h:outputText id="lblName" value="#{labels.contactType}" ></h:outputText>
                                 <p:inputText id="txtName" value="#{contactTypeController.current.name}" disabled="#{contactTypeController.modifyControlDisable}" ></p:inputText>
                             </h:panelGrid>
                             <h:panelGrid id="gpDetailButtons" columns="2">
