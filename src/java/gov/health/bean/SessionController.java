@@ -465,7 +465,7 @@ public class SessionController implements Serializable {
         }
         uFacade.create(user);
         JsfUtil.addSuccessMessage("New User Registered.");
-        return "";
+        return "manage_users";
     }
 
     public String changePassword() {

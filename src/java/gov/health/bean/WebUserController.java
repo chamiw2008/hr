@@ -24,20 +24,21 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
+import javax.inject.Inject;
 
 /**
  *
  * @author Dr. M. H. B. Ariyaratne, MBBS, PGIM Trainee for MSc(Biomedical
- * Informatics)
+ Informatics)
  */
 @Named
 @SessionScoped
-public  class WebUserController implements Serializable {
+public class WebUserController implements Serializable {
 
-    @EJB
+    @Inject
     private SessionController sessionController;
     @EJB
-    private WebUserFacade ejbFacade;
+    private WebUserFacade facade;
     @EJB
     WebUserRoleFacade roleFacade;
     List<WebUser> lstItems;
@@ -82,9 +83,32 @@ public  class WebUserController implements Serializable {
         this.current = current;
     }
 
-    private WebUserFacade getFacade() {
-        return ejbFacade;
+    public SessionController getSessionController() {
+        return sessionController;
     }
+
+    public void setSessionController(SessionController sessionController) {
+        this.sessionController = sessionController;
+    }
+
+    public WebUserFacade getFacade() {
+        return facade;
+    }
+
+    public void setFacade(WebUserFacade facade) {
+        this.facade = facade;
+    }
+
+    public WebUserRoleFacade getRoleFacade() {
+        return roleFacade;
+    }
+
+    public void setRoleFacade(WebUserRoleFacade roleFacade) {
+        this.roleFacade = roleFacade;
+    }
+
+
+
 
     public DataModel<WebUser> getItems() {
         items = new ListDataModel(getFacade().findAll("name", true));
@@ -156,10 +180,13 @@ public  class WebUserController implements Serializable {
         }
     }
 
-    public void prepareAdd() {
+    public String newUserAdd() {
         selectedItemIndex = -1;
         current = new WebUser();
+        Person p = new Person();
+        current.setWebUserPerson(p);
         this.prepareSelectControlDisable();
+        return "";
     }
 
     public void saveSelected() {
@@ -255,6 +282,53 @@ public  class WebUserController implements Serializable {
     @FacesConverter(forClass = WebUser.class)
     public static class WebUserControllerConverter implements Converter {
 
+        @Override
+        public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
+            if (value == null || value.length() == 0) {
+                return null;
+            }
+            WebUserController controller = (WebUserController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "webUserController");
+            if (value == null) {
+                System.out.println("value null");
+                return null;
+            } else {
+                System.out.println("value is " + value);
+                return controller.getFacade().find(getKey(value));
+            }
+        }
+
+        java.lang.Long getKey(String value) {
+            java.lang.Long key;
+            key = Long.valueOf(value);
+            return key;
+        }
+
+        String getStringKey(java.lang.Long value) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(value);
+            return sb.toString();
+        }
+
+        @Override
+        public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
+            if (object == null) {
+                return null;
+            }
+            if (object instanceof WebUser) {
+                WebUser o = (WebUser) object;
+                return getStringKey(o.getId());
+            } else {
+                throw new IllegalArgumentException("object " + object + " is of type "
+                        + object.getClass().getName() + "; expected type: " + WebUserController.class.getName());
+            }
+        }
+    }
+
+    @FacesConverter("webUserConverter")
+    public static class WebUserConverter implements Converter {
+
+        @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
@@ -271,11 +345,12 @@ public  class WebUserController implements Serializable {
         }
 
         String getStringKey(java.lang.Long value) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append(value);
             return sb.toString();
         }
 
+        @Override
         public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
             if (object == null) {
                 return null;

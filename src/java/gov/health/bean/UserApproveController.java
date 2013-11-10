@@ -16,7 +16,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
-import javax.faces.bean.RequestScoped;
 import javax.inject.Inject;
 
 /**
@@ -95,7 +94,7 @@ public class UserApproveController implements Serializable {
 
     public List<WebUser> getUsers() {
         String temSql;
-        if (sessionController.getLoggedUser().getRestrictedInstitution() != null) {
+        if (getSessionController().getLoggedUser().getRestrictedInstitution() != null) {
             temSql = "SELECT a FROM WebUser a WHERE a.retired=false AND a.webUserPerson.institution.id = " + sessionController.getLoggedUser().getRestrictedInstitution().getId() + " ORDER BY a.name ";
         } else {
             temSql = "SELECT a FROM WebUser a WHERE a.retired=false ORDER BY a.name ";

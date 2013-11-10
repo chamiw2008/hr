@@ -1,7 +1,9 @@
 /*
- * To change this template, choose Tools | Templates
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package gov.health.facade;
 
 import gov.health.entity.WebUser;
@@ -11,7 +13,7 @@ import javax.persistence.PersistenceContext;
 
 /**
  *
- * @author IT
+ * @author buddhika
  */
 @Stateless
 public class WebUserFacade extends AbstractFacade<WebUser> {

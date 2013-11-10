@@ -24,8 +24,8 @@
 
                     <h:panelGrid id="gpSelect" columns="1" >
                         <h:outputLabel class="pdPageText" value="Users"  />
-                        <p:selectOneListbox class="pdDropDownList" value="#{userApproveController.selectedUser}" p:selectOneListbox >
-                            <f:selectItems value="#{userApproveController.users}" var="users" itemValue="#{users}" itemLabel="#{users.webUserPerson.name}" />
+                        <p:selectOneListbox   value="#{userApproveController.selectedUser}"  >
+                            <f:selectItems value="#{userApproveController.users}" var="user" itemValue="#{user}" itemLabel="#{user.webUserPerson.name}" />
                             <f:ajax event="change" render="gpDetail" execute="gpSelect"/>
                         </p:selectOneListbox>
                     </h:panelGrid>
@@ -43,7 +43,7 @@
 
                             <h:outputLabel value="Previleges Restricted to" />
                             <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution!=null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}" />
-                            <p:selectOneListbox id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}" value="#{userApproveController.institution}"  p:selectOneListbox>
+                            <p:selectOneListbox id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}" value="#{userApproveController.institution}"  >
                                 <f:selectItems value="#{institutionController.payCentres}" var="ri" itemValue="#{ri}" itemLabel="#{ri.name}" />
                             </p:selectOneListbox>
 
@@ -55,7 +55,7 @@
 
 
                         <h:panelGroup>
-                            <p:commandButton ajax="false" value="Save" action="#{userApproveController.saveUser}"></p:commandButton ajax="false">
+                            <p:commandButton ajax="false" value="Save" action="#{userApproveController.saveUser}"></p:commandButton>
                         </h:panelGroup>
 
 
