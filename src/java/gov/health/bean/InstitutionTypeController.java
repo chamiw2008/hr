@@ -21,8 +21,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.inject.Inject;
 
 /**
@@ -40,7 +38,7 @@ public  class InstitutionTypeController  implements Serializable {
     SessionController sessionController;
     List<InstitutionType> lstItems;
     private InstitutionType current;
-    private DataModel<InstitutionType> items = null;
+    private List<InstitutionType> items = null;
     private int selectedItemIndex;
     boolean selectControlDisable = false;
     boolean modifyControlDisable = true;
@@ -80,8 +78,8 @@ public  class InstitutionTypeController  implements Serializable {
         return ejbFacade;
     }
 
-    public DataModel<InstitutionType> getItems() {
-        items = new ListDataModel(getFacade().findAll("name", true));
+    public List<InstitutionType> getItems() {
+        items = getFacade().findAll("name", true);
         return items;
     }
 
@@ -94,17 +92,17 @@ public  class InstitutionTypeController  implements Serializable {
         return valueInt;
     }
 
-    public DataModel searchItems() {
+    public List searchItems() {
         recreateModel();
         if (items == null) {
             if (selectText.equals("")) {
-                items = new ListDataModel(getFacade().findAll("name", true));
+                items = getFacade().findAll("name", true);
             } else {
-                items = new ListDataModel(getFacade().findAll("name", "%" + selectText + "%",
-                        true));
-                if (items.getRowCount() > 0) {
-                    items.setRowIndex(0);
-                    current = (InstitutionType) items.getRowData();
+                items = getFacade().findAll("name", "%" + selectText + "%",
+                        true);
+                if (items.size() > 0) {
+                    items.get(0);
+                    current = (InstitutionType) items.get(0);
                     Long temLong = current.getId();
                     selectedItemIndex = intValue(temLong);
                 } else {
@@ -119,10 +117,9 @@ public  class InstitutionTypeController  implements Serializable {
 
     public InstitutionType searchItem(String itemName, boolean createNewIfNotPresent) {
         InstitutionType searchedItem = null;
-        items = new ListDataModel(getFacade().findAll("name", itemName, true));
-        if (items.getRowCount() > 0) {
-            items.setRowIndex(0);
-            searchedItem = (InstitutionType) items.getRowData();
+        items = getFacade().findAll("name", itemName, true);
+        if (items.size() > 0) {
+            searchedItem = (InstitutionType) items.get(0);
         } else if (createNewIfNotPresent) {
             searchedItem = new InstitutionType();
             searchedItem.setName(itemName);
