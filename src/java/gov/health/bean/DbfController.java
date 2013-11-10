@@ -1006,7 +1006,6 @@ public class DbfController implements Serializable {
 
     public String uploadAndReplaceData() {
         extractData();
-        replaceData();
         return "upload_view";
     }
 

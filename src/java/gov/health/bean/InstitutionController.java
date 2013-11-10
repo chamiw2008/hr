@@ -91,6 +91,20 @@ public class InstitutionController implements Serializable {
         return paycentreInstitutions;
     }
 
+    public void saveInstitution(Institution ins) {
+        if (ins == null) {
+         JsfUtil.addErrorMessage("Nothing to update");
+         return;
+        }
+        if(ins.getId()==null || ins.getId()==0){
+            getFacade().create(ins);
+            JsfUtil.addSuccessMessage("Saved");
+        }else{
+            getFacade().edit(ins);
+            JsfUtil.addSuccessMessage("Updated");
+        }
+    }
+
     public void setPaycentreInstitutions(List<Institution> paycentreInstitutions) {
         this.paycentreInstitutions = paycentreInstitutions;
     }

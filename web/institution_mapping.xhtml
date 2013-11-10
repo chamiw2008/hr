@@ -20,7 +20,7 @@
                         <p:selectOneMenu id="cmbPs" value="#{institutionController.payCentre}" >
                             <f:selectItem itemLabel="Select a pay centre" />
                             <f:selectItems value="#{institutionController.payCentres}" var="ps" itemLabel="#{ps.name}" itemValue="#{ps}" ></f:selectItems>
-                            <f:ajax event="change" execute="cmbPs" render="chkSite chkSection chkMap" />
+                            <f:ajax event="change" execute="cmbPs" render="chkSite chkSection chkMap tbl" />
                         </p:selectOneMenu>
 
                         <br/>
@@ -34,7 +34,18 @@
                         <p:commandButton ajax="false" value="Update" action="#{institutionController.savePayCentre()}" ></p:commandButton>
 
                         
-                        <p:dataTable value="#{institutionController}" >
+                        <p:dataTable id="tbl" value="#{institutionController.paycentreInstitutions}" var="pi" >
+                            <p:column headerText="Name in Database" >
+                                <h:outputLabel value="#{pi.name}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Mapped to" >
+                                <h:selectOneMenu id="cmbMt" value="#{pi.mappedToInstitution}" >
+                                    <f:selectItem itemLabel="Not Mapped" />
+                                    <f:selectItems value="#{institutionController.officialInstitutions}" var="oi" itemLabel="#{oi.name}" itemValue="#{oi}" ></f:selectItems>
+                                    <f:ajax event="blur" execute="cmbMt"  listener="#{institutionController.saveInstitution(oi)}" ></f:ajax>
+                                </h:selectOneMenu>
+                            </p:column>
+                            
                         </p:dataTable>
                         
                     </p:panel>
