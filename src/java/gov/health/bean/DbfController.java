@@ -35,8 +35,10 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 
 import javax.faces.context.FacesContext;
@@ -523,7 +525,7 @@ public class DbfController implements Serializable {
             return new ArrayList<PersonInstitution>();
         }
         if (getToGetRecordsagain()) {
-            existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId());
+            existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " order by pi.institution.name = ");
             getSummeryCounts(existingPersonInstitutions);
             setToGetRecordsagain(Boolean.FALSE);
         } else {
@@ -829,12 +831,7 @@ public class DbfController implements Serializable {
             JsfUtil.addErrorMessage("Please select a Set");
             return;
         }
-
-        if (getExistingPersonInstitutions().size() > 0) {
-            newEntries = false;
-        } else {
-            newEntries = true;
-        }
+        newEntries = getExistingPersonInstitutions().size() <= 0;
 
         try {
             in = event.getFile().getInputstream();
@@ -1086,7 +1083,7 @@ public class DbfController implements Serializable {
                     empNo = "999999.0";
                 }
 
-                if (empNo != "999999.0") {
+                if (!"999999.0".equals(empNo)) {
 
                     if (insName.trim().equals("")) {
                         attachedIns = getInstitution();
@@ -1198,24 +1195,99 @@ public class DbfController implements Serializable {
 
     private Designation findDesignation(String designationName) {
         designationName = designationName.trim();
+        Designation search;
+        Designation des;
         if (designationName.equals("")) {
             return null;
         }
-        Designation des = getDesFacade().findFirstBySQL("select d from Designation d where lower(d.name) = '" + designationName.toLowerCase() + "'");
-        if (des == null) {
+
+        Map m = new HashMap();
+        m.put("i", getInstitution());
+
+        //Check same name mapped to a designation for that perticular institute
+        search = getDesFacade().findFirstBySQL("select d from Designation d where d.mappedToDesignation is not null and d.institution=:i and d.name = '" + designationName + "'", m);
+        if (search != null) {
+            return search.getMappedToDesignation();
+        }
+
+        //Check same name mapped to a designation for any other institute
+        search = getDesFacade().findFirstBySQL("select d from Designation d where d.mappedToDesignation is not null and d.name = '" + designationName + "'");
+        if (search != null) {
             des = new Designation();
             des.setName(designationName);
             des.setCreatedAt(Calendar.getInstance().getTime());
             des.setCreater(sessionController.loggedUser);
             des.setOfficial(Boolean.FALSE);
+            des.setInstitution(getInstitution());
+            des.setMappedToDesignation(search.getMappedToDesignation());
             getDesFacade().create(des);
-        } else {
-            if (des.getOfficial().equals(Boolean.FALSE)) {
-                if (des.getMappedToDesignation() != null) {
-                    return des.getMappedToDesignation();
-                }
-            }
+            return search.getMappedToDesignation();
         }
+
+        //Check name without capital or simple for the same institute
+        search = getDesFacade().findFirstBySQL("select d from Designation d where d.mappedToDesignation is not null and d.institution=:i and lower(d.name) = '" + designationName.toLowerCase() + "'", m);
+        if (search != null) {
+            des = new Designation();
+            des.setName(designationName);
+            des.setCreatedAt(Calendar.getInstance().getTime());
+            des.setCreater(sessionController.loggedUser);
+            des.setOfficial(Boolean.FALSE);
+            des.setInstitution(getInstitution());
+            des.setMappedToDesignation(search.getMappedToDesignation());
+            getDesFacade().create(des);
+            return search.getMappedToDesignation();
+
+        }
+
+        //Check name without capital or simple for the any institute
+        search = getDesFacade().findFirstBySQL("select d from Designation d where d.mappedToDesignation is not null and lower(d.name) = '" + designationName.toLowerCase() + "'");
+        if (search != null) {
+            des = new Designation();
+            des.setName(designationName);
+            des.setCreatedAt(Calendar.getInstance().getTime());
+            des.setCreater(sessionController.loggedUser);
+            des.setOfficial(Boolean.FALSE);
+            des.setInstitution(getInstitution());
+            des.setMappedToDesignation(search.getMappedToDesignation());
+            getDesFacade().create(des);
+            return search.getMappedToDesignation();
+
+        }
+
+        //Check exact name to any match any official designation
+        search = getDesFacade().findFirstBySQL("select d from Designation d where d.official=true and d.name = '" + designationName + "'");
+        if (search != null) {
+            des = new Designation();
+            des.setName(designationName);
+            des.setCreatedAt(Calendar.getInstance().getTime());
+            des.setCreater(sessionController.loggedUser);
+            des.setOfficial(Boolean.FALSE);
+            des.setInstitution(getInstitution());
+            des.setMappedToDesignation(search);
+            getDesFacade().create(des);
+            return search;
+        }
+
+        //Check name ignore simple, capital to match any official designation
+        search = getDesFacade().findFirstBySQL("select d from Designation d where d.official=true and lower(d.name) = '" + designationName.toLowerCase() + "'");
+        if (search != null) {
+            des = new Designation();
+            des.setName(designationName);
+            des.setCreatedAt(Calendar.getInstance().getTime());
+            des.setCreater(sessionController.loggedUser);
+            des.setOfficial(Boolean.FALSE);
+            des.setInstitution(getInstitution());
+            des.setMappedToDesignation(search);
+            getDesFacade().create(des);
+            return search;
+        }
+        des = new Designation();
+        des.setName(designationName);
+        des.setCreatedAt(Calendar.getInstance().getTime());
+        des.setCreater(sessionController.loggedUser);
+        des.setOfficial(Boolean.FALSE);
+        des.setInstitution(getInstitution());
+        getDesFacade().create(des);
         return des;
     }
 

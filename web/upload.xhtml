@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./resources/template/template_1.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+
+        <p:panel >
+            <f:facet name="header" >
+                <h:outputLabel value="Uploading Payment Cycle Details" ></h:outputLabel>
+                <h:form>
+                    <p:commandButton ajax="false" value="View Existing Date" style="float: right;" action="upload_view" />
+                </h:form>
+
+
+            </f:facet>
+
+            <h:form enctype="multipart/form-data">
+                <p:panelGrid columns="2" >
+                    <h:outputText value="Institution"/>
+                    <h:selectOneMenu  rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc" value="#{dbfController.institution}" >
+                        <f:selectItem itemLabel="Select Paycenter"/>
+                        <f:selectItems value="#{institutionController.payCentres}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
+                        <f:ajax event="change" execute="cmbLoc" render="cmbSet" />
+                    </h:selectOneMenu>
+                    <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
+
+                    <h:outputText value="Year"/>
+                    <h:selectOneMenu    id="cmbYear" value="#{dbfController.payYear}" >
+                        <!--<f:selectItem itemLabel="Select Year"/>-->
+                        <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
+                        <f:ajax event="change" execute="cmbYear" render=":#{p:component('cmbSet')}  " />
+                    </h:selectOneMenu>
+
+                    <h:outputText value="Month"/>
+                    <h:selectOneMenu    id="cmbMonth" value="#{dbfController.payMonth}"  >
+                        <!--<f:selectItem itemLabel="Select Month"/>-->
+                        <f:selectItem itemValue="1" itemLabel="January" />
+                        <f:selectItem itemValue="2" itemLabel="February" />
+                        <f:selectItem itemValue="3" itemLabel="March" />
+                        <f:selectItem itemValue="4" itemLabel="April" />
+                        <f:selectItem itemValue="5" itemLabel="May" />
+                        <f:selectItem itemValue="6" itemLabel="June" />
+                        <f:selectItem itemValue="7" itemLabel="July" />
+                        <f:selectItem itemValue="8" itemLabel="August" />
+                        <f:selectItem itemValue="9" itemLabel="September" />
+                        <f:selectItem itemValue="10" itemLabel="October" />
+                        <f:selectItem itemValue="11" itemLabel="November" />
+                        <f:selectItem itemValue="12" itemLabel="December" />
+                        <f:ajax event="change" execute="cmbMonth" render=":#{p:component('cmbSet')}  " />
+                    </h:selectOneMenu>
+                    <h:outputText value="Set"/>
+
+                    <h:selectOneMenu    id="cmbSet" value="#{dbfController.insSet}"      >
+                        <!--<f:selectItem itemLabel="Select Set"/>-->
+                        <f:selectItems value="#{dbfController.insSets}" var="insset" itemValue="#{insset}" itemLabel="#{insset.name}" />
+                        <f:ajax event="change" execute="cmbSet" render=":#{p:component('cmbSet')}  " />
+                    </h:selectOneMenu>
+                    <h:outputText value="Select the file and Upload"/>
+                    <p:fileUpload value="#{dbfController.file}" mode="simple" ></p:fileUpload>
+                    <p:commandButton value="Upload" ajax="false" actionListener="#{dbfController.extractData}" ></p:commandButton>
+                </p:panelGrid>
+            </h:form>
+
+
+        </p:panel>
+
+    </ui:define>
+</ui:composition>

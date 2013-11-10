@@ -48,6 +48,16 @@ public class Designation implements Serializable {
     //
     @ManyToOne
     Designation mappedToDesignation;
+    @ManyToOne
+    Institution institution;
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
+    }
 
     public Designation getMappedToDesignation() {
         return mappedToDesignation;

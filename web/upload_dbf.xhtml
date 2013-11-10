@@ -60,8 +60,8 @@
                         <h:outputText value="Select the file and Upload"/>
 
                         
-                        <p:fileUpload fileUploadListener="#{dbfController.handleFileUpload}" mode="advanced" dragDropSupport="false"  
-                                      update="messages" sizeLimit="10000000" fileLimit="3" allowTypes="/(\.|\/)(dbf|DBF)$/" />  
+                        <p:fileUpload value="#{dbfController.file}" mode="simple" ></p:fileUpload>
+                        <p:commandButton value="Upload" ajax="false" actionListener="#{dbfController.extractData}" ></p:commandButton>
 
                         <p:growl id="messages" showDetail="true"/>  
 

@@ -273,6 +273,10 @@ public abstract class AbstractFacade<T> {
         }
     }
 
+    public T findFirstBySQL(String temSQL, Map<String, Object> parameters) {
+        return findFirstBySQL(temSQL, parameters, TemporalType.DATE);
+    }
+    
     public <U> List<T> testMethod(U[] a, Collection<U> all) {
         List<T> myList = new ArrayList<T>();
         return myList;
