@@ -29,12 +29,12 @@
                                 </h:outputText>
 
                                 <p:inputText id="txtSelect" value="#{institutionTypeController.selectText}" readonly="#{institutionTypeController.selectControlDisable}"  style="min-width: 200px" >
-                                    <f:ajax  event="keyup" render="lstSelect gpDetail" >
+                                    <f:ajax  event="keyup" execute="txtSelect" render="lstSelect gpDetail" >
                                     </f:ajax>
                                 </p:inputText>
                                 <p:selectOneListbox id="lstSelect"  disabled="#{institutionTypeController.selectControlDisable}"  value="#{institutionTypeController.current}" style="min-width: 223px">
-                                    <f:selectItems value="#{institutionTypeController.lstItems}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
-                                    <f:ajax render="txtName" execute="lstSelect" >                                
+                                    <f:selectItems value="#{institutionTypeController.searchItems}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
+                                    <f:ajax render="gpDetail" execute="lstSelect" >                                
                                     </f:ajax>
                                 </p:selectOneListbox>
 
@@ -54,7 +54,7 @@
                                     </f:ajax>                                
                                 </p:commandButton>
                             </h:panelGrid>
-                            <p:confirmDialog appendToBody="true" message="Are you sure you want to delete?" header="Deleting" severity="alert" widgetVar="confirmation">  
+                            <p:confirmDialog appendTo="@(body)" message="Are you sure you want to delete?" header="Deleting" severity="alert" widgetVar="confirmation">  
                                 <p:commandButton value="Yes" oncomplete="confirmation.hide()" action="#{institutionTypeController.delete()}" update="lstSelect gpDetail"  />  
                                 <p:commandButton value="No" onclick="confirmation.hide()" type="button" />   
                             </p:confirmDialog>

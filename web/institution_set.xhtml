@@ -14,57 +14,63 @@
             <ui:define name="content">
 
                 <h:form>
-                    <p:panelGrid >
 
-                        <p:row>
-                            <p:column>
-                                <h:outputLabel value="Institution"/>
-                            </p:column>
+                    <p:panel header="Manage Institution Sets" >
 
-                            <p:column>
-                                <p:selectOneMenu id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}"  value="#{institutionSetController.institution}" >
-                                    <f:selectItems value="#{institutionController.payCentres}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}"/>
-                                    <f:ajax execute="cmbIns" event="change" render="cmbSet"/>
-                                </p:selectOneMenu>
-                                <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution!=null}" value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
-                            </p:column>
+                        <p:panelGrid >
 
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Institution"/>
+                                </p:column>
 
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
-                                <h:outputLabel value="Sets"/>
-                            </p:column>
-
-                            <p:column>
-                                <p:selectOneListbox id="cmbSet"  value="#{institutionSetController.toRemove}" >
-                                    <f:selectItems  value="#{institutionSetController.items}" var="sets" itemValue="#{sets}" itemLabel="#{sets.name}"/>
-                                </p:selectOneListbox>
-                            </p:column>
-
-                             <p:column>
-                                 <p:commandButton ajax="false" value="Remove Selected Set" action="#{institutionSetController.delete()}" />
-                            </p:column>
-
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
-                                <h:outputLabel value="Set Name to add"/>
-                            </p:column>
-                            <p:column>
-                                <p:inputText value="#{institutionSetController.newName}"/>
-                            </p:column>
-                            <p:column>
-                                <p:commandButton ajax="false" value="Add New Set" action="#{institutionSetController.addDirectly()}" />
-                            </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}"  value="#{institutionSetController.institution}" >
+                                        <f:selectItem itemLabel="Select Institute" />
+                                        <f:selectItems value="#{institutionController.payCentres}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}"/>
+                                        <f:ajax execute="cmbIns" event="change" render="cmbSet"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution!=null}" value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
+                                </p:column>
 
 
-                        </p:row>                    
+                            </p:row>
 
-                    </p:panelGrid>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Sets"/>
+                                </p:column>
 
+                                <p:column>
+                                    <p:selectOneListbox id="cmbSet"  value="#{institutionSetController.toRemove}" >
+                                        <f:selectItems  value="#{institutionSetController.items}" var="sets" itemValue="#{sets}" itemLabel="#{sets.name}"/>
+                                    </p:selectOneListbox>
+                                </p:column>
+
+                                <p:column>
+                                    <p:commandButton ajax="false" value="Remove Selected Set" action="#{institutionSetController.delete()}" />
+                                </p:column>
+
+                            </p:row>
+
+
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Set Name to add"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText value="#{institutionSetController.newName}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:commandButton ajax="false" value="Add New Set" action="#{institutionSetController.addDirectly()}" />
+                                </p:column>
+
+
+                            </p:row>                    
+
+                        </p:panelGrid>
+
+                    </p:panel>
                 </h:form>
             </ui:define>
 

@@ -30,7 +30,7 @@ import javax.inject.Inject;
  */
 @Named
 @SessionScoped
-public  class InstitutionTypeController  implements Serializable {
+public class InstitutionTypeController implements Serializable {
 
     @EJB
     private InstitutionTypeFacade ejbFacade;
@@ -92,27 +92,37 @@ public  class InstitutionTypeController  implements Serializable {
         return valueInt;
     }
 
-    public List searchItems() {
-        recreateModel();
-        if (items == null) {
-            if (selectText.equals("")) {
-                items = getFacade().findAll("name", true);
+    List<InstitutionType> searchItems;
+
+    public void setItems(List<InstitutionType> items) {
+        this.items = items;
+    }
+
+    public void setSearchItems(List<InstitutionType> searchItems) {
+        this.searchItems = searchItems;
+    }
+
+    public List<InstitutionType> getSearchItems() {
+        System.out.println("getSearchItems");
+        if (selectText.equals("")) {
+            System.out.println("find all");
+            searchItems = getFacade().findAll("name", true);
+        } else {
+            System.out.println("find selected");
+            String sql = "select t from InstitutionType t where t.retired=false and upper(t.name) like '%" + getSelectText().toUpperCase() + "%' order by t.name";
+            searchItems = getFacade().findBySQL(sql);
+            if (searchItems.size() > 0) {
+                searchItems.get(0);
+                current = (InstitutionType) searchItems.get(0);
+                Long temLong = current.getId();
+                selectedItemIndex = intValue(temLong);
             } else {
-                items = getFacade().findAll("name", "%" + selectText + "%",
-                        true);
-                if (items.size() > 0) {
-                    items.get(0);
-                    current = (InstitutionType) items.get(0);
-                    Long temLong = current.getId();
-                    selectedItemIndex = intValue(temLong);
-                } else {
-                    current = null;
-                    selectedItemIndex = -1;
-                }
+                current = null;
+                selectedItemIndex = -1;
             }
         }
-        return items;
-
+        System.out.println("size " + searchItems.size());
+        return searchItems;
     }
 
     public InstitutionType searchItem(String itemName, boolean createNewIfNotPresent) {
@@ -154,7 +164,7 @@ public  class InstitutionTypeController  implements Serializable {
     }
 
     public void saveSelected() {
-                  
+
         if (selectedItemIndex > 0) {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));
@@ -192,7 +202,7 @@ public  class InstitutionTypeController  implements Serializable {
     }
 
     public void delete() {
-       
+
         if (current != null) {
             current.setRetired(true);
             current.setRetiredAt(Calendar.getInstance().getTime());
@@ -232,7 +242,6 @@ public  class InstitutionTypeController  implements Serializable {
 
     public void setSelectText(String selectText) {
         this.selectText = selectText;
-        searchItems();
     }
 
     public void prepareSelectControlDisable() {
@@ -260,8 +269,6 @@ public  class InstitutionTypeController  implements Serializable {
     public void setSessionController(SessionController sessionController) {
         this.sessionController = sessionController;
     }
-    
-    
 
     @FacesConverter(forClass = InstitutionType.class)
     public static class InstitutionTypeControllerConverter implements Converter {
