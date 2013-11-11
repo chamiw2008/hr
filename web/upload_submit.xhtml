@@ -13,7 +13,7 @@
                 <h:form>
                     <h:outputLabel value="Submit Payment Cycle Data" ></h:outputLabel>
                     <p:commandButton value="Submit" ajax="false" action="#{dbfController.submit}" style="float: right;" />
-                     <p:commandButton value="Cancel" ajax="false" action="#{dbfController.cancelSubmit}" style="float: right;" />
+                    <p:commandButton value="Cancel" ajax="false" action="#{dbfController.cancelSubmit}" style="float: right;" />
                 </h:form>
             </f:facet>
 
@@ -85,12 +85,12 @@
 
                     <p:panel header="Details" >
 
-                        <p:dataTable id="tblEx" value="#{dbfController.newPersonInstitutions}" rowIndexVar="rowIndex" var="exPi">
+                        <p:dataTable id="tblEx" value="#{dbfController.newPersonInstitutions}" rowIndexVar="rowIndex" var="exPi" editable="true" editMode="cell" >
                             <p:column >
                                 <f:facet name="header">Serial</f:facet>
                                 <h:outputLabel value="#{rowIndex + 1}"/>
                             </p:column>
-                            
+
                             <p:column>
                                 <f:facet name="header">Employee Id</f:facet>
                                 <h:outputLabel value="#{exPi.empNo}"/>
@@ -105,20 +105,20 @@
                             </p:column>           
                             <p:column>
                                 <f:facet name="header">Designation</f:facet>
-                                <p:selectOneMenu id="cmbDes"  value="#{exPi.designation}" >
+                                <p:selectOneMenu  value="#{exPi.designation}" immediate="true" >
                                     <f:selectItem itemLabel="Not Selected" />
                                     <f:selectItem itemLabel="#{exPi.designation.name}" itemValue="#{exPi.designation}" ></f:selectItem>
                                     <f:selectItems value="#{designationController.officialDesignations}" var="od" itemLabel="#{od.name}" itemValue="#{od}" ></f:selectItems>
-                                    <f:ajax event="blur" execute="cmbDes" />
+                                    <f:ajax execute="@this" event="change" listener="#{dbfController.savePiDs(exPi,exPi.designation) }" />
                                 </p:selectOneMenu>
                             </p:column>  
                             <p:column>
-                                <f:facet name="header">Institution</f:facet>
-                                <p:selectOneMenu id="cmbIns"  value="#{exPi.institution}" >
+                                 <f:facet name="header">Institution</f:facet>
+                                <p:selectOneMenu  value="#{exPi.institution}" immediate="true" >
                                     <f:selectItem itemLabel="Not Selected" />
                                     <f:selectItem itemLabel="#{exPi.institution.name}" itemValue="#{exPi.institution}" ></f:selectItem>
                                     <f:selectItems value="#{institutionController.officialInstitutions}" var="oi" itemLabel="#{oi.name}" itemValue="#{oi}" ></f:selectItems>
-                                    <f:ajax event="blur" execute="cmbIns" />
+                                    <f:ajax execute="@this" event="change" listener="#{dbfController.savePiIn(exPi,exPi.institution) }" />
                                 </p:selectOneMenu>
                             </p:column>
                         </p:dataTable>

@@ -60,6 +60,8 @@ import org.apache.commons.io.IOUtils;
 @SessionScoped
 public class DbfController implements Serializable {
 
+    PersonInstitution currentPi;
+
     StreamedContent scImage;
     StreamedContent scImageById;
     private UploadedFile file;
@@ -119,6 +121,36 @@ public class DbfController implements Serializable {
 
     @Inject
     InstitutionController institutionController;
+
+    public PersonInstitution getCurrentPi() {
+        return currentPi;
+    }
+
+    public void setCurrentPi(PersonInstitution currentPi) {
+        this.currentPi = currentPi;
+    }
+
+    public List<Institution> getPayrollInstitutions() {
+        return payrollInstitutions;
+    }
+
+    public void setPayrollInstitutions(List<Institution> payrollInstitutions) {
+        this.payrollInstitutions = payrollInstitutions;
+    }
+
+    public void saveCurrentPi() {
+        if (currentPi == null) {
+         JsfUtil.addErrorMessage("Nothing to save");
+         return;
+        }
+        if(currentPi.getId()!=null && currentPi.getId()!=0){
+            getPiFacade().edit(currentPi);
+            JsfUtil.addSuccessMessage("Updated");
+        }else{
+            getPiFacade().create(currentPi);
+            JsfUtil.addSuccessMessage("Saved");
+        }
+    }
 
     public InstitutionController getInstitutionController() {
         return institutionController;
@@ -1218,12 +1250,69 @@ public class DbfController implements Serializable {
                     newPersonInstitutions.add(pi);
                 }
             }
+
+            for (PersonInstitution temPi : newPersonInstitutions) {
+                temPi.setRetired(true);
+                System.out.println("saving pi " + temPi);
+                getPiFacade().create(temPi);
+            }
+
             getSummeryCounts(newPersonInstitutions);
             JsfUtil.addSuccessMessage("Data Captured. But NOT Recorded to the database. Please click Save to confirm.");
         } catch (Exception e) {
             System.out.println("Error " + e.getMessage());
         }
         return "upload_submit";
+    }
+
+    public void savePi(PersonInstitution pi) {
+        if (pi.getId() != null && pi.getId() != 0) {
+            getPiFacade().edit(pi);
+        } else {
+            getPiFacade().create(pi);
+        }
+        JsfUtil.addSuccessMessage("Updated");
+    }
+
+    public void savePiDs(PersonInstitution pi, Designation d) {
+        if(pi==null){
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        System.out.println("pi is " + pi);
+        System.out.println("d is " + d.getName());
+        pi.setDesignation(d);
+        if (pi.getId() != null && pi.getId() != 0) {
+            getPiFacade().edit(pi);
+        } else {
+            getPiFacade().create(pi);
+        }
+        JsfUtil.addSuccessMessage("Updated");
+    }
+
+    public void savePiIn(PersonInstitution pi, Institution i) {
+        if(pi==null){
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        System.out.println("pi is " + pi);
+        System.out.println("i is " + i.getName());
+        pi.setInstitution(i);
+        if (pi.getId() != null && pi.getId() != 0) {
+            getPiFacade().edit(pi);
+        } else {
+            getPiFacade().create(pi);
+        }
+        JsfUtil.addSuccessMessage("Updated");
+    }
+    
+    public void removePi(PersonInstitution pi) {
+        if (newPersonInstitutions == null) {
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return;
+        }
+        newPersonInstitutions.remove(pi);
+        JsfUtil.addSuccessMessage("Removed");
     }
 
     public String submit() {
@@ -1238,7 +1327,12 @@ public class DbfController implements Serializable {
             getPiFacade().edit(pi);
         }
         for (PersonInstitution pi : newPersonInstitutions) {
-            getPiFacade().create(pi);
+            pi.setRetired(false);
+            if (pi.getId() != null && pi.getId() != 0) {
+                getPiFacade().edit(pi);
+            } else {
+                getPiFacade().create(pi);
+            }
         }
         recreateModel();
         newPersonInstitutions = new ArrayList<PersonInstitution>();
@@ -1362,13 +1456,13 @@ public class DbfController implements Serializable {
         Institution ins;
 
         //Get Exact Match for that percerticular institute
-        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.institution=:i and d.mappedToInstitution not null and d.retired = false and d.name = '" + insName + "'", m);
+        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.institution=:i and d.mappedToInstitution is not null and d.retired = false and d.name = '" + insName + "'", m);
         if (ins != null) {
             return ins.getMappedToInstitution();
         }
 
         //Get CapitalSimple Match for that percerticular institute
-        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.institution=:i and d.mappedToInstitution not null and d.retired = false and upper(d.name) = '" + insName.toUpperCase() + "'", m);
+        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.institution=:i and d.mappedToInstitution is not null and d.retired = false and upper(d.name) = '" + insName.toUpperCase() + "'", m);
         if (ins != null) {
             Institution i = new Institution();
             i.setName(insName);
@@ -1382,7 +1476,7 @@ public class DbfController implements Serializable {
         }
 
         //Get Exact Match for any other institute
-        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.retired = false  and d.mappedToInstitution not null and  d.name = '" + insName + "'");
+        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.retired = false  and d.mappedToInstitution is not null and  d.name = '" + insName + "'");
         if (ins != null) {
             Institution i = new Institution();
             i.setName(insName);
@@ -1396,7 +1490,7 @@ public class DbfController implements Serializable {
         }
 
         //Get Capital/Simple Match for any other institute
-        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.retired = false  and d.mappedToInstitution not null and  upper(d.name) = '" + insName.toUpperCase() + "'");
+        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.retired = false  and d.mappedToInstitution is not null and  upper(d.name) = '" + insName.toUpperCase() + "'");
         if (ins != null) {
             Institution i = new Institution();
             i.setName(insName);
