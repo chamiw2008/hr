@@ -15,27 +15,33 @@
 
                     <p:panel >
                         <f:facet name="header" >
+                            <h:outputLabel value="Institution Mapping" ></h:outputLabel>
                         </f:facet>
-                        <h:outputLabel value="Paycenter" ></h:outputLabel>
-                        <p:selectOneMenu id="cmbPs" value="#{institutionController.payCentre}" >
-                            <f:selectItem itemLabel="Select a pay centre" />
-                            <f:selectItems value="#{institutionController.payCentres}" var="ps" itemLabel="#{ps.name}" itemValue="#{ps}" ></f:selectItems>
-                            <f:ajax event="change" execute="cmbPs" render="chkSite chkSection chkMap tbl" />
-                        </p:selectOneMenu>
 
-                        <br/>
+                        <p:panelGrid columns="3" >
+                            <h:outputLabel value="Paycenter" ></h:outputLabel>
+                            <p:selectOneMenu id="cmbPs" value="#{institutionController.payCentre}" >
+                                <f:selectItem itemLabel="Select a pay centre" />
+                                <f:selectItems value="#{institutionController.payCentres}" var="ps" itemLabel="#{ps.name}" itemValue="#{ps}" ></f:selectItems>
+                                <f:ajax event="change" execute="cmbPs" render="chkSite chkSection chkMap tbl" />
+                            </p:selectOneMenu>
+                            <p:commandButton ajax="false" value="Update" action="#{institutionController.savePayCentre()}" ></p:commandButton>
+                        </p:panelGrid>
 
-                        <p:selectBooleanCheckbox id="chkSite"  rendered="#{institutionController.payCentre ne null}" value="#{institutionController.payCentre.insmapSite}" itemLabel="Consider Site Field in Deciding Institution" ></p:selectBooleanCheckbox>
-                        <br/>
-                        <p:selectBooleanCheckbox  id="chkSection"  rendered="#{institutionController.payCentre ne null}" value="#{institutionController.payCentre.insmapSection}" itemLabel="Consider Section Field in Deciding Institution" ></p:selectBooleanCheckbox>
-                        <br/>
-                        <p:selectBooleanCheckbox  id="chkMap"  rendered="#{institutionController.payCentre ne null}" value="#{institutionController.payCentre.insmapAddress}" itemLabel="Consider Address Field in Deciding Institution" ></p:selectBooleanCheckbox>
-                        <br/>
-                        <p:selectBooleanCheckbox  id="chkPc"  rendered="#{institutionController.payCentre ne null}" value="#{institutionController.payCentre.insMapToPaycentre}" itemLabel="Map Directly to Paycentre" ></p:selectBooleanCheckbox>
-                        <br/>
-                        <p:commandButton ajax="false" value="Update" action="#{institutionController.savePayCentre()}" ></p:commandButton>
+                        <p:panelGrid columns="1" >
+                            <p:selectBooleanCheckbox  id="chkPc"  rendered="#{institutionController.payCentre ne null}" value="#{institutionController.payCentre.insMapToPaycentre}" itemLabel="Map Directly to Paycentre" >
+                                <f:ajax event="change" execute="@this" render="chkSite chkSection chkMap" ></f:ajax>
+                            </p:selectBooleanCheckbox>
+                            <p:selectBooleanCheckbox id="chkSite" disabled="#{institutionController.payCentre.insMapToPaycentre}"  rendered="#{institutionController.payCentre ne null}" value="#{institutionController.payCentre.insmapSite}" itemLabel="Consider Site Field in Deciding Institution" ></p:selectBooleanCheckbox>
+                            <p:selectBooleanCheckbox  id="chkSection" disabled="#{institutionController.payCentre.insMapToPaycentre}"  rendered="#{institutionController.payCentre ne null}" value="#{institutionController.payCentre.insmapSection}" itemLabel="Consider Section Field in Deciding Institution" ></p:selectBooleanCheckbox>
+                            <p:selectBooleanCheckbox  id="chkMap" disabled="#{institutionController.payCentre.insMapToPaycentre}"  rendered="#{institutionController.payCentre ne null}" value="#{institutionController.payCentre.insmapAddress}" itemLabel="Consider Address Field in Deciding Institution" ></p:selectBooleanCheckbox>
 
-                        
+                        </p:panelGrid>
+
+
+
+
+
                         <p:dataTable id="tbl" value="#{institutionController.paycentreInstitutions}" var="pi" >
                             <p:column headerText="Name in Database" >
                                 <h:outputLabel value="#{pi.name}" ></h:outputLabel>
@@ -47,9 +53,9 @@
                                     <f:ajax event="blur" execute="cmbMt"  listener="#{institutionController.saveInstitution(oi)}" ></f:ajax>
                                 </h:selectOneMenu>
                             </p:column>
-                            
+
                         </p:dataTable>
-                        
+
                     </p:panel>
 
 

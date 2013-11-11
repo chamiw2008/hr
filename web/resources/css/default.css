@@ -27,3 +27,12 @@ a:link:hover, a:visited:hover  {
   font-weight : bold;
   text-decoration : underline;
 }
+
+.redrow{
+    background: lightcoral!important;
+}
+
+.greenrow{
+    background: lightgreen!important;
+    
+}

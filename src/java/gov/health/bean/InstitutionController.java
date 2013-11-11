@@ -45,7 +45,7 @@ import javax.inject.Inject;
 /**
  *
  * @author Dr. M. H. B. Ariyaratne, MBBS, PGIM Trainee for MSc(Biomedical
- * Informatics)
+ Informatics)
  */
 @Named
 @SessionScoped
@@ -80,6 +80,80 @@ public class InstitutionController implements Serializable {
 
     Institution payCentre;
 
+    List<Institution> mappedInstitutions;
+    Institution mappingsForInstitution;
+    Institution currentMappingInstitution;
+
+    public void saveCurrentMapping(){
+        if(currentMappingInstitution==null){
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        if(currentMappingInstitution.getId()==null || currentMappingInstitution.getId()==0){
+            getFacade().create(currentMappingInstitution);
+            JsfUtil.addSuccessMessage("Saved");
+        }else{
+            getFacade().edit(currentMappingInstitution);
+            JsfUtil.addSuccessMessage("Updated");
+        }
+    }
+
+    public void saveIndividualMapping(Institution mappingFor, Institution mappedTo){
+        mappingFor.setMappedToInstitution(mappedTo);
+        if(mappingFor.getId()==null || mappingFor.getId()==0){
+            getFacade().create(mappingFor);
+            JsfUtil.addSuccessMessage("Saved");
+        }else{
+            getFacade().edit(mappingFor);
+            JsfUtil.addSuccessMessage("Updated");
+        }
+    }
+    
+    public String toMapGeneralInstitutions(){
+        mappingsForInstitution=null;
+        return "institution_mapping_general";
+    }
+    
+    public List<Institution> getMappedInstitutions() {
+        String sql;
+        if(mappingsForInstitution==null){
+            sql = "select i from Institution i where i.retired=false and i.mappedToInstitution is not null and i.institution is null and i.official=false order by i.name";
+            mappedInstitutions=getFacade().findBySQL(sql);
+        }else{
+            Map m = new HashMap();
+            m.put("ii", mappingsForInstitution);
+            sql = "select i from Institution i where i.retired=false and i.mappedToInstitution is not null and i.institution=:ii and i.official=false order by i.name";
+            mappedInstitutions=getFacade().findBySQL(sql,m);
+        }
+        return mappedInstitutions;
+    }
+
+    public void setMappedInstitutions(List<Institution> mappedInstitutions) {
+        this.mappedInstitutions = mappedInstitutions;
+    }
+
+    public Institution getMappingsForInstitution() {
+        return mappingsForInstitution;
+    }
+
+    public void setMappingsForInstitution(Institution mappingsForInstitution) {
+        this.mappingsForInstitution = mappingsForInstitution;
+    }
+
+    public Institution getCurrentMappingInstitution() {
+        if(currentMappingInstitution==null){
+            currentMappingInstitution = new Institution();
+            currentMappingInstitution.setInstitution(mappingsForInstitution);
+        }
+        return currentMappingInstitution;
+    }
+
+    public void setCurrentMappingInstitution(Institution currentMappingInstitution) {
+        this.currentMappingInstitution = currentMappingInstitution;
+    }
+    
+    
+    
     public List<Institution> getPaycentreInstitutions() {
         if (getPayCentre() == null) {
             return new ArrayList<Institution>();

@@ -85,7 +85,13 @@
 
                     <p:panel header="Details" >
 
-                        <p:dataTable id="tblEx" value="#{dbfController.newPersonInstitutions}" rowIndexVar="rowIndex" var="exPi" editable="true" editMode="cell" >
+                        <h:outputStylesheet library="css" name="default.css" ></h:outputStylesheet>
+                        
+                        <p:dataTable  id="tblEx" value="#{dbfController.newPersonInstitutions}" 
+                                      rowIndexVar="rowIndex" var="exPi" 
+                                      editable="true" editMode="cell" 
+                                      rowStyleClass="#{exPi.conSal le 1 and exPi.activeState eq false ? 'redrow' : 'greenrow'}">
+                            
                             <p:column >
                                 <f:facet name="header">Serial</f:facet>
                                 <h:outputLabel value="#{rowIndex + 1}"/>
