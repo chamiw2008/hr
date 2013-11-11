@@ -113,13 +113,21 @@
                                 </p:selectOneMenu>
                             </p:column>  
                             <p:column>
-                                 <f:facet name="header">Institution</f:facet>
+                                <f:facet name="header">Institution</f:facet>
                                 <p:selectOneMenu  value="#{exPi.institution}" immediate="true" >
                                     <f:selectItem itemLabel="Not Selected" />
                                     <f:selectItem itemLabel="#{exPi.institution.name}" itemValue="#{exPi.institution}" ></f:selectItem>
                                     <f:selectItems value="#{institutionController.officialInstitutions}" var="oi" itemLabel="#{oi.name}" itemValue="#{oi}" ></f:selectItems>
                                     <f:ajax execute="@this" event="change" listener="#{dbfController.savePiIn(exPi,exPi.institution) }" />
                                 </p:selectOneMenu>
+                            </p:column>
+                            <p:column > 
+                                <f:facet name="header">F1_CONSAL</f:facet>
+                                <h:outputLabel value="#{exPi.conSal}" ></h:outputLabel>
+                            </p:column>
+                            <p:column > 
+                                <f:facet name="header">F1_STAT</f:facet>
+                                <h:outputLabel value="#{exPi.activeState}" ></h:outputLabel>
                             </p:column>
                         </p:dataTable>
 

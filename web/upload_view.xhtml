@@ -96,12 +96,12 @@
                     </p:panelGrid>
 
                     <p:panel header="Details" >
-
-                        <p:dataTable id="tblEx" value="#{dbfController.existingPersonInstitutions}" var="exPi">
-                            <p:column>
-                                <f:facet name="header">Institution</f:facet>
-                                <h:outputLabel value="#{exPi.institution.name}"/>
+                        <p:dataTable  id="tblEx" value="#{dbfController.existingPersonInstitutions}" rowIndexVar="rowIndex" var="exPi" editable="true" editMode="cell" >
+                            <p:column >
+                                <f:facet name="header">Serial</f:facet>
+                                <h:outputLabel value="#{rowIndex + 1}"/>
                             </p:column>
+
                             <p:column>
                                 <f:facet name="header">Employee Id</f:facet>
                                 <h:outputLabel value="#{exPi.empNo}"/>
@@ -111,14 +111,25 @@
                                 <h:outputLabel value="#{exPi.name}"/>
                             </p:column> 
                             <p:column>
-                                <f:facet name="header">Designation</f:facet>
-                                <h:outputLabel value="#{exPi.designation.name}"/>
-                            </p:column>  
-                            <p:column>
                                 <f:facet name="header">NIC</f:facet>
                                 <h:outputLabel value="#{exPi.nic}"/>
                             </p:column>           
-
+                            <p:column>
+                                <f:facet name="header">Designation</f:facet>
+                                <h:outputLabel  value="#{exPi.designation.name}" ></h:outputLabel>
+                            </p:column>  
+                            <p:column>
+                                <f:facet name="header">Institution</f:facet>
+                                <h:outputLabel value="#{exPi.institution}" ></h:outputLabel>
+                            </p:column>
+                            <p:column > 
+                                <f:facet name="header">F1_CONSAL</f:facet>
+                                <h:outputLabel value="#{exPi.conSal}" ></h:outputLabel>
+                            </p:column>
+                            <p:column > 
+                                <f:facet name="header">F1_STAT</f:facet>
+                                <h:outputLabel value="#{exPi.activeState}" ></h:outputLabel>
+                            </p:column>
                         </p:dataTable>
 
                     </p:panel>
