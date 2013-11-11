@@ -23,7 +23,7 @@
                             <h:outputLabel value="Designation Name to Map" ></h:outputLabel>
                             <p:inputText value="#{designationController.currentMappingDesignation.name}" ></p:inputText>
                             <h:outputLabel value="Designation to Map" ></h:outputLabel>
-                            <p:selectOneMenu value="#{designationController.currentMappingDesignation.mappedToInstitution}" >
+                            <p:selectOneMenu value="#{designationController.currentMappingDesignation.mappedToDesignation}" >
                                 <f:selectItem itemLabel="Select" ></f:selectItem>
                                 <f:selectItems value="#{designationController.officialDesignations}" var="oi" itemLabel="#{oi.name}" itemValue="#{oi}" ></f:selectItems>
                             </p:selectOneMenu>

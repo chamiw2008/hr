@@ -112,14 +112,14 @@ public class DesignationController implements Serializable {
     public List<Designation> getMappedDesignations() {
         String sql;
         if(mappingsForDesignation==null){
-            sql = "select i from Designation i where i.retired=false and i.mappedToDesignation is not null and i.designation is null order by i.name";
+            sql = "select i from Designation i where i.retired=false and i.mappedToDesignation is not null and i.institution is null order by i.name";
             System.out.println("sql is " + sql);
             mappedDesignations=getFacade().findBySQL(sql);
             System.out.println("mappedDesignations is " + mappedDesignations);
         }else{
             Map m = new HashMap();
             m.put("ii", mappingsForDesignation);
-            sql = "select i from Designation i where i.retired=false and i.mappedToDesignation is not null and i.designation=:ii order by i.name";
+            sql = "select i from Designation i where i.retired=false and i.mappedToDesignation is not null and i.institution=:ii order by i.name";
             mappedDesignations=getFacade().findBySQL(sql,m);
         }
         return mappedDesignations;
