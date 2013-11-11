@@ -10,32 +10,11 @@
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>#{labels.topic}</title>
-        <h:outputStylesheet library="css" name="pdhscss1.css" ></h:outputStylesheet>
-        <style type="text/css">
-            .ui-widget,
-            .ui-widget .ui-widget {
-                font-size: 12px !important;
-            }
-            .ui-layout-north {
-                z-index:20 !important;
-                overflow:visible !important;;
-            }
+        <h:outputStylesheet library="css" name="dafault.css" ></h:outputStylesheet>
 
-            .ui-layout-north .ui-layout-unit-content {
-                overflow:visible !important;
-            }
-            .ui-layout-south {
-                overflow:hidden;;
-            }
 
-            .ui-layout-south .ui-layout-unit-content {
-                overflow:hidden !important;
-            }
-
-        </style>   
     </h:head>
 
-    <!-- style="min-height:920px !important; height:auto !important;"   -->
     <h:body >
 
         <p:growl id="growl" autoUpdate="true"/>
@@ -43,189 +22,167 @@
             <f:facet name="start">  
                 <p:graphicImage library="image" name="ajaxloading.gif" />  
             </f:facet>  
-
             <f:facet name="complete">  
                 <h:outputText value="" />  
             </f:facet>  
         </p:ajaxStatus>  
 
-        <!--        style="width: 100%; min-height:700px !important; height:auto !important; padding: 1px; margin :0px;"-->
-        <p:panel style="border: 0px; margin: 0px;padding: 0px;" >
-            <p:panelGrid style="border: 0px; margin: 0px;padding: 0px;  " >
-                <p:row>
-                    <p:column colspan="2" style="margin: 0px; border: 0px;"  >
-                        <p:panel style="margin: 0px; padding: 0px; border: 0px;" >
-
-                            <ui:insert  name="top">
-                                <p:panelGrid columns="2" style="border: 0px; width: 100%; height: 75px;">
-                                    <p:panel style="margin: 0px; padding: 0px; border: 0px; width: 20%; height: 70px;">
-                                        <h:graphicImage  class="pdLogo" library="image" name="logo.gif"  height="50px" ></h:graphicImage> 
-                                    </p:panel>
-                                    <p:panel style="margin: 1px; padding: 1px; border: 0px; width: 60%;">
-                                        <h:outputLabel style="font-size: 2.0em;" >#{labels.topic}</h:outputLabel><br/>&nbsp;
-                                        <h:outputLabel style="font-size: 1.0em;" >#{labels.subtopic}</h:outputLabel> 
-                                    </p:panel>
-                                </p:panelGrid>
-
-                            </ui:insert>
-                        </p:panel>
-                    </p:column>
-                </p:row>
-                <p:row >
-                    <p:column colspan="2" style="margin: 0px; padding: 0px; border: 0px;">
-                        <p:panel  rendered="#{sessionController.logged}" style="margin: 0px; padding: 0px; border: 0px;" >
-                            <h:form >
 
 
-                                <p:menubar styleClass="nonPrintBlock" style=" border: 0px;" >
-                                    <p:menuitem  ajax="false"  action="index" value="Home" ></p:menuitem>
-                                    <p:submenu label="View Data" >
-                                        <p:menuitem ajax="false" action="inst_summary" value="Institution Summery" ></p:menuitem>
-                                        <p:menuitem ajax="false" action="records_without_nic"  value="Records without NIC"  ></p:menuitem>
-                                        <p:menuitem ajax="false" action="records_without_designation" value="Records without Designations"  ></p:menuitem>
-                                    </p:submenu>
-                                    <p:submenu label="Upload Data"  >
-                                        <p:menuitem  ajax="false"  action="upload_view" value="Upload" ></p:menuitem>
-                                    </p:submenu>
-                                    <p:submenu label="Administration"  rendered="#{sessionController.sysAdmin}">
-                                        <p:menuitem  ajax="false"  action="institution_type" value="Institution Type"   ></p:menuitem>
-                                        <p:menuitem  ajax="false"  action="institutions" value="Institutions"  ></p:menuitem>
-                                        <p:menuitem  ajax="false"  action="#{institutionController.toMapGeneralInstitutions}" value="General Institution Mapping"  ></p:menuitem>
-                                        <p:menuitem  ajax="false"  action="institution_mapping" value="Institution-vice Mapping"  ></p:menuitem>
-                                        <p:separator></p:separator>
-                                        <p:menuitem  ajax="false"  action="institution_set" value="Institution Sets"  ></p:menuitem>
-                                        <p:separator></p:separator>
-                                        <p:menuitem  ajax="false"  action="designation" value="Designations"  ></p:menuitem>
-                                        <p:menuitem  ajax="false"  action="designation_category" value="Designation (Service) Type"  ></p:menuitem>
-                                        <p:menuitem  ajax="false"  action="#{designationController.toMapGeneralDesignations}" value="General Desgination Mapping"  ></p:menuitem>
-                                        <p:separator></p:separator>
-                                        <p:menuitem  ajax="false"  action="#{webUserController.newUserAdd}" value="Add Users"  ></p:menuitem>
-                                        <p:menuitem  ajax="false"  action="manage_users" value="Manage Users"  ></p:menuitem>
+        <p:panelGrid  >
 
-                                    </p:submenu>
-                                    <p:submenu label="Administration"  rendered="#{sessionController.insAdmin}">
-                                        <p:menuitem  ajax="false" action="institution_set"  value="Institution Sets"  ></p:menuitem>
-                                        <p:menuitem  ajax="false" action="map_institution"  value="Map Institution"  ></p:menuitem>
-                                        <p:menuitem  ajax="false"  action="register_user" value="Add Users"  ></p:menuitem>
-                                        <p:menuitem  ajax="false"  action="manage_users" value="Manage Users"  ></p:menuitem>
-
-                                    </p:submenu>
-                                    <p:submenu label="Options"  >
-                                        <p:menuitem  ajax="false"  action="change_password" value="Change Password" ></p:menuitem>
-                                        <p:menuitem  ajax="false"  action="preferances" value="Preferances"  ></p:menuitem>
-                                    </p:submenu>
-                                </p:menubar>
+            <p:row>
+                <p:column colspan="2" style="margin: 0px; border: 0px;"  >
+                    <p:panel style="margin: 0px; padding: 0px; border: 0px;" >
 
 
-                            </h:form>
-                        </p:panel>
-                    </p:column>
-                </p:row>
-                <p:row >
-
-                    <p:column  style="width: 65%; vertical-align: text-top; border: 0px;">
-
-                        <p:panel  style="width: 100%; border: 0px;" >
-                            <h:panelGroup rendered="#{sessionController.logged}" >
-
-                                <ui:insert name="content"   >
-                                </ui:insert>
-
-                            </h:panelGroup>
-                            <h:panelGroup rendered="#{!sessionController.logged}" >
-                                <ui:insert name="login"   >
-
-                                    <h:form>
-                                        <table render="false"  width="400px" class="pdTable" align="center">
-                                            <tr>
-                                                <td colspan="2" class="pdTableHighlightRow">&nbsp;</td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2" class="pdLabel">&nbsp;</td>
-                                            </tr>
-
-                                            <tr>
-                                                <td align="center" colspan="2">
-
-                                                    <span class="pdHeading1">#{labels.logintotheApplication}</span>
-                                                </td>
-                                            </tr>                  
-                                            <tr>
-                                                <td colspan="2" class="pdLabel">&nbsp;</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="pdLabel" align="right" width="40%">#{labels.userName}</td>
-                                                <td align="left" width="60%"><p:inputText value="#{sessionController.userName}" autocomplete="off" required="true" requiredMessage="Please enter the user name"/></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="pdLabel" align="right">#{labels.password}</td>
-                                                <td align="left"><p:password value="#{sessionController.passord}"  autocomplete="off" required="true" requiredMessage="Please enter the password" /></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="left"></td>
-                                                <td align="left">
-                                                    <p:commandButton  ajax="false" id="btnLogin" value="#{labels.login}" action="#{sessionController.loginAction}"/>
-                                                </td>
-                                            </tr>                  
-                                            <tr>
-                                                <td colspan="2" class="pdLabel">&nbsp;</td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2"  class="pdTableHighlightRow">&nbsp;
-                                                    <p:messages globalOnly="true" ></p:messages>
-                                                </td>
-                                            </tr>
-
-                                        </table>
-                                    </h:form>
+                        <p:panelGrid columns="2" style="border: 0px; width: 100%; height: 75px;">
+                            <p:panel style="margin: 0px; padding: 0px; border: 0px; width: 20%; height: 70px;">
+                                <h:graphicImage  class="pdLogo" library="image" name="logo.gif"  height="50px" ></h:graphicImage> 
+                            </p:panel>
+                            <p:panel style="margin: 1px; padding: 1px; border: 0px; width: 60%;">
+                                <h:outputLabel style="font-size: 2.0em;" >#{labels.topic}</h:outputLabel><br/>&nbsp;
+                                <h:outputLabel style="font-size: 1.0em;" >#{labels.subtopic}</h:outputLabel> 
+                            </p:panel>
+                        </p:panelGrid>
 
 
-                                </ui:insert>
-                            </h:panelGroup>
+                    </p:panel>
+                </p:column>
+            </p:row>
 
-                        </p:panel>
-
-
-                    </p:column>
-
-
-                </p:row>
-                <p:row>
-                    <p:column colspan="2">
-                        <p:panel style="width: 100%; border: 0px;" >
-                            <ui:insert name="bottom">
-                                <p:column colspan="2" style="width: 100%;" >
-                                    &copy;&nbsp;Ministry of Health, Sri Lanka
-                                </p:column>
-                            </ui:insert>
-                        </p:panel>
-                    </p:column>
-                </p:row>
-
-            </p:panelGrid>
+            <p:row >
+                <p:column colspan="2" style="margin: 0px; padding: 0px; border: 0px;">
+                    <p:panel  rendered="#{sessionController.logged}" style="margin: 0px; padding: 0px; border: 0px;" >
+                        <h:form >
 
 
-            <ui:insert   name="right">
+                            <p:menubar styleClass="nonPrintBlock" style=" border: 0px;" >
+                                <p:menuitem  ajax="false"  action="index" value="Home" ></p:menuitem>
+                                <p:submenu label="View Data" >
+                                    <p:menuitem ajax="false" action="inst_summary" value="Institution Summery" ></p:menuitem>
+                                    <p:menuitem ajax="false" action="records_without_nic"  value="Records without NIC"  ></p:menuitem>
+                                    <p:menuitem ajax="false" action="records_without_designation" value="Records without Designations"  ></p:menuitem>
+                                </p:submenu>
+                                <p:submenu label="Upload Data"  >
+                                    <p:menuitem  ajax="false"  action="upload_view" value="Upload" ></p:menuitem>
+                                </p:submenu>
+                                <p:submenu label="Administration"  rendered="#{sessionController.sysAdmin}">
+                                    <p:menuitem  ajax="false"  action="institution_type" value="Institution Type"   ></p:menuitem>
+                                    <p:menuitem  ajax="false"  action="institutions" value="Institutions"  ></p:menuitem>
+                                    <p:menuitem  ajax="false"  action="#{institutionController.toMapGeneralInstitutions}" value="General Institution Mapping"  ></p:menuitem>
+                                    <p:menuitem  ajax="false"  action="institution_mapping" value="Institution-vice Mapping"  ></p:menuitem>
+                                    <p:separator></p:separator>
+                                    <p:menuitem  ajax="false"  action="institution_set" value="Institution Sets"  ></p:menuitem>
+                                    <p:separator></p:separator>
+                                    <p:menuitem  ajax="false"  action="designation" value="Designations"  ></p:menuitem>
+                                    <p:menuitem  ajax="false"  action="designation_category" value="Designation (Service) Type"  ></p:menuitem>
+                                    <p:menuitem  ajax="false"  action="#{designationController.toMapGeneralDesignations}" value="General Desgination Mapping"  ></p:menuitem>
+                                    <p:separator></p:separator>
+                                    <p:menuitem  ajax="false"  action="#{webUserController.newUserAdd}" value="Add Users"  ></p:menuitem>
+                                    <p:menuitem  ajax="false"  action="manage_users" value="Manage Users"  ></p:menuitem>
 
-                <p:panel  rendered="#{sessionController.logged}" style="position: fixed; left: 30%; width: 68%; bottom: 0px;  margin: 2px; padding: 2px; border: 0px;">
-                    <f:facet name="header" >
-                        <h:form>
+                                </p:submenu>
+                                <p:submenu label="Administration"  rendered="#{sessionController.insAdmin}">
+                                    <p:menuitem  ajax="false" action="institution_set"  value="Institution Sets"  ></p:menuitem>
+                                    <p:menuitem  ajax="false" action="map_institution"  value="Map Institution"  ></p:menuitem>
+                                    <p:menuitem  ajax="false"  action="register_user" value="Add Users"  ></p:menuitem>
+                                    <p:menuitem  ajax="false"  action="manage_users" value="Manage Users"  ></p:menuitem>
 
-                            <h:outputLabel value="You are logged as #{sessionController.displayName}." ></h:outputLabel>
-                            <p:commandLink value="Click here to Logout" action="#{sessionController.logout}" ajax="false"></p:commandLink>
-                           
+                                </p:submenu>
+                                <p:submenu label="Options"  >
+                                    <p:menuitem  ajax="false"  action="change_password" value="Change Password" ></p:menuitem>
+                                    <p:menuitem  ajax="false"  action="preferances" value="Preferances"  ></p:menuitem>
+                                </p:submenu>
+                            </p:menubar>
+
+
                         </h:form>
+                    </p:panel>
+                </p:column>
+            </p:row>
+            <p:row >
 
-                    </f:facet>
+                <p:column  style="width: 65%; vertical-align: text-top; border: 0px;">
 
-                </p:panel>
+                    <p:panel  style="width: 100%; border: 0px;" >
+                        <h:panelGroup rendered="#{sessionController.logged}" >
+
+                            <ui:insert name="content"   >
+                            </ui:insert>
+
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{!sessionController.logged}" >
+                            <ui:insert name="login"   >
+
+                                <h:form>
+                                    <table render="false"  width="400px" class="pdTable" align="center">
+                                        <tr>
+                                            <td colspan="2" class="pdTableHighlightRow">&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="pdLabel">&nbsp;</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td align="center" colspan="2">
+
+                                                <span class="pdHeading1">#{labels.logintotheApplication}</span>
+                                            </td>
+                                        </tr>                  
+                                        <tr>
+                                            <td colspan="2" class="pdLabel">&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pdLabel" align="right" width="40%">#{labels.userName}</td>
+                                            <td align="left" width="60%"><p:inputText value="#{sessionController.userName}" autocomplete="off" required="true" requiredMessage="Please enter the user name"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pdLabel" align="right">#{labels.password}</td>
+                                            <td align="left"><p:password value="#{sessionController.passord}"  autocomplete="off" required="true" requiredMessage="Please enter the password" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left"></td>
+                                            <td align="left">
+                                                <p:commandButton  ajax="false" id="btnLogin" value="#{labels.login}" action="#{sessionController.loginAction}"/>
+                                            </td>
+                                        </tr>                  
+                                        <tr>
+                                            <td colspan="2" class="pdLabel">&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"  class="pdTableHighlightRow">&nbsp;
+                                                <p:messages globalOnly="true" ></p:messages>
+                                            </td>
+                                        </tr>
+
+                                    </table>
+                                </h:form>
 
 
-            </ui:insert>
+                            </ui:insert>
+                        </h:panelGroup>
+
+                    </p:panel>
+                </p:column>
+            </p:row>
+        </p:panelGrid>
+
+
+        <ui:insert   name="right">
+            <p:panel  rendered="#{sessionController.logged}" style="position: fixed; left: 10%; right: 10%; bottom: 0px;  margin: 2px; padding: 2px; border: 0px;">
+                <h:form>
+                    <h:panelGrid columns="3" >
+                        <h:outputLabel value="&copy;&nbsp;Ministry of Health, Sri Lanka." ></h:outputLabel>
+                        <h:outputLabel value="You are logged as #{sessionController.displayName}." ></h:outputLabel>
+                        <p:commandLink value="Click here to Logout" action="#{sessionController.logout}" ajax="false"></p:commandLink>
+                    </h:panelGrid>
+                </h:form>
+            </p:panel>
+        </ui:insert>
 
 
 
-        </p:panel>
     </h:body>
 
 </html>
