@@ -93,13 +93,13 @@ public class InstitutionController implements Serializable {
 
     public void saveInstitution(Institution ins) {
         if (ins == null) {
-         JsfUtil.addErrorMessage("Nothing to update");
-         return;
+            JsfUtil.addErrorMessage("Nothing to update");
+            return;
         }
-        if(ins.getId()==null || ins.getId()==0){
+        if (ins.getId() == null || ins.getId() == 0) {
             getFacade().create(ins);
             JsfUtil.addSuccessMessage("Saved");
-        }else{
+        } else {
             getFacade().edit(ins);
             JsfUtil.addSuccessMessage("Updated");
         }
@@ -154,6 +154,9 @@ public class InstitutionController implements Serializable {
     }
 
     public List<Institution> getSelectedIns() {
+//        if (selectedIns != null) {
+//            return selectedIns;
+//        }
         selectedIns = new ArrayList<Institution>(getOwnAndAllChildInstitutions(null, current));
         return selectedIns;
     }
@@ -263,7 +266,6 @@ public class InstitutionController implements Serializable {
         this.offSel = offSel;
     }
 
-    
     @Inject
     DbfController dbfController;
 
@@ -274,11 +276,10 @@ public class InstitutionController implements Serializable {
     public void setDbfController(DbfController dbfController) {
         this.dbfController = dbfController;
     }
-    
-    
-    
+
     public void setSelectedNode(TreeNode selectedNode) {
-        if(this.selectedNode!=selectedNode){
+        if (this.selectedNode != selectedNode) {
+            System.out.println("set select node");
             getDbfController().recreateModel();
             getDbfController().getSelectedPersonInstitutions();
         }
@@ -316,6 +317,7 @@ public class InstitutionController implements Serializable {
 
     public void onNodeSelect(NodeSelectEvent event) {
         current = findInstitution(event.getTreeNode().toString(), false);
+        System.out.println("set on node select");
         getDbfController().recreateModel();
         getDbfController().getSelectedPersonInstitutions();
         JsfUtil.addSuccessMessage(current.getName());
@@ -444,6 +446,7 @@ public class InstitutionController implements Serializable {
     }
 
     public void setCurrent(Institution current) {
+        if(this.current!=current) recreateModel();
         this.current = current;
     }
 
@@ -531,6 +534,7 @@ public class InstitutionController implements Serializable {
 //        return searchedItem;
 //    }
     private void recreateModel() {
+        selectedIns=null;
         items = null;
     }
 

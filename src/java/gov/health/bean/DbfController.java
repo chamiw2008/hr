@@ -218,17 +218,9 @@ public class DbfController implements Serializable {
 
     public void completedSetCount(Integer temPayYear) {
         int temPayMonth = 0;
-        if (getInstitution() == null || getPayYear() == 0) {
-            System.out.println("Completed Set Count ok");
-            System.out.println(getInstitution().toString());
-            System.out.println("Pay Month " + temPayMonth);
-            System.out.println("Pay Year " + temPayYear);
-            return;
-        }
         for (int i = 0; i < 12; i++) {
             temPayMonth = i + 1;
             String sql;
-
             sql = "select distinct pi.paySet from PersonInstitution pi where pi.retired = false and pi.payYear = " + temPayYear + " and pi.payMonth = " + temPayMonth + " and pi.payCentre.id in " + getInstitutionController().getInsIds() + " ";
             System.out.println(sql);
             try {
@@ -372,9 +364,6 @@ public class DbfController implements Serializable {
     }
 
     public List<DesignationSummeryRecord> getDesignationSummery() {
-        if (getInstitution() == null) {
-            return new ArrayList<DesignationSummeryRecord>();
-        }
         String sql = "select pi.designation.name, count(pi) from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.institution.id in " + getInstitutionController().getInsIds() + " group by pi.designation.name";
         List lst = getPiFacade().findGroupingBySql(sql);
         List<DesignationSummeryRecord> sums = new ArrayList<DesignationSummeryRecord>();
@@ -417,6 +406,7 @@ public class DbfController implements Serializable {
 
     public void setInsSet(InstitutionSet insSet) {
         if (this.insSet != insSet) {
+            System.out.println("setInsSet");
             recreateModel();
         }
         this.insSet = insSet;
@@ -486,6 +476,7 @@ public class DbfController implements Serializable {
 
     public void setPayMonth(Integer payMonth) {
         if (this.payMonth != payMonth) {
+            System.out.println("setPayMonth");
             recreateModel();
         }
         this.payMonth = payMonth;
@@ -494,13 +485,15 @@ public class DbfController implements Serializable {
     public Integer getPayYear() {
         if (payYear == null || payYear == 0) {
             payYear = Calendar.getInstance().get(Calendar.YEAR);
+            System.out.println("get Pay Year");
+            recreateModel();
         }
-        recreateModel();
         return payYear;
     }
 
     public void setPayYear(Integer payYear) {
         if (this.payYear != payYear) {
+            System.out.println("set pay year");
             recreateModel();
         }
         this.payYear = payYear;
@@ -712,6 +705,7 @@ public class DbfController implements Serializable {
 
     public void setInstitution(Institution institution) {
         if (this.institution != institution) {
+            System.out.println("set Institution");
             recreateModel();
         }
         this.institution = institution;
@@ -1227,7 +1221,6 @@ public class DbfController implements Serializable {
             for (PersonInstitution pi : newPersonInstitutions) {
                 getPiFacade().create(pi);
             }
-
             recreateModel();
             newPersonInstitutions = new ArrayList<PersonInstitution>();
             JsfUtil.addSuccessMessage("Data Replaced Successfully");
