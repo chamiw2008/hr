@@ -96,9 +96,13 @@ public class InstitutionController implements Serializable {
             getFacade().edit(currentMappingInstitution);
             JsfUtil.addSuccessMessage("Updated");
         }
+        currentMappingInstitution=null;
+        getCurrentMappingInstitution();
     }
 
     public void saveIndividualMapping(Institution mappingFor, Institution mappedTo){
+        System.out.println("mapped for " + mappingFor);
+        System.out.println("mapped to " + mappedTo);
         mappingFor.setMappedToInstitution(mappedTo);
         if(mappingFor.getId()==null || mappingFor.getId()==0){
             getFacade().create(mappingFor);
@@ -117,12 +121,14 @@ public class InstitutionController implements Serializable {
     public List<Institution> getMappedInstitutions() {
         String sql;
         if(mappingsForInstitution==null){
-            sql = "select i from Institution i where i.retired=false and i.mappedToInstitution is not null and i.institution is null and i.official=false order by i.name";
+            sql = "select i from Institution i where i.retired=false and i.mappedToInstitution is not null and i.institution is null order by i.name";
+            System.out.println("sql is " + sql);
             mappedInstitutions=getFacade().findBySQL(sql);
+            System.out.println("mappedInstitutions is " + mappedInstitutions);
         }else{
             Map m = new HashMap();
             m.put("ii", mappingsForInstitution);
-            sql = "select i from Institution i where i.retired=false and i.mappedToInstitution is not null and i.institution=:ii and i.official=false order by i.name";
+            sql = "select i from Institution i where i.retired=false and i.mappedToInstitution is not null and i.institution=:ii order by i.name";
             mappedInstitutions=getFacade().findBySQL(sql,m);
         }
         return mappedInstitutions;
@@ -151,6 +157,17 @@ public class InstitutionController implements Serializable {
     public void setCurrentMappingInstitution(Institution currentMappingInstitution) {
         this.currentMappingInstitution = currentMappingInstitution;
     }
+    
+    public void removeMapping(){
+        if(currentMappingInstitution==null){
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return;
+        }
+        currentMappingInstitution.setRetired(true);
+        getFacade().edit(currentMappingInstitution);
+    }
+    
+    
     
     
     

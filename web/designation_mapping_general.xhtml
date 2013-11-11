@@ -15,32 +15,32 @@
 
                     <p:panel >
                         <f:facet name="header" >
-                            <h:outputLabel value="General Institution Mapping" ></h:outputLabel>
+                            <h:outputLabel value="General Designation Mapping" ></h:outputLabel>
                         </f:facet>
 
                         <p:panelGrid columns="2" >
 
-                            <h:outputLabel value="Instituion Name to Map" ></h:outputLabel>
-                            <p:inputText value="#{institutionController.currentMappingInstitution.name}" ></p:inputText>
-                            <h:outputLabel value="Instituion to Map" ></h:outputLabel>
-                            <p:selectOneMenu value="#{institutionController.currentMappingInstitution.mappedToInstitution}" >
+                            <h:outputLabel value="Designation Name to Map" ></h:outputLabel>
+                            <p:inputText value="#{designationController.currentMappingDesignation.name}" ></p:inputText>
+                            <h:outputLabel value="Designation to Map" ></h:outputLabel>
+                            <p:selectOneMenu value="#{designationController.currentMappingDesignation.mappedToInstitution}" >
                                 <f:selectItem itemLabel="Select" ></f:selectItem>
-                                <f:selectItems value="#{institutionController.officialInstitutions}" var="oi" itemLabel="#{oi.name}" itemValue="#{oi}" ></f:selectItems>
+                                <f:selectItems value="#{designationController.officialDesignations}" var="oi" itemLabel="#{oi.name}" itemValue="#{oi}" ></f:selectItems>
                             </p:selectOneMenu>
-                            <p:commandButton ajax="false" value="Add" action="#{institutionController.saveCurrentMapping()}" ></p:commandButton>
+                            <p:commandButton ajax="false" value="Add" action="#{designationController.saveCurrentMapping()}" ></p:commandButton>
 
                         </p:panelGrid>
 
-                        <p:dataTable id="tbl" value="#{institutionController.mappedInstitutions}" var="pi" >
+                        <p:dataTable id="tbl" value="#{designationController.mappedDesignations}" var="pi" >
                             <p:column headerText="Mapped For" >
                                 <h:outputLabel value="#{pi.name}" ></h:outputLabel>
                             </p:column>
                             <p:column headerText="Mapped to" >
-                               <h:outputLabel value="#{pi.mappedToInstitution.name}" ></h:outputLabel>
+                               <h:outputLabel value="#{pi.mappedToDesignation.name}" ></h:outputLabel>
                             </p:column>
                             <p:column headerText="Remove" >
-                                <h:commandButton  action="#{institutionController.removeMapping()}" value="Remove" >
-                                    <f:setPropertyActionListener value="#{pi}" target="#{institutionController.currentMappingInstitution}" ></f:setPropertyActionListener>
+                                <h:commandButton  action="#{designationController.removeMapping()}" value="Remove" >
+                                    <f:setPropertyActionListener value="#{pi}" target="#{designationController.currentMappingDesignation}" ></f:setPropertyActionListener>
                                 </h:commandButton>
                             </p:column>
                         </p:dataTable>

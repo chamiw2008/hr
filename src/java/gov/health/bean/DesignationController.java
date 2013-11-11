@@ -10,9 +10,12 @@ package gov.health.bean;
 
 import gov.health.facade.DesignationFacade;
 import gov.health.entity.Designation;
+import gov.health.entity.Institution;
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
 
@@ -48,6 +51,127 @@ public class DesignationController implements Serializable {
 
     List<Designation> officialDesignations;
 
+
+    
+    
+    Institution institution;
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    List<Designation> mappedDesignations;
+    Designation mappingsForDesignation;
+    Designation currentMappingDesignation;
+
+    public void saveCurrentMapping(){
+        if(currentMappingDesignation==null){
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        if(currentMappingDesignation.getId()==null || currentMappingDesignation.getId()==0){
+            getFacade().create(currentMappingDesignation);
+            JsfUtil.addSuccessMessage("Saved");
+        }else{
+            getFacade().edit(currentMappingDesignation);
+            JsfUtil.addSuccessMessage("Updated");
+        }
+        currentMappingDesignation=null;
+        getCurrentMappingDesignation();
+    }
+
+    public void saveIndividualMapping(Designation mappingFor, Designation mappedTo){
+        System.out.println("mapped for " + mappingFor);
+        System.out.println("mapped to " + mappedTo);
+        mappingFor.setMappedToDesignation(mappedTo);
+        if(mappingFor.getId()==null || mappingFor.getId()==0){
+            getFacade().create(mappingFor);
+            JsfUtil.addSuccessMessage("Saved");
+        }else{
+            getFacade().edit(mappingFor);
+            JsfUtil.addSuccessMessage("Updated");
+        }
+    }
+    
+    public String toMapGeneralDesignations(){
+        mappingsForDesignation=null;
+        return "designation_mapping_general";
+    }
+    
+    public List<Designation> getMappedDesignations() {
+        String sql;
+        if(mappingsForDesignation==null){
+            sql = "select i from Designation i where i.retired=false and i.mappedToDesignation is not null and i.designation is null order by i.name";
+            System.out.println("sql is " + sql);
+            mappedDesignations=getFacade().findBySQL(sql);
+            System.out.println("mappedDesignations is " + mappedDesignations);
+        }else{
+            Map m = new HashMap();
+            m.put("ii", mappingsForDesignation);
+            sql = "select i from Designation i where i.retired=false and i.mappedToDesignation is not null and i.designation=:ii order by i.name";
+            mappedDesignations=getFacade().findBySQL(sql,m);
+        }
+        return mappedDesignations;
+    }
+
+    public void setMappedDesignations(List<Designation> mappedDesignations) {
+        this.mappedDesignations = mappedDesignations;
+    }
+
+    public Designation getMappingsForDesignation() {
+        return mappingsForDesignation;
+    }
+
+    public void setMappingsForDesignation(Designation mappingsForDesignation) {
+        this.mappingsForDesignation = mappingsForDesignation;
+    }
+
+    public Designation getCurrentMappingDesignation() {
+        if(currentMappingDesignation==null){
+            currentMappingDesignation = new Designation();
+            currentMappingDesignation.setInstitution(institution);
+        }
+        return currentMappingDesignation;
+    }
+
+    public void setCurrentMappingDesignation(Designation currentMappingDesignation) {
+        this.currentMappingDesignation = currentMappingDesignation;
+    }
+    
+    public void removeMapping(){
+        if(currentMappingDesignation==null){
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return;
+        }
+        currentMappingDesignation.setRetired(true);
+        getFacade().edit(currentMappingDesignation);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     public List<Designation> getOfficialDesignations() {
         if (officialDesignations == null) {
             officialDesignations = getFacade().findBySQL("select d from Designation d where d.retired=false and d.official=true order by d.name");
