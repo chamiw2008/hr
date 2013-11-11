@@ -38,5 +38,5 @@ a:link:hover, a:visited:hover  {
 }
 
 .ui-widget, .ui-widget .ui-widget {
-    font-size: 60%;
+    font-size: 60%!important;
 }
