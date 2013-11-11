@@ -140,7 +140,7 @@ public class SessionController implements Serializable {
 
     public String getPrimeTheme() {
         if (primeTheme == null || primeTheme.equals("")) {
-            primeTheme = "hot-sneaks";
+            primeTheme = "redmond";
         }
         if (getLoggedUser() != null) {
             if (getLoggedUser().getPrimeTheme() != null) {

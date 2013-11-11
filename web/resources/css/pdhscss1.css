@@ -27,6 +27,13 @@ html, body{
     background-color: #e3f5fa;
 }
 
+
+.headerblock{
+    background-color: #b1eafa;
+    border-bottom:  #6fddfc solid 2px;
+    width: 100%;
+}
+
 .pdFullWidthHeight{
     height: 100%;
     width: 100%;
@@ -191,6 +198,8 @@ html, body{
     background: #F4F5F7;
 
 }
+
+
 
 .pdHeading1{
     font-family:Verdana, Arial, Helvetica, sans-serif;

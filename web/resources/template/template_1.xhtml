@@ -50,30 +50,21 @@
         </p:ajaxStatus>  
 
         <div Class="wholepage" style="width: 98%; height: 96%; " >
-
-
-            <div id="header" >
-
-                    <ui:insert  name="top">
-                        <p:panelGrid columns="2" style="border: 0px; width: 100%; height: 75px;">
-                            <p:panel style="margin: 0px; padding: 0px; border: 0px; width: 20%; height: 70px;">
-                                <h:graphicImage  class="pdLogo" library="image" name="Emblem_of_Sri_Lanka.png"  height="50px" ></h:graphicImage> 
-                            </p:panel>
-                            <p:panel style="margin: 1px; padding: 1px; border: 0px; width: 60%;">
-                                <h:outputLabel style="font-size: 2.0em;" >#{labels.topic}</h:outputLabel><br/>&nbsp;
-                                <h:outputLabel style="font-size: 1.0em;" >#{labels.subtopic}</h:outputLabel> 
-                            </p:panel>
-                        </p:panelGrid>
-
-                    </ui:insert>
-                    
-            </div>
+            <h:panelGrid columns="2" id="header" class="headerblock" >
+                <h:panelGroup style="margin: auto; padding: 5px; border:0px; width: 20%; text-align: center; vertical-align: middle;">
+                    <h:graphicImage  class="pdLogo" library="image" name="Emblem_of_Sri_Lanka.png"  height="40px" ></h:graphicImage> 
+                </h:panelGroup>
+                <h:panelGroup style="margin: auto; padding: 1px; border: 0px; width: 75%;  text-align: center; vertical-align: middle;  ">
+                    <h:outputLabel style="font-size: 2.0em;" >#{labels.topic}</h:outputLabel><br/>&nbsp;
+                    <h:outputLabel style="font-size: 1.0em;" >#{labels.subtopic}</h:outputLabel> 
+                </h:panelGroup>
+            </h:panelGrid>
 
 
             <div id="menu" >
 
                 <h:panelGroup  rendered="#{sessionController.logged}" style="margin: 0px; padding: 0px; border: 0px;" >
-                    
+
                     <h:form >
 
 
@@ -118,7 +109,7 @@
 
 
                     </h:form>
-                
+
                 </h:panelGroup>
 
             </div>
@@ -126,57 +117,57 @@
 
 
             <div id="content" >
-                    <h:panelGroup rendered="#{sessionController.logged}" >
-                        <ui:insert name="content"   >
-                        </ui:insert>
-                    </h:panelGroup>
-                    <h:panelGroup rendered="#{!sessionController.logged}" >
-                        <ui:insert name="login"   >
-                            <h:form>
-                                <table render="false"  width="400px" class="pdTable" align="center">
-                                    <tr>
-                                        <td colspan="2" class="pdTableHighlightRow">&nbsp;</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" class="pdLabel">&nbsp;</td>
-                                    </tr>
+                <h:panelGroup rendered="#{sessionController.logged}" >
+                    <ui:insert name="content"   >
+                    </ui:insert>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{!sessionController.logged}" >
+                    <ui:insert name="login"   >
+                        <h:form>
+                            <table render="false"  width="400px" class="pdTable" align="center">
+                                <tr>
+                                    <td colspan="2" class="pdTableHighlightRow">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="pdLabel">&nbsp;</td>
+                                </tr>
 
-                                    <tr>
-                                        <td align="center" colspan="2">
+                                <tr>
+                                    <td align="center" colspan="2">
 
-                                            <span class="pdHeading1">#{labels.logintotheApplication}</span>
-                                        </td>
-                                    </tr>                  
-                                    <tr>
-                                        <td colspan="2" class="pdLabel">&nbsp;</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="pdLabel" align="right" width="40%">#{labels.userName}</td>
-                                        <td align="left" width="60%"><p:inputText value="#{sessionController.userName}" autocomplete="off" required="true" requiredMessage="Please enter the user name"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="pdLabel" align="right">#{labels.password}</td>
-                                        <td align="left"><p:password value="#{sessionController.passord}"  autocomplete="off" required="true" requiredMessage="Please enter the password" /></td>
-                                    </tr>
-                                    <tr>
-                                        <td align="left"></td>
-                                        <td align="left">
-                                            <p:commandButton  ajax="false" id="btnLogin" value="#{labels.login}" action="#{sessionController.loginAction}"/>
-                                        </td>
-                                    </tr>                  
-                                    <tr>
-                                        <td colspan="2" class="pdLabel">&nbsp;</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2"  class="pdTableHighlightRow">&nbsp;
-                                            <p:messages globalOnly="true" ></p:messages>
-                                        </td>
-                                    </tr>
+                                        <span class="pdHeading1">#{labels.logintotheApplication}</span>
+                                    </td>
+                                </tr>                  
+                                <tr>
+                                    <td colspan="2" class="pdLabel">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td class="pdLabel" align="right" width="40%">#{labels.userName}</td>
+                                    <td align="left" width="60%"><p:inputText value="#{sessionController.userName}" autocomplete="off" required="true" requiredMessage="Please enter the user name"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="pdLabel" align="right">#{labels.password}</td>
+                                    <td align="left"><p:password value="#{sessionController.passord}"  autocomplete="off" required="true" requiredMessage="Please enter the password" /></td>
+                                </tr>
+                                <tr>
+                                    <td align="left"></td>
+                                    <td align="left">
+                                        <p:commandButton  ajax="false" id="btnLogin" value="#{labels.login}" action="#{sessionController.loginAction}"/>
+                                    </td>
+                                </tr>                  
+                                <tr>
+                                    <td colspan="2" class="pdLabel">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"  class="pdTableHighlightRow">&nbsp;
+                                        <p:messages globalOnly="true" ></p:messages>
+                                    </td>
+                                </tr>
 
-                                </table>
-                            </h:form>
-                        </ui:insert>
-                    </h:panelGroup>
+                            </table>
+                        </h:form>
+                    </ui:insert>
+                </h:panelGroup>
             </div>
         </div>
 
