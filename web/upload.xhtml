@@ -11,7 +11,7 @@
             <p:panel >
                 <f:facet name="header" >
                     <h:form>
-                         <h:outputLabel value="Upload Data" ></h:outputLabel>
+                         <h:outputLabel value="Capture Payment Cycle Data" ></h:outputLabel>
                         <p:commandButton ajax="false" value="View Existing Data" style="float: right;" action="upload_view" />
                     </h:form>
                 </f:facet>
@@ -54,7 +54,7 @@
                         </h:selectOneMenu>
                         <h:outputText value="Select the file and Upload"/>
                         <p:fileUpload value="#{dbfController.file}" mode="simple" ></p:fileUpload>
-                        <p:commandButton value="Upload and Replace" ajax="false" action="#{dbfController.uploadAndReplaceData}" ></p:commandButton>
+                        <p:commandButton value="Upload and Replace" ajax="false" action="#{dbfController.extractData}" ></p:commandButton>
                     </p:panelGrid>
                 </h:form>
             </p:panel>

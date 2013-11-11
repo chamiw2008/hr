@@ -73,8 +73,30 @@ public class PersonInstitution implements Serializable {
 
     Integer payYear;
     Integer payMonth;
+    @ManyToOne
     InstitutionSet paySet;
 
+    Long consal;
+    Boolean active;
+
+    public Long getConsal() {
+        return consal;
+    }
+
+    public void setConsal(Long consal) {
+        this.consal = consal;
+    }
+
+    public Boolean isActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+    
+    
+    
     public InstitutionSet getPaySet() {
         return paySet;
     }

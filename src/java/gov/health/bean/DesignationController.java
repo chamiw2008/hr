@@ -32,7 +32,7 @@ import javax.inject.Inject;
  */
 @Named
 @SessionScoped
-public  class DesignationController  implements Serializable {
+public class DesignationController implements Serializable {
 
     @EJB
     private DesignationFacade ejbFacade;
@@ -45,6 +45,24 @@ public  class DesignationController  implements Serializable {
     boolean selectControlDisable = false;
     boolean modifyControlDisable = true;
     String selectText = "";
+
+    List<Designation> officialDesignations;
+
+    public List<Designation> getOfficialDesignations() {
+        if (officialDesignations == null) {
+            officialDesignations = getFacade().findBySQL("select d from Designation d where d.retired=false and d.official=true order by d.name");
+        }
+        return officialDesignations;
+    }
+
+    public void recreateModel() {
+        items=null;
+        officialDesignations = null;
+    }
+
+    public void setOfficialDesignations(List<Designation> officialDesignations) {
+        this.officialDesignations = officialDesignations;
+    }
 
     public DesignationController() {
     }
@@ -133,10 +151,6 @@ public  class DesignationController  implements Serializable {
         return searchedItem;
     }
 
-    private void recreateModel() {
-        items = null;
-    }
-
     public void prepareSelect() {
         this.prepareModifyControlDisable();
     }
@@ -157,7 +171,7 @@ public  class DesignationController  implements Serializable {
     }
 
     public void saveSelected() {
-                  
+
         if (selectedItemIndex > 0) {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));
@@ -195,7 +209,7 @@ public  class DesignationController  implements Serializable {
     }
 
     public void delete() {
-       
+
         if (current != null) {
             current.setRetired(true);
             current.setRetiredAt(Calendar.getInstance().getTime());
@@ -263,8 +277,6 @@ public  class DesignationController  implements Serializable {
     public void setSessionController(SessionController sessionController) {
         this.sessionController = sessionController;
     }
-    
-    
 
     @FacesConverter(forClass = Designation.class)
     public static class DesignationControllerConverter implements Converter {
