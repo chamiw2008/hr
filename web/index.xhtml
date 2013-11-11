@@ -15,8 +15,10 @@
 
 
             <p:panel header="Dashboard" >
+
                 <p:panelGrid columns="2" >
-                    <p:panel>
+                    <p:panel header="Institution Hirachy">
+
                         <p:tree  value="#{institutionController.root}" var="node" dynamic="true" cache="false"  
                                  selectionMode="single"  selection="#{institutionController.selectedNode}" id="tree">  
                             <p:ajax event="select"  update=":#{p:component('tblIns')}  :#{p:component('tblDes')} :#{p:component('panPay')}"   listener="#{institutionController.onNodeSelect}" />  
@@ -24,17 +26,23 @@
                                 <h:outputText value="#{node}" />  
                             </p:treeNode>  
                         </p:tree>
+                    </p:panel>
+
+                    <p:panel >
+                        <f:facet name="header" >
+                            <h:outputLabel value="Selected Institutions under " ></h:outputLabel>
+                            <h:outputLabel value="#{institutionController.current.name}" rendered="#{institutionController.current ne null}" ></h:outputLabel>
+                        </f:facet>
                         <p:dataTable id="tblIns" value="#{institutionController.selectedIns}" var="i"  >
-                            <f:facet name="header" >
-                                <h:outputLabel value="#{institutionController.current.name}" rendered="#{institutionController.current ne null}" ></h:outputLabel>
-                            </f:facet>
+
                             <p:column >
-                                #{i.name}
+                                <h:outputLabel value="#{i.name}" ></h:outputLabel>
                             </p:column>
 
                         </p:dataTable>
 
                     </p:panel>
+
                     <p:panelGrid >
                         <p:row>
                             <p:column colspan="2" >

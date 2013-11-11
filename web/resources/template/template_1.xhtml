@@ -37,7 +37,7 @@
 
     <!-- style="min-height:920px !important; height:auto !important;"   -->
     <h:body >
-        
+
         <p:growl id="growl" autoUpdate="true"/>
         <p:ajaxStatus style="position: absolute; width:128px;height:128px;position:fixed;right:5px;top:5px">  
             <f:facet name="start">  
@@ -92,7 +92,7 @@
                                         <p:menuitem  ajax="false"  action="institutions" value="Institutions"  ></p:menuitem>
                                         <p:menuitem  ajax="false"  action="institution_set" value="Institution Sets"  ></p:menuitem>
                                         <p:menuitem  ajax="false"  action="institution_mapping" value="Institution Mapping"  ></p:menuitem>
-                                        
+
                                         <p:menuitem  ajax="false"  action="designation" value="Designations"  ></p:menuitem>
                                         <p:menuitem  ajax="false"  action="designation_category" value="Designation (Service) Type"  ></p:menuitem>
                                         <p:menuitem  ajax="false"  action="#{webUserController.newUserAdd}" value="Add Users"  ></p:menuitem>
@@ -120,7 +120,7 @@
                 <p:row >
 
                     <p:column  style="width: 65%; vertical-align: text-top; border: 0px;">
-                        
+
                         <p:panel  style="width: 100%; border: 0px;" >
                             <h:panelGroup rendered="#{sessionController.logged}" >
 
@@ -180,40 +180,31 @@
                             </h:panelGroup>
 
                         </p:panel>
-                    
-                    
+
+
                     </p:column>
-                    <p:column style="width: 15%; margin: 0px; padding: 0px;">
-                        <!--                        style="width: 100%; min-height:700px !important; height:auto !important; height:800px !important; border: 0px; padding: 0px; margin: 0px;"-->
-                        <p:panel  >
-                            <ui:insert   name="right">
 
-                                <p:panel rendered="#{sessionController.logged}" header="Loggin" style="margin: 2px; padding: 2px; border: 0px;">
-                                    <h:form>
-                                        <p:panel id="divActivated" rendered="#{sessionController.activated}" style="margin:2px; padding: 0px; border: 0px;">
-                                            You are logged as #{sessionController.displayName}
-                                            <p:commandButton value="Logout" action="#{sessionController.logout}" ajax="false"></p:commandButton>
-                                        </p:panel>
-                                        <p:panel id="divNotActivated" rendered="#{!sessionController.activated}" style="margin: 2px; padding: 0px; border: 0px;">
-                                            Welcome to Health Office. Your account is yet to activate. Please contact administrator.
-                                            <p:commandButton value="Logout" action="#{sessionController.logout}" ajax="false"></p:commandButton>
-                                        </p:panel>
-                                    </h:form>
-                                </p:panel>
+                    <ui:insert   name="right">
 
-                                <p:panel header="Theme" style="margin: 2px; padding: 2px; border: 0px;">
-                                    <h:form>
-                                        <p:themeSwitcher style="width:165px" id="defaultSwitcher" value="#{themeSwitcherBean.theme}">
-                                            <f:selectItem itemLabel="Choose Theme" itemValue="" />
-                                            <f:selectItems value="#{themeSwitcherBean.themes}" />
-                                        </p:themeSwitcher>
-                                        <p:commandButton value="Set" action="#{themeSwitcherBean.saveTheme}"></p:commandButton>
-                                    </h:form>
-                                </p:panel>
+                        <p:panel header="Login" rendered="#{sessionController.logged}" style="position: fixed; left: 30%; width: 68%; bottom: 0px;  margin: 2px; padding: 2px; border: 0px;">
+                            <h:form>
+                                <p:panelGrid columns="5" >
+                                    <h:outputLabel value="You are logged as #{sessionController.displayName}." ></h:outputLabel>
+                                    <p:commandLink value="Click here to Logout" action="#{sessionController.logout}" ajax="false"></p:commandLink>
+                                    <p:themeSwitcher style="width:165px" id="defaultSwitcher" value="#{themeSwitcherBean.theme}">
+                                        <f:selectItem itemLabel="Choose Theme" itemValue="" />
+                                        <f:selectItems value="#{themeSwitcherBean.themes}" />
+                                    </p:themeSwitcher>
+                                    <p:commandButton ajax="false" value="Set" action="#{themeSwitcherBean.saveTheme}"></p:commandButton>
+                                </p:panelGrid>
+                            </h:form>
 
-                            </ui:insert>
                         </p:panel>
-                    </p:column>
+
+
+                    </ui:insert>
+
+
 
                 </p:row>
                 <p:row>
