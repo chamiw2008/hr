@@ -1242,11 +1242,19 @@ public class DbfController implements Serializable {
                     } catch (Exception e) {
                         pi.setActiveState(true);
                     }
+                    
                     try {
                         pi.setNopay((Boolean) rowObjects[31]);
                     } catch (Exception e) {
                         pi.setNopay(false);
                     }
+                    
+                    try {
+                        pi.setConSal((Double) rowObjects[4]);
+                    } catch (Exception e) {
+                        pi.setConSal(0.0);
+                    }
+                    
                     newPersonInstitutions.add(pi);
                 }
             }
