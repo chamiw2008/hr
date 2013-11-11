@@ -9,10 +9,6 @@
 
 
     <ui:define name="content">
-
-
-
-
         <h:form  >
             <p:growl autoUpdate="true" />
             <p:focus id="selectFocus" context="gpSelect" />
@@ -27,29 +23,17 @@
 
                                 <h:outputText id="lblSelect" value="Institution Types" >
                                 </h:outputText>
-
-                                <p:inputText id="txtSelect" value="#{institutionTypeController.selectText}" readonly="#{institutionTypeController.selectControlDisable}"  style="min-width: 200px" >
-                                    <f:ajax  event="keyup" execute="txtSelect" render="lstSelect gpDetail" >
-                                    </f:ajax>
-                                </p:inputText>
-                                <p:selectOneListbox id="lstSelect"  disabled="#{institutionTypeController.selectControlDisable}"  value="#{institutionTypeController.current}" style="min-width: 223px">
-                                    <f:selectItems value="#{institutionTypeController.searchItems}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
+                                <p:selectOneListbox id="lstSelect"    value="#{institutionTypeController.current}" style="min-width: 223px">
+                                    <f:selectItems value="#{institutionTypeController.lstItems}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
                                     <f:ajax render="gpDetail" execute="lstSelect" >                                
                                     </f:ajax>
                                 </p:selectOneListbox>
-
                             </h:panelGrid>
 
                             <h:panelGrid id="gpSelectButtons" columns="3"  >
-                                <p:commandButton id="btnAdd" value="Add" readonly="#{institutionTypeController.selectControlDisable}" action="#{institutionTypeController.prepareAdd()}" styleClass="buttons" >
-                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail detailFocus" execute="btnEdit" >                                
-                                    </f:ajax>
+                                <p:commandButton ajax="false" id="btnAdd" value="Add"  actionListener="#{institutionTypeController.prepareAdd}" >
                                 </p:commandButton>
-                                <p:commandButton id ="btnEdit" value="Edit" readonly="#{institutionTypeController.selectControlDisable}" action="#{institutionTypeController.prepareEdit()}"  styleClass="buttons">
-                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail detailFocus" execute="lstSelect" >
-                                    </f:ajax>
-                                </p:commandButton>
-                                <p:commandButton id="btnDelete"  action="#{institutionTypeController.delete()}"  value="Delete" readonly="#{institutionTypeController.selectControlDisable}" styleClass="buttons">
+                                <p:commandButton id="btnDelete"  action="#{institutionTypeController.delete()}"  value="Delete"  >
                                     <f:ajax render="lstSelect gpDetail" execute="lstSelect btnDelete" >
                                     </f:ajax>                                
                                 </p:commandButton>
@@ -61,38 +45,20 @@
                         </p:panel>
                     </h:panelGrid >
 
-                    
-                    
-                    
                     <p:panel>
-                        
-                        
-                        
                         <h:panelGrid id="gpDetail" columns="1">
                             <h:panelGrid id="gpDetailText" columns="2">
-                                
-                                
                                 <h:outputText id="lblName" value="Institution Type" ></h:outputText>
-                                <p:inputText  id="txtName" value="#{institutionTypeController.current.name}" readonly="#{institutionTypeController.modifyControlDisable}" ></p:inputText>
+                                <p:inputText  id="txtName" value="#{institutionTypeController.current.name}"  ></p:inputText>
                                 <h:outputText id="lblComments" value="Comments" ></h:outputText>
                                 <p:inputTextarea  id="txtComments" value="#{institutionTypeController.current.description}" readonly ="#{institutionTypeController.modifyControlDisable}" ></p:inputTextarea>
-
                             </h:panelGrid>
                             <h:panelGrid id="gpDetailButtons" columns="2">
-                                <p:commandButton id="btnSave" value="Save" readonly="#{institutionTypeController.modifyControlDisable}" action="#{institutionTypeController.saveSelected()}" styleClass="buttons">
-                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail selectFocus"  execute="gpDetail    " >
-                                    </f:ajax>
-                                </p:commandButton>
-                                <p:commandButton id ="btnCancel" value="Cancel" readonly="#{institutionTypeController.modifyControlDisable}" action="#{institutionTypeController.cancelSelect()}" styleClass="buttons">
-                                    <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail selectFocus" execute=" gpDetail    " >                                
-                                    </f:ajax>
+                                <p:commandButton id="btnSave" ajax="false" value="Save"  action="#{institutionTypeController.saveSelected()}" >
                                 </p:commandButton>
                             </h:panelGrid >
                         </h:panelGrid>
                     </p:panel>
-                
-                
-                
                 </h:panelGrid>
             </p:panel>
         </h:form>        

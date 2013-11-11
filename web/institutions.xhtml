@@ -31,28 +31,22 @@
                                     <h:outputText id="lblSelect" value="#{labels.institutions}" >
                                     </h:outputText>
 
-                                    <p:inputText id="txtSelect" value="#{institutionController.selectText}" disabled="#{institutionController.selectControlDisable}"  style="min-width: 200px" >
+                                    <p:inputText id="txtSelect" value="#{institutionController.selectText}"   style="min-width: 200px" >
                                         <f:ajax execute="txtSelect"  event="keyup" render="lstSelect gpDetail" >
                                         </f:ajax>
                                     </p:inputText>
                                     <h:outputLabel value="&#160;">
                                     </h:outputLabel>
-                                    <p:selectOneListbox  id="lstSelect"  disabled="#{institutionController.selectControlDisable}"  value="#{institutionController.current}" style="min-width: 223px">
+                                    <p:selectOneListbox  id="lstSelect"    value="#{institutionController.current}" style="min-width: 223px">
                                         <f:selectItems  value="#{institutionController.officialInstitutions}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
                                         <f:ajax render="gpDetail" execute="lstSelect" >                                
                                         </f:ajax>
                                     </p:selectOneListbox>
                                 </h:panelGrid>
                                 <h:panelGrid id="gpSelectButtons" columns="3"  >
-                                    <p:commandButton id="btnAdd" value="#{labels.add}" disabled="#{institutionController.selectControlDisable}" action="#{institutionController.prepareAdd()}" styleClass="buttons" >
-                                        <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail detailFocus" execute="btnEdit" >                                
-                                        </f:ajax>
+                                    <p:commandButton ajax="false" id="btnAdd" value="#{labels.add}"  action="#{institutionController.prepareAdd}"  >
                                     </p:commandButton>
-                                    <p:commandButton id ="btnEdit" value="#{labels.edit}" disabled="#{institutionController.selectControlDisable}" action="#{institutionController.prepareEdit()}"  styleClass="buttons">
-                                        <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail detailFocus" execute="lstSelect" >
-                                        </f:ajax>
-                                    </p:commandButton>
-                                    <p:commandButton ajax="false" id="btnDelete" onclick="if (!confirm('Are you sure you want to delete this record?')) return false" action="#{institutionController.delete()}"  value="#{labels.delete}" disabled="#{institutionController.selectControlDisable}" styleClass="buttons">
+                                    <p:commandButton ajax="false" id="btnDelete" onclick="if (!confirm('Are you sure you want to delete this record?')) return false" action="#{institutionController.delete()}"  value="#{labels.delete}"  >
                                     </p:commandButton>
                                 </h:panelGrid>
                             </p:panel>
@@ -62,43 +56,37 @@
                             <h:panelGrid id="gpDetail" columns="1">
                                 <h:panelGrid id="gpDetailText" columns="2">
                                     <h:outputText id="lblName" value="#{labels.institution}" ></h:outputText>
-                                    <p:inputText id="txtName" value="#{institutionController.current.name}" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
+                                    <p:inputText id="txtName" value="#{institutionController.current.name}"  ></p:inputText>
                                     <h:outputText id="lblCode" value="Code" ></h:outputText>
-                                    <p:inputText id="txtCode"   value="#{institutionController.current.code }" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
+                                    <p:inputText id="txtCode"   value="#{institutionController.current.code }"  ></p:inputText>
                                     <h:outputText id="lblCat" value="#{labels.institutionType}" ></h:outputText>
                                    
-                                    <p:selectOneMenu required="true" id="cmbCat" value="#{institutionController.current.institutionType}"  disabled="#{institutionController.modifyControlDisable}" >
+                                    <p:selectOneMenu id="cmbCat" value="#{institutionController.current.institutionType}"   >
                                         <f:selectItem itemLabel="Select Type"/>
                                         <f:selectItems  value="#{institutionTypeController.lstItems}" var="itype" itemLabel="#{itype.name}" itemValue="#{itype}" />
                                     </p:selectOneMenu>
                                     
                                     <h:outputText id="lblPi"   value="Super Institute"  ></h:outputText>
-                                    <p:autoComplete id="acPi" value="#{institutionController.current.superInstitution}"  disabled="#{institutionController.modifyControlDisable}" completeMethod="#{institutionController.completeOffcialInstitutions}" var="pi" itemLabel="#{pi.name}" itemValue="#{pi}" >
+                                    <p:autoComplete id="acPi" value="#{institutionController.current.superInstitution}"   completeMethod="#{institutionController.completeOffcialInstitutions}" var="pi" itemLabel="#{pi.name}" itemValue="#{pi}" >
                                     </p:autoComplete>
                                     
                                     <h:outputText id="lblPayCentre" value="Pay Centre" ></h:outputText>
-                                    <h:selectBooleanCheckbox id="chkPayCentre"  disabled="#{institutionController.modifyControlDisable}"  value="#{institutionController.current.payCentre}" />
+                                    <h:selectBooleanCheckbox id="chkPayCentre"    value="#{institutionController.current.payCentre}" />
                                     <h:outputText id="lblAddress" value="Address" ></h:outputText>
-                                    <p:inputText id="txtAddress"   value="#{institutionController.current.address}" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
+                                    <p:inputText id="txtAddress"   value="#{institutionController.current.address}"  ></p:inputText>
                                     <h:outputText id="lblTelephone" value="Telephone" ></h:outputText>
-                                    <p:inputText id="txtTelephone"   value="#{institutionController.current.telephone }" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
+                                    <p:inputText id="txtTelephone"   value="#{institutionController.current.telephone }"  ></p:inputText>
                                     <h:outputText id="lblMobile" value="Mobile" ></h:outputText>
-                                    <p:inputText id="txtMobile"   value="#{institutionController.current.mobile }" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
+                                    <p:inputText id="txtMobile"   value="#{institutionController.current.mobile }"  ></p:inputText>
                                     <h:outputText id="lblFax" value="Fax" ></h:outputText>
-                                    <p:inputText id="txtFax"   value="#{institutionController.current.fax}" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
+                                    <p:inputText id="txtFax"   value="#{institutionController.current.fax}"  ></p:inputText>
                                     <h:outputText id="lblEmail" value="Email" ></h:outputText>
-                                    <p:inputText id="txtEmail"   value="#{institutionController.current.email}" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
+                                    <p:inputText id="txtEmail"   value="#{institutionController.current.email}"  ></p:inputText>
                                     <h:outputText id="lblWebsite" value="Website" ></h:outputText>
-                                    <p:inputText id="txtWebsite"  value="#{institutionController.current.website}" disabled="#{institutionController.modifyControlDisable}" ></p:inputText>
+                                    <p:inputText id="txtWebsite"  value="#{institutionController.current.website}"  ></p:inputText>
                                 </h:panelGrid>
                                 <h:panelGrid id="gpDetailButtons" columns="2">
-                                    <p:commandButton id="btnSave" value="#{labels.save}" disabled="#{institutionController.modifyControlDisable}" action="#{institutionController.saveSelected()}" styleClass="buttons">
-                                        <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail selectFocus"  execute="btnSave gpDetail" >
-                                        </f:ajax>
-                                    </p:commandButton>
-                                    <p:commandButton id ="btnCancel" value="#{labels.cancel}" disabled="#{institutionController.modifyControlDisable}" action="#{institutionController.cancelSelect()}" styleClass="buttons">
-                                        <f:ajax render="btnAdd btnEdit btnDelete btnSave btnCancel txtSelect lstSelect gpDetail selectFocus" execute="btnCancel gpDetail" >                                
-                                        </f:ajax>
+                                    <p:commandButton ajax="false" id="btnSave" value="#{labels.save}"  action="#{institutionController.saveSelected()}" >
                                     </p:commandButton>
                                 </h:panelGrid>
                             </h:panelGrid>

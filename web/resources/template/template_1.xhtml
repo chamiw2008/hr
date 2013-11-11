@@ -184,27 +184,6 @@
 
                     </p:column>
 
-                    <ui:insert   name="right">
-
-                        <p:panel header="Login" rendered="#{sessionController.logged}" style="position: fixed; left: 30%; width: 68%; bottom: 0px;  margin: 2px; padding: 2px; border: 0px;">
-                            <h:form>
-                                <p:panelGrid columns="5" >
-                                    <h:outputLabel value="You are logged as #{sessionController.displayName}." ></h:outputLabel>
-                                    <p:commandLink value="Click here to Logout" action="#{sessionController.logout}" ajax="false"></p:commandLink>
-                                    <p:themeSwitcher style="width:165px" id="defaultSwitcher" value="#{themeSwitcherBean.theme}">
-                                        <f:selectItem itemLabel="Choose Theme" itemValue="" />
-                                        <f:selectItems value="#{themeSwitcherBean.themes}" />
-                                    </p:themeSwitcher>
-                                    <p:commandButton ajax="false" value="Set" action="#{themeSwitcherBean.saveTheme}"></p:commandButton>
-                                </p:panelGrid>
-                            </h:form>
-
-                        </p:panel>
-
-
-                    </ui:insert>
-
-
 
                 </p:row>
                 <p:row>
@@ -220,6 +199,26 @@
                 </p:row>
 
             </p:panelGrid>
+
+
+            <ui:insert   name="right">
+
+                <p:panel  rendered="#{sessionController.logged}" style="position: fixed; left: 30%; width: 68%; bottom: 0px;  margin: 2px; padding: 2px; border: 0px;">
+                    <f:facet name="header" >
+                        <h:form>
+
+                            <h:outputLabel value="You are logged as #{sessionController.displayName}." ></h:outputLabel>
+                            <p:commandLink value="Click here to Logout" action="#{sessionController.logout}" ajax="false"></p:commandLink>
+                           
+                        </h:form>
+
+                    </f:facet>
+
+                </p:panel>
+
+
+            </ui:insert>
+
 
 
         </p:panel>

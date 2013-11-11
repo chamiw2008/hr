@@ -446,7 +446,9 @@ public class InstitutionController implements Serializable {
     }
 
     public void setCurrent(Institution current) {
-        if(this.current!=current) recreateModel();
+        if (this.current != current) {
+            recreateModel();
+        }
         this.current = current;
     }
 
@@ -534,7 +536,7 @@ public class InstitutionController implements Serializable {
 //        return searchedItem;
 //    }
     private void recreateModel() {
-        selectedIns=null;
+        selectedIns = null;
         items = null;
     }
 
@@ -559,8 +561,15 @@ public class InstitutionController implements Serializable {
     }
 
     public void saveSelected() {
-
-        if (selectedItemIndex > 0) {
+        if (current == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        if (current.getInstitutionType() == null) {
+            JsfUtil.addErrorMessage("Please select a category");
+            return;
+        }
+        if (current.getId() != null && current.getId() != 0) {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));
         } else {
@@ -569,13 +578,16 @@ public class InstitutionController implements Serializable {
             current.setOfficial(true);
             getFacade().create(current);
 
-            InstitutionSet insSet = new InstitutionSet();
-            insSet.setName("Default");
-            insSet.setCreatedAt(Calendar.getInstance().getTime());
-            insSet.setCreater(sessionController.loggedUser);
-            insSet.setInstitution(current);
+            if (current.getPayCentre() == true) {
+                InstitutionSet insSet = new InstitutionSet();
+                insSet.setName("Default");
+                insSet.setCreatedAt(Calendar.getInstance().getTime());
+                insSet.setCreater(sessionController.loggedUser);
+                insSet.setInstitution(current);
 
-            inSetFacade.create(insSet);
+                inSetFacade.create(insSet);
+            }
+
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
         }
         this.prepareSelect();

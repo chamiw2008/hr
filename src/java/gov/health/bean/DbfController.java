@@ -468,7 +468,7 @@ public class DbfController implements Serializable {
     }
 
     public Integer getPayMonth() {
-        if (payMonth == null || payMonth==0) {
+        if (payMonth == null || payMonth == 0) {
             payMonth = Calendar.getInstance().get(Calendar.MONTH);
         }
         return payMonth;
@@ -524,9 +524,9 @@ public class DbfController implements Serializable {
         Map m = new HashMap();
         m.put("y", getPayYear());
         m.put("m", getPayMonth());
-        String jpql = "select pi from PersonInstitution pi where pi.retired = false and pi.payYear =:y and pi.payMonth =:m and pi.payCentre.id in " +  getInstitutionController().getInsIds() + " order by pi.institution.name";
+        String jpql = "select pi from PersonInstitution pi where pi.retired = false and pi.payYear =:y and pi.payMonth =:m and pi.payCentre.id in " + getInstitutionController().getInsIds() + " order by pi.institution.name";
         System.out.println("JPQL is " + jpql);
-        selectedPersonInstitutions = getPiFacade().findBySQL(jpql,m);
+        selectedPersonInstitutions = getPiFacade().findBySQL(jpql, m);
         System.out.println("selected Person Institutes are " + selectedPersonInstitutions);
         getSummeryCounts(selectedPersonInstitutions);
         return selectedPersonInstitutions;
@@ -539,14 +539,23 @@ public class DbfController implements Serializable {
     public List<PersonInstitution> getExistingPersonInstitutions() {
         System.out.println("existing pis");
         if (existingPersonInstitutions != null) {
+            System.out.println("Already exists");
             return existingPersonInstitutions;
+
         }
         if (getInstitution() == null || getInsSet() == null) {
             return new ArrayList<PersonInstitution>();
         }
         Map m = new HashMap();
         m.put("s", getInsSet());
-        existingPersonInstitutions = getPiFacade().findBySQL("select pi from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.paySet.id = " + getInsSet().getId() + " and  pi.payCentre.id = " + getInstitution().getId() + " order by pi.institution.name");
+        m.put("y", getPayYear());
+        m.put("m", getPayMonth());
+        m.put("c", getInstitution());
+        String sql;
+        sql = "select pi from PersonInstitution pi where pi.payYear =:y and pi.payMonth =:m and pi.paySet =:s and  pi.payCentre =:c ";
+        System.out.println("sql is " + sql);
+        existingPersonInstitutions = getPiFacade().findBySQL(sql, m);
+        System.out.println("existing is " + existingPersonInstitutions);
         getSummeryCounts(existingPersonInstitutions);
         return existingPersonInstitutions;
     }
@@ -554,7 +563,7 @@ public class DbfController implements Serializable {
     public void recreateModel() {
         System.out.println("recreating model");
         existingPersonInstitutions = null;
-        selectedPersonInstitutions=null;
+        selectedPersonInstitutions = null;
     }
 
     public List<PersonInstitution> getPersonInstitutionsWithoutNic() {

@@ -164,8 +164,11 @@ public class InstitutionTypeController implements Serializable {
     }
 
     public void saveSelected() {
-
-        if (selectedItemIndex > 0) {
+        if (current == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        if (current.getId()!=null && current.getId()!= 0) {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));
         } else {
