@@ -50,6 +50,7 @@
         </p:ajaxStatus>  
 
         <div Class="wholepage" style="width: 98%; height: 96%; " >
+            
             <h:panelGrid columns="2" id="header" class="headerblock" >
                 <h:panelGroup style="margin: auto; padding: 5px; border:0px; width: 20%; text-align: center; vertical-align: middle;">
                     <h:graphicImage  class="pdLogo" library="image" name="Emblem_of_Sri_Lanka.png"  height="40px" ></h:graphicImage> 
@@ -169,21 +170,16 @@
                     </ui:insert>
                 </h:panelGroup>
             </div>
-        </div>
-
-        <ui:insert   name="right">
-            <p:panel  rendered="#{sessionController.logged}" style="position: fixed; left: 10%; right: 10%; bottom: 0px;  margin: 2px; padding: 2px; border: 0px;">
+            <div style="bottom: 0px;">
                 <h:form>
                     <h:panelGrid columns="3" >
-                        <h:outputLabel value="&copy;&nbsp;Ministry of Health, Sri Lanka." ></h:outputLabel>
-                        <h:outputLabel value="You are logged as #{sessionController.displayName}." ></h:outputLabel>
-                        <p:commandLink value="Click here to Logout" action="#{sessionController.logout}" ajax="false"></p:commandLink>
+                        <h:outputLabel rendered="#{sessionController.logged}" value="&copy;&nbsp;Ministry of Health, Sri Lanka." ></h:outputLabel>
+                        <h:outputLabel rendered="#{sessionController.logged}" value="You are logged as #{sessionController.displayName}." ></h:outputLabel>
+                        <p:commandLink rendered="#{sessionController.logged}" value="Click here to Logout" action="#{sessionController.logout}" ajax="false"></p:commandLink>
                     </h:panelGrid>
                 </h:form>
-            </p:panel>
-        </ui:insert>
-
-
+            </div>
+        </div>
 
     </h:body>
 
