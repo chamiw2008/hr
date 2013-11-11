@@ -85,7 +85,7 @@
 
                     <p:panel header="Details" >
 
-                        <p:dataTable id="tblEx" value="#{dbfController.existingPersonInstitutions}" rowIndexVar="rowIndex" var="exPi">
+                        <p:dataTable id="tblEx" value="#{dbfController.newPersonInstitutions}" rowIndexVar="rowIndex" var="exPi">
                             <p:column >
                                 <f:facet name="header">Serial</f:facet>
                                 <h:outputLabel value="#{rowIndex + 1}"/>
@@ -109,6 +109,7 @@
                                     <f:selectItem itemLabel="Not Selected" />
                                     <f:selectItem itemLabel="#{exPi.designation.name}" itemValue="#{exPi.designation}" ></f:selectItem>
                                     <f:selectItems value="#{designationController.officialDesignations}" var="od" itemLabel="#{od.name}" itemValue="#{od}" ></f:selectItems>
+                                    <f:ajax event="blur" execute="cmbDes" />
                                 </p:selectOneMenu>
                             </p:column>  
                             <p:column>
@@ -117,6 +118,7 @@
                                     <f:selectItem itemLabel="Not Selected" />
                                     <f:selectItem itemLabel="#{exPi.institution.name}" itemValue="#{exPi.institution}" ></f:selectItem>
                                     <f:selectItems value="#{institutionController.officialInstitutions}" var="oi" itemLabel="#{oi.name}" itemValue="#{oi}" ></f:selectItems>
+                                    <f:ajax event="blur" execute="cmbIns" />
                                 </p:selectOneMenu>
                             </p:column>
                         </p:dataTable>
