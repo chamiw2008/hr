@@ -89,6 +89,7 @@ public class InstitutionController implements Serializable {
             JsfUtil.addErrorMessage("Nothing to save");
             return;
         }
+        currentMappingInstitution.setInstitution(mappingsForInstitution);
         if(currentMappingInstitution.getId()==null || currentMappingInstitution.getId()==0){
             getFacade().create(currentMappingInstitution);
             JsfUtil.addSuccessMessage("Saved");
@@ -104,6 +105,7 @@ public class InstitutionController implements Serializable {
         System.out.println("mapped for " + mappingFor);
         System.out.println("mapped to " + mappedTo);
         mappingFor.setMappedToInstitution(mappedTo);
+        mappingFor.setInstitution(mappingsForInstitution);
         if(mappingFor.getId()==null || mappingFor.getId()==0){
             getFacade().create(mappingFor);
             JsfUtil.addSuccessMessage("Saved");

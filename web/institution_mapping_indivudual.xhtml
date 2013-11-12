@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="./resources/template/template_1.xhtml">
+            <ui:define name="content">
+
+                <h:form>
+
+                    <p:panel >
+                        <f:facet name="header" >
+                            <h:outputLabel value="General Institution Mapping" ></h:outputLabel>
+                        </f:facet>
+
+                        <p:panelGrid columns="2" >
+                            <h:outputLabel value="Paycenter" ></h:outputLabel>
+                            <p:selectOneMenu id="cmbPs" value="#{institutionController.mappingsForInstitution}" >
+                                <f:selectItem itemLabel="Select a pay centre" />
+                                <f:selectItems value="#{institutionController.payCentres}" var="ps" itemLabel="#{ps.name}" itemValue="#{ps}" ></f:selectItems>
+                                <f:ajax event="change" execute="cmbPs" render="chkSite chkSection chkMap tbl" />
+                            </p:selectOneMenu>
+                            <h:outputLabel value="Instituion Name to Map" ></h:outputLabel>
+                            <p:inputText value="#{institutionController.currentMappingInstitution.name}" ></p:inputText>
+                            <h:outputLabel value="Instituion to Map" ></h:outputLabel>
+                            <p:selectOneMenu value="#{institutionController.currentMappingInstitution.mappedToInstitution}" >
+                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                <f:selectItems value="#{institutionController.officialInstitutions}" var="oi" itemLabel="#{oi.name}" itemValue="#{oi}" ></f:selectItems>
+                            </p:selectOneMenu>
+                            <p:commandButton ajax="false" value="Add" action="#{institutionController.saveCurrentMapping()}" ></p:commandButton>
+
+                        </p:panelGrid>
+
+                        <p:dataTable id="tbl" value="#{institutionController.mappedInstitutions}" var="pi" >
+                            <p:column headerText="Mapped For" >
+                                <h:outputLabel value="#{pi.name}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Mapped to" >
+                                <h:outputLabel value="#{pi.mappedToInstitution.name}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Remove" >
+                                <h:commandButton  action="#{institutionController.removeMapping()}" value="Remove" >
+                                    <f:setPropertyActionListener value="#{pi}" target="#{institutionController.currentMappingInstitution}" ></f:setPropertyActionListener>
+                                </h:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

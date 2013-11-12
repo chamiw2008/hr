@@ -72,7 +72,7 @@ public class DesignationController implements Serializable {
     
     
     List<Designation> mappedDesignations;
-    Designation mappingsForDesignation;
+    
     Designation currentMappingDesignation;
 
     public void saveCurrentMapping(){
@@ -80,6 +80,7 @@ public class DesignationController implements Serializable {
             JsfUtil.addErrorMessage("Nothing to save");
             return;
         }
+        currentMappingDesignation.setInstitution(institution);
         if(currentMappingDesignation.getId()==null || currentMappingDesignation.getId()==0){
             getFacade().create(currentMappingDesignation);
             JsfUtil.addSuccessMessage("Saved");
@@ -94,6 +95,7 @@ public class DesignationController implements Serializable {
     public void saveIndividualMapping(Designation mappingFor, Designation mappedTo){
         System.out.println("mapped for " + mappingFor);
         System.out.println("mapped to " + mappedTo);
+        mappingFor.setInstitution(institution);
         mappingFor.setMappedToDesignation(mappedTo);
         if(mappingFor.getId()==null || mappingFor.getId()==0){
             getFacade().create(mappingFor);
@@ -105,20 +107,20 @@ public class DesignationController implements Serializable {
     }
     
     public String toMapGeneralDesignations(){
-        mappingsForDesignation=null;
+        institution=null;
         return "designation_mapping_general";
     }
     
     public List<Designation> getMappedDesignations() {
         String sql;
-        if(mappingsForDesignation==null){
+        if(institution==null){
             sql = "select i from Designation i where i.retired=false and i.mappedToDesignation is not null and i.institution is null order by i.name";
             System.out.println("sql is " + sql);
             mappedDesignations=getFacade().findBySQL(sql);
             System.out.println("mappedDesignations is " + mappedDesignations);
         }else{
             Map m = new HashMap();
-            m.put("ii", mappingsForDesignation);
+            m.put("ii", institution);
             sql = "select i from Designation i where i.retired=false and i.mappedToDesignation is not null and i.institution=:ii order by i.name";
             mappedDesignations=getFacade().findBySQL(sql,m);
         }
@@ -127,14 +129,6 @@ public class DesignationController implements Serializable {
 
     public void setMappedDesignations(List<Designation> mappedDesignations) {
         this.mappedDesignations = mappedDesignations;
-    }
-
-    public Designation getMappingsForDesignation() {
-        return mappingsForDesignation;
-    }
-
-    public void setMappingsForDesignation(Designation mappingsForDesignation) {
-        this.mappingsForDesignation = mappingsForDesignation;
     }
 
     public Designation getCurrentMappingDesignation() {
