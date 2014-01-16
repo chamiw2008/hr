@@ -306,7 +306,7 @@ public class InstitutionController implements Serializable {
         List<Institution> ins;
         String sql;
         if (parent == null) {
-            sql = "select ci from Institution ci where ci.retired=false and ci.superInstitution=null order by ci.name";
+            sql = "select ci from Institution ci where ci.retired=false and ci.superInstitution is null order by ci.name";
             ins = getFacade().findBySQL(sql);
         } else {
             sql = "select ci from Institution ci where ci.retired=false and ci.superInstitution=:pi order by ci.name";

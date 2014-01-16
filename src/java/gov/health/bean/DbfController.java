@@ -140,13 +140,13 @@ public class DbfController implements Serializable {
 
     public void saveCurrentPi() {
         if (currentPi == null) {
-         JsfUtil.addErrorMessage("Nothing to save");
-         return;
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
         }
-        if(currentPi.getId()!=null && currentPi.getId()!=0){
+        if (currentPi.getId() != null && currentPi.getId() != 0) {
             getPiFacade().edit(currentPi);
             JsfUtil.addSuccessMessage("Updated");
-        }else{
+        } else {
             getPiFacade().create(currentPi);
             JsfUtil.addSuccessMessage("Saved");
         }
@@ -397,20 +397,25 @@ public class DbfController implements Serializable {
     }
 
     public List<DesignationSummeryRecord> getDesignationSummery() {
-        String sql = "select pi.designation.name, count(pi) from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.institution.id in " + getInstitutionController().getInsIds() + " group by pi.designation.name";
-        List lst = getPiFacade().findGroupingBySql(sql);
-        List<DesignationSummeryRecord> sums = new ArrayList<DesignationSummeryRecord>();
-        Iterator<Object[]> itr = lst.iterator();
-        while (itr.hasNext()) {
-            Object[] o = itr.next();
-            DesignationSummeryRecord s = new DesignationSummeryRecord();
-            s.setDesignationName(o[0].toString());
-            s.setCount(Long.valueOf(o[1].toString()));
-            sums.add(s);
-        }
-        getSetCount();
-        prepareSetSeubmitColours();
-        return sums;
+
+//        
+//        
+//        String sql = "select pi.designation.name, count(pi) from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.institution.id in " + getInstitutionController().getInsIds() + " group by pi.designation.name";
+//        
+//        List lst = getPiFacade().findGroupingBySql(sql);
+//        List<DesignationSummeryRecord> sums = new ArrayList<DesignationSummeryRecord>();
+//        Iterator<Object[]> itr = lst.iterator();
+//        while (itr.hasNext()) {
+//            Object[] o = itr.next();
+//            DesignationSummeryRecord s = new DesignationSummeryRecord();
+//            s.setDesignationName(o[0].toString());
+//            s.setCount(Long.valueOf(o[1].toString()));
+//            sums.add(s);
+//        }
+//        getSetCount();
+//        prepareSetSeubmitColours();
+//        return sums;
+        return new ArrayList<DesignationSummeryRecord>();
     }
 
     public TransferHistoryFacade getThFacade() {
@@ -1242,19 +1247,19 @@ public class DbfController implements Serializable {
                     } catch (Exception e) {
                         pi.setActiveState(true);
                     }
-                    
+
                     try {
                         pi.setNopay((Boolean) rowObjects[31]);
                     } catch (Exception e) {
                         pi.setNopay(false);
                     }
-                    
+
                     try {
                         pi.setConSal((Double) rowObjects[4]);
                     } catch (Exception e) {
                         pi.setConSal(0.0);
                     }
-                    
+
                     newPersonInstitutions.add(pi);
                 }
             }
@@ -1283,7 +1288,7 @@ public class DbfController implements Serializable {
     }
 
     public void savePiDs(PersonInstitution pi, Designation d) {
-        if(pi==null){
+        if (pi == null) {
             JsfUtil.addErrorMessage("Nothing to save");
             return;
         }
@@ -1299,7 +1304,7 @@ public class DbfController implements Serializable {
     }
 
     public void savePiIn(PersonInstitution pi, Institution i) {
-        if(pi==null){
+        if (pi == null) {
             JsfUtil.addErrorMessage("Nothing to save");
             return;
         }
@@ -1313,7 +1318,7 @@ public class DbfController implements Serializable {
         }
         JsfUtil.addSuccessMessage("Updated");
     }
-    
+
     public void removePi(PersonInstitution pi) {
         if (newPersonInstitutions == null) {
             JsfUtil.addErrorMessage("Nothing to remove");

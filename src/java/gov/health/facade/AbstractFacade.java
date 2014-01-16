@@ -228,6 +228,29 @@ public abstract class AbstractFacade<T> {
         return qry.getResultList();
     }
 
+    public List findGroupingBySql(String sql, Map parameters) {
+        return findGroupingBySql(sql, parameters, TemporalType.DATE);
+    }
+
+    public List findGroupingBySql(String sql, Map parameters, TemporalType tt) {
+        Query qry = getEntityManager().createQuery(sql);
+        Set s = parameters.entrySet();
+        Iterator it = s.iterator();
+        while (it.hasNext()) {
+            Map.Entry m = (Map.Entry) it.next();
+            Object pVal = m.getValue();
+            String pPara = (String) m.getKey();
+            if (pVal instanceof Date) {
+                Date d = (Date) pVal;
+                qry.setParameter(pPara, d, tt);
+            } else {
+                qry.setParameter(pPara, pVal);
+            }
+            //    System.out.println("Parameter " + pPara + "\tVal" + pVal);
+        }
+        return qry.getResultList();
+    }
+
     public T findByField(String fieldName, String fieldValue, boolean withoutRetired) {
         List<T> lstAll = findExact(fieldName, fieldValue, true);
         if (lstAll.isEmpty()) {
@@ -276,7 +299,7 @@ public abstract class AbstractFacade<T> {
     public T findFirstBySQL(String temSQL, Map<String, Object> parameters) {
         return findFirstBySQL(temSQL, parameters, TemporalType.DATE);
     }
-    
+
     public <U> List<T> testMethod(U[] a, Collection<U> all) {
         List<T> myList = new ArrayList<T>();
         return myList;

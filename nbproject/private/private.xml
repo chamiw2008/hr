@@ -37,11 +37,7 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/buddhika/Documents/NetBeansProjects/hr/web/upload_view.xhtml</file>
-            <file>file:/C:/Users/buddhika/Documents/NetBeansProjects/hr/web/resources/template/template_1.xhtml</file>
-            <file>file:/C:/Users/buddhika/Documents/NetBeansProjects/hr/web/index.xhtml</file>
-            <file>file:/C:/Users/buddhika/Documents/NetBeansProjects/hr/src/java/gov/health/bean/InstitutionController.java</file>
-            <file>file:/C:/Users/buddhika/Documents/NetBeansProjects/hr/src/java/gov/health/bean/DbfController.java</file>
+            <file>file:/root/NetBeansProjects/hr/src/conf/persistence.xml</file>
         </group>
     </open-files>
 </project-private>
