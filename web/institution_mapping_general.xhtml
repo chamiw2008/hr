@@ -19,16 +19,16 @@
                         </f:facet>
 
                         <p:panelGrid columns="2" >
-
+                            <h:outputLabel value="Instituion to Map" ></h:outputLabel>
+                            <p:autoComplete converter="institutionConverter"
+                                            value="#{institutionController.currentMappingInstitution.mappedToInstitution}"
+                                            completeMethod="#{institutionController.completeOffcialInstitutions}"
+                                            var="ins"
+                                            itemLabel="#{ins.name}"
+                                            itemValue="#{ins}"></p:autoComplete>
                             <h:outputLabel value="Instituion Name to Map" ></h:outputLabel>
                             <p:inputText value="#{institutionController.currentMappingInstitution.name}" ></p:inputText>
-                            <h:outputLabel value="Instituion to Map" ></h:outputLabel>
-                            <p:selectOneMenu value="#{institutionController.currentMappingInstitution.mappedToInstitution}" >
-                                <f:selectItem itemLabel="Select" ></f:selectItem>
-                                <f:selectItems value="#{institutionController.officialInstitutions}" var="oi" itemLabel="#{oi.name}" itemValue="#{oi}" ></f:selectItems>
-                            </p:selectOneMenu>
                             <p:commandButton ajax="false" value="Add" action="#{institutionController.saveCurrentMapping()}" ></p:commandButton>
-
                         </p:panelGrid>
 
                         <p:dataTable id="tbl" value="#{institutionController.mappedInstitutions}" var="pi" >
@@ -36,7 +36,7 @@
                                 <h:outputLabel value="#{pi.name}" ></h:outputLabel>
                             </p:column>
                             <p:column headerText="Mapped to" >
-                               <h:outputLabel value="#{pi.mappedToInstitution.name}" ></h:outputLabel>
+                                <h:outputLabel value="#{pi.mappedToInstitution.name}" ></h:outputLabel>
                             </p:column>
                             <p:column headerText="Remove" >
                                 <h:commandButton  action="#{institutionController.removeMapping()}" value="Remove" >

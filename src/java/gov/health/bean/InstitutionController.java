@@ -45,7 +45,7 @@ import javax.inject.Inject;
 /**
  *
  * @author Dr. M. H. B. Ariyaratne, MBBS, PGIM Trainee for MSc(Biomedical
- Informatics)
+ * Informatics)
  */
 @Named
 @SessionScoped
@@ -84,54 +84,54 @@ public class InstitutionController implements Serializable {
     Institution mappingsForInstitution;
     Institution currentMappingInstitution;
 
-    public void saveCurrentMapping(){
-        if(currentMappingInstitution==null){
+    public void saveCurrentMapping() {
+        if (currentMappingInstitution == null) {
             JsfUtil.addErrorMessage("Nothing to save");
             return;
         }
         currentMappingInstitution.setInstitution(mappingsForInstitution);
-        if(currentMappingInstitution.getId()==null || currentMappingInstitution.getId()==0){
+        if (currentMappingInstitution.getId() == null || currentMappingInstitution.getId() == 0) {
             getFacade().create(currentMappingInstitution);
             JsfUtil.addSuccessMessage("Saved");
-        }else{
+        } else {
             getFacade().edit(currentMappingInstitution);
             JsfUtil.addSuccessMessage("Updated");
         }
-        currentMappingInstitution=null;
+        currentMappingInstitution = null;
         getCurrentMappingInstitution();
     }
 
-    public void saveIndividualMapping(Institution mappingFor, Institution mappedTo){
+    public void saveIndividualMapping(Institution mappingFor, Institution mappedTo) {
         System.out.println("mapped for " + mappingFor);
         System.out.println("mapped to " + mappedTo);
         mappingFor.setMappedToInstitution(mappedTo);
         mappingFor.setInstitution(mappingsForInstitution);
-        if(mappingFor.getId()==null || mappingFor.getId()==0){
+        if (mappingFor.getId() == null || mappingFor.getId() == 0) {
             getFacade().create(mappingFor);
             JsfUtil.addSuccessMessage("Saved");
-        }else{
+        } else {
             getFacade().edit(mappingFor);
             JsfUtil.addSuccessMessage("Updated");
         }
     }
-    
-    public String toMapGeneralInstitutions(){
-        mappingsForInstitution=null;
+
+    public String toMapGeneralInstitutions() {
+        mappingsForInstitution = null;
         return "institution_mapping_general";
     }
-    
+
     public List<Institution> getMappedInstitutions() {
         String sql;
-        if(mappingsForInstitution==null){
+        if (mappingsForInstitution == null) {
             sql = "select i from Institution i where i.retired=false and i.mappedToInstitution is not null and i.institution is null order by i.name";
             System.out.println("sql is " + sql);
-            mappedInstitutions=getFacade().findBySQL(sql);
+            mappedInstitutions = getFacade().findBySQL(sql);
             System.out.println("mappedInstitutions is " + mappedInstitutions);
-        }else{
+        } else {
             Map m = new HashMap();
             m.put("ii", mappingsForInstitution);
             sql = "select i from Institution i where i.retired=false and i.mappedToInstitution is not null and i.institution=:ii order by i.name";
-            mappedInstitutions=getFacade().findBySQL(sql,m);
+            mappedInstitutions = getFacade().findBySQL(sql, m);
         }
         return mappedInstitutions;
     }
@@ -149,7 +149,7 @@ public class InstitutionController implements Serializable {
     }
 
     public Institution getCurrentMappingInstitution() {
-        if(currentMappingInstitution==null){
+        if (currentMappingInstitution == null) {
             currentMappingInstitution = new Institution();
             currentMappingInstitution.setInstitution(mappingsForInstitution);
         }
@@ -159,20 +159,16 @@ public class InstitutionController implements Serializable {
     public void setCurrentMappingInstitution(Institution currentMappingInstitution) {
         this.currentMappingInstitution = currentMappingInstitution;
     }
-    
-    public void removeMapping(){
-        if(currentMappingInstitution==null){
+
+    public void removeMapping() {
+        if (currentMappingInstitution == null) {
             JsfUtil.addErrorMessage("Nothing to remove");
             return;
         }
         currentMappingInstitution.setRetired(true);
         getFacade().edit(currentMappingInstitution);
     }
-    
-    
-    
-    
-    
+
     public List<Institution> getPaycentreInstitutions() {
         if (getPayCentre() == null) {
             return new ArrayList<Institution>();
@@ -391,7 +387,7 @@ public class InstitutionController implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
 
-    private Institution findInstitution(String insName, boolean createNew) {
+    public Institution findInstitution(String insName, boolean createNew) {
         insName = insName.trim();
         if (insName.equals("")) {
             return null;
@@ -777,6 +773,33 @@ public class InstitutionController implements Serializable {
         return officialInstitutions;
     }
 
+    public List<Institution> completeOfficialInstitutions(String qry) {
+        String temSql;
+        List<Institution> ins;
+        temSql = "SELECT i FROM Institution i where i.retired=false and i.official = true and LOWER(i.name) like '%" + qry.toLowerCase() + "%' order by i.name";
+        ins = getFacade().findBySQL(temSql);
+        return ins;
+    }
+
+    
+    
+    public List<Institution> completePayCentres(String qry) {
+        String temSql;
+        List<Institution> ins;
+        temSql = "SELECT i FROM Institution i where i.retired=false and i.payCentre = true and LOWER(i.name) like '%" + qry.toLowerCase() + "%' order by i.name";
+        ins = getFacade().findBySQL(temSql);
+        return ins;
+    }
+
+    
+    
+    public List<Institution> getAllOfficialInstitutions() {
+        String temSql;
+        temSql = "SELECT i FROM Institution i where i.retired=false and i.official = true order by i.name";
+        officialInstitutions = getFacade().findBySQL(temSql);
+        return officialInstitutions;
+    }
+
     public void setOfficialInstitutions(List<Institution> officialInstitutions) {
         this.officialInstitutions = officialInstitutions;
     }
@@ -791,6 +814,44 @@ public class InstitutionController implements Serializable {
 
     @FacesConverter(forClass = Institution.class)
     public static class InstitutionControllerConverter implements Converter {
+
+        public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
+            if (value == null || value.length() == 0) {
+                return null;
+            }
+            InstitutionController controller = (InstitutionController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "institutionController");
+            return controller.getEjbFacade().find(getKey(value));
+        }
+
+        java.lang.Long getKey(String value) {
+            java.lang.Long key;
+            key = Long.valueOf(value);
+            return key;
+        }
+
+        String getStringKey(java.lang.Long value) {
+            StringBuffer sb = new StringBuffer();
+            sb.append(value);
+            return sb.toString();
+        }
+
+        public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
+            if (object == null) {
+                return null;
+            }
+            if (object instanceof Institution) {
+                Institution o = (Institution) object;
+                return getStringKey(o.getId());
+            } else {
+                throw new IllegalArgumentException("object " + object + " is of type "
+                        + object.getClass().getName() + "; expected type: " + InstitutionController.class.getName());
+            }
+        }
+    }
+
+    @FacesConverter("institutionConverter")
+    public static class InstitutionConverter implements Converter {
 
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {

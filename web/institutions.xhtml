@@ -37,7 +37,7 @@
                                     </p:inputText>
                                     <h:outputLabel value="&#160;">
                                     </h:outputLabel>
-                                    <p:selectOneListbox  id="lstSelect"    value="#{institutionController.current}" style="min-width: 223px">
+                                    <p:selectOneListbox   id="lstSelect"    value="#{institutionController.current}" style="min-width: 223px; min-height: 300px; max-height: 300px;">
                                         <f:selectItems  value="#{institutionController.officialInstitutions}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
                                         <f:ajax render="gpDetail" execute="lstSelect" >                                
                                         </f:ajax>

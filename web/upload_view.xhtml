@@ -12,7 +12,7 @@
             <f:facet name="header" >
                 <h:form>
                     <h:outputLabel value="Payment Cycle Data" ></h:outputLabel>
-                    <p:commandButton value="To upload" ajax="false" action="upload" style="float: right;" />
+                    <p:commandButton value="To upload" ajax="false" action="upload"  />
                 </h:form>
             </f:facet>
 
@@ -23,11 +23,16 @@
 
                         <p:panelGrid columns="2" >
                             <h:outputText value="Institution"/>
-                            <h:selectOneMenu  rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc" value="#{dbfController.institution}" >
-                                <f:selectItem itemLabel="Select Paycenter"/>
-                                <f:selectItems value="#{institutionController.payCentres}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
-                                <f:ajax event="change" execute="cmbLoc" render="cmbSet :#{p:component('tblEx')} :#{p:component('gridSummery')}" />
-                            </h:selectOneMenu>
+                            <p:autoComplete converter="institutionConverter"
+                                            value="#{dbfController.institution}"
+                                            completeMethod="#{institutionController.completePayCentres}"
+                                            var="ins"
+                                            itemLabel="#{ins.name}"
+                                            itemValue="#{ins}"
+                                            rendered="#{sessionController.loggedUser.restrictedInstitution == null}" 
+                                            id="cmbLoc">
+                                <f:ajax event="itemSelect" execute="cmbLoc" render="cmbSet" />
+                            </p:autoComplete>
                             <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
 
                             <h:outputText value="Year"/>

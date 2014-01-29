@@ -24,6 +24,7 @@
 
                         <p:panelGrid columns="2" >
                             <h:outputText value="Institution"/>
+                            
                             <h:selectOneMenu readonly="true" rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc" value="#{dbfController.institution}" >
                                 <f:selectItem itemLabel="Select Paycenter"/>
                                 <f:selectItems value="#{institutionController.payCentres}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
@@ -59,7 +60,7 @@
                             <p:panelGrid columns="2" >
                                 <h:outputLabel value="Records without NIC"/>
                                 <h:outputLabel   value="#{dbfController.withoutNicCount}" />
-
+                                
                                 <h:outputLabel value="Records without Designations"/>
                                 <h:outputLabel   value="#{dbfController.withoutDesignationCount}" />
 
