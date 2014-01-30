@@ -46,7 +46,8 @@
                                 <h:panelGrid id="gpSelectButtons" columns="3"  >
                                     <p:commandButton ajax="false" id="btnAdd" value="#{labels.add}"  action="#{institutionController.prepareAdd}"  >
                                     </p:commandButton>
-                                    <p:commandButton ajax="false" id="btnDelete" onclick="if (!confirm('Are you sure you want to delete this record?')) return false" action="#{institutionController.delete()}"  value="#{labels.delete}"  >
+                                    <p:commandButton ajax="false" id="btnDelete" onclick="if (!confirm('Are you sure you want to delete this record?'))
+                                                return false" action="#{institutionController.delete()}"  value="#{labels.delete}"  >
                                     </p:commandButton>
                                 </h:panelGrid>
                             </p:panel>
@@ -60,16 +61,16 @@
                                     <h:outputText id="lblCode" value="Code" ></h:outputText>
                                     <p:inputText id="txtCode"   value="#{institutionController.current.code }"  ></p:inputText>
                                     <h:outputText id="lblCat" value="#{labels.institutionType}" ></h:outputText>
-                                   
+
                                     <p:selectOneMenu id="cmbCat" value="#{institutionController.current.institutionType}"   >
                                         <f:selectItem itemLabel="Select Type"/>
                                         <f:selectItems  value="#{institutionTypeController.lstItems}" var="itype" itemLabel="#{itype.name}" itemValue="#{itype}" />
                                     </p:selectOneMenu>
-                                    
+
                                     <h:outputText id="lblPi"   value="Super Institute"  ></h:outputText>
                                     <p:autoComplete id="acPi" value="#{institutionController.current.superInstitution}"   completeMethod="#{institutionController.completeOffcialInstitutions}" var="pi" itemLabel="#{pi.name}" itemValue="#{pi}" >
                                     </p:autoComplete>
-                                    
+
                                     <h:outputText id="lblPayCentre" value="Pay Centre" ></h:outputText>
                                     <h:selectBooleanCheckbox id="chkPayCentre"    value="#{institutionController.current.payCentre}" />
                                     <h:outputText id="lblAddress" value="Address" ></h:outputText>
@@ -84,6 +85,18 @@
                                     <p:inputText id="txtEmail"   value="#{institutionController.current.email}"  ></p:inputText>
                                     <h:outputText id="lblWebsite" value="Website" ></h:outputText>
                                     <p:inputText id="txtWebsite"  value="#{institutionController.current.website}"  ></p:inputText>
+                                    <h:outputText  value="Only contain Pay Centre Data" ></h:outputText>
+                                    <p:selectBooleanCheckbox value="#{institutionController.current.insMapToPaycentre}" ></p:selectBooleanCheckbox>
+                                    <h:outputText  value="Map Institution by address" ></h:outputText>
+                                    <p:selectBooleanCheckbox value="#{institutionController.current.insmapAddress}" ></p:selectBooleanCheckbox>
+                                    <h:outputText  value="Map Institution by site" ></h:outputText>
+                                    <p:selectBooleanCheckbox value="#{institutionController.current.insmapSite}" ></p:selectBooleanCheckbox>
+                                    <h:outputText  value="Map Institution by section" ></h:outputText>
+                                    <p:selectBooleanCheckbox value="#{institutionController.current.insmapSection}" ></p:selectBooleanCheckbox>
+
+
+
+
                                 </h:panelGrid>
                                 <h:panelGrid id="gpDetailButtons" columns="2">
                                     <p:commandButton ajax="false" id="btnSave" value="#{labels.save}"  action="#{institutionController.saveSelected()}" >

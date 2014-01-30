@@ -576,10 +576,9 @@ public class DbfController implements Serializable {
 
     public List<PersonInstitution> getExistingPersonInstitutions() {
         System.out.println("existing pis");
-        if (existingPersonInstitutions != null) {
+        if (existingPersonInstitutions != null && !existingPersonInstitutions.isEmpty()) {
             System.out.println("Already exists");
             return existingPersonInstitutions;
-
         }
         if (getInstitution() == null || getInsSet() == null) {
             return new ArrayList<PersonInstitution>();
@@ -1076,7 +1075,9 @@ public class DbfController implements Serializable {
     public String extractData() {
         System.out.println("extracting date");
         InputStream in;
+//        System.out.println("1");
         String temNic;
+//        System.out.println("2");
         if (sessionController.getLoggedUser().getRestrictedInstitution() != null) {
             setInstitution(sessionController.getLoggedUser().getRestrictedInstitution());
         } else {
@@ -1085,55 +1086,62 @@ public class DbfController implements Serializable {
                 return "upload_view";
             }
         }
+//        System.out.println("3");
         if (getInstitution() == null) {
             JsfUtil.addErrorMessage("Please select an institute");
             return "upload_view";
         }
+//        System.out.println("4");
         if (file == null) {
             JsfUtil.addErrorMessage("Please select the dbf file to upload");
             return "upload_view";
         }
-        System.out.println("Pay year is " + payYear);
+//        System.out.println("5");
+//        System.out.println("Pay year is " + payYear);
         if (payYear == null || payYear == 0) {
             JsfUtil.addErrorMessage("Please select a year");
             return "upload_view";
         }
+//        System.out.println("6");
         if (payMonth == null || payMonth == 0) {
             JsfUtil.addErrorMessage("Please select a Month");
             return "upload_view";
         }
+//        System.out.println("7");
         if (insSet == null) {
             JsfUtil.addErrorMessage("Please select a Set");
             return "upload_view";
         }
+//        System.out.println("8");
         try {
-
+//            System.out.println("9");
             in = file.getInputstream();
+//            System.out.println("10");
             DBFReader reader = new DBFReader(in);
-
+//            System.out.println("11");
             if (!isCorrectDbfFile(reader)) {
                 JsfUtil.addErrorMessage("But the file you selected is not the correct file. Please make sure you selected the correct file named PYREMPMA.DBF. If you are sure that you selected the correct file, you may be using an old version.");
                 return "";
             }
-
+//            System.out.println("12");
             int numberOfFields = reader.getFieldCount();
-
-            System.out.println("Number of fields is " + numberOfFields);
+//            System.out.println("13");
+//            System.out.println("Number of fields is " + numberOfFields);
             for (int i = 0; i < numberOfFields; i++) {
                 DBFField field = reader.getField(i);
-                System.out.println("Data Field " + i + " is " + field.getName());
+//                System.out.println("Data Field " + i + " is " + field.getName());
             }
-
+//            System.out.println("14");
             Object[] rowObjects;
-
+//            System.out.println("15");
             newPersonInstitutions = new ArrayList<PersonInstitution>();
-
+//            System.out.println("16");
             while ((rowObjects = reader.nextRecord()) != null) {
-
+//                System.out.println("17");
                 Person p = null;
                 PersonInstitution pi = new PersonInstitution();
                 Institution attachedIns;
-
+//                System.out.println("18");
                 String insName = "";
 
                 if (!institution.isInsMapToPaycentre()) {
@@ -1149,15 +1157,15 @@ public class DbfController implements Serializable {
                         insName = insName + rowObjects[13].toString();
                     }
                 }
-
+//                System.out.println("19");
                 String empNo = "";
-
+//                System.out.println("20");
                 try {
                     empNo = rowObjects[0].toString();
                 } catch (Exception e) {
                     empNo = "999999.0";
                 }
-
+//                System.out.println("21");
                 if (!"999999.0".equals(empNo)) {
 
                     if (institution.isInsMapToPaycentre()) {
@@ -1169,14 +1177,17 @@ public class DbfController implements Serializable {
                             attachedIns = findInstitution(insName);
                         }
                     }
-
+//                    System.out.println("22");
                     temNic = rowObjects[48].toString();
-
+//                    System.out.println("23");
                     if ("".equals(temNic.trim())) {
+//                        System.out.println("24a");
                         pi.setPerson(null);
                     } else {
+//                        System.out.println("24b");
                         p = getPerFacade().findFirstBySQL("select p from Person p where p.retired = false and p.nic = '" + temNic + "'");
                         if (p == null) {
+//                            System.out.println("24b1");
                             p = new Person();
                             p.setCreatedAt(Calendar.getInstance().getTime());
                             p.setCreater(sessionController.getLoggedUser());
@@ -1186,53 +1197,86 @@ public class DbfController implements Serializable {
                             p.setSurname(rowObjects[2].toString());
                             SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
                             try {
+                                System.out.println("24b1a");
                                 p.setDob(dateFormat.parse(rowObjects[7].toString()));
                             } catch (Exception e) {
 //                            p.setDob(null);
                             }
+//                            System.out.println("24b2");
                             try {
+//                                System.out.println("24c");
                                 p.setNic(rowObjects[48].toString());
                             } catch (Exception e) {
+//                                System.out.println("25");
                             }
                             try {
+//                                System.out.println("26 = " + 26);
                                 p.setName(p.getTitle() + " " + p.getInitials() + " " + p.getSurname());
                             } catch (Exception e) {
+//                                System.out.println("27");
                             }
+//                            System.out.println("28");
                             getPerFacade().create(p);
+//                            System.out.println("29");
                         } else {
+//                            System.out.println("30 = " + 30);
                             if (p.getInstitution() != getInstitution()) {
+//                                System.out.println("31");
                                 markTransfer(p, p.getInstitution(), institution, pi);
                             }
+//                            System.out.println("32");
                         }
-
+//                        System.out.println("33");
                     }
-
+//                    System.out.println("34 = " + 34);
                     pi.setPerson(p);
+//                    System.out.println("35");
+
                     pi.setInstitution(attachedIns);
+//                    System.out.println("36");
+                    pi.setStrInstitution(insName);
+//                    System.out.println("37");
                     pi.setPayCentre(getInstitution());
+//                    System.out.println("38");
                     pi.setNic(rowObjects[48].toString());
-
+//                    System.out.println("39");
                     pi.setEmpNo(rowObjects[0].toString());
+//                    System.out.println("40");
                     pi.setAddress1(rowObjects[18].toString());
+//                    System.out.println("41");
                     pi.setAddress2(rowObjects[19].toString());
+//                    System.out.println("42");
                     pi.setAddress3(rowObjects[20].toString());
+//                    System.out.println("43");
                     pi.setOffAddress1(rowObjects[21].toString());
+//                    System.out.println("44");
                     pi.setOffAddress2(rowObjects[22].toString());
+//                    System.out.println("45");
                     pi.setOffAddress3(rowObjects[23].toString());
+//                    System.out.println("46");
 
-                    pi.setDesignation(findDesignation(rowObjects[8].toString()));
-
+                    String desName = rowObjects[8].toString();
+//                    System.out.println("47");
+                    System.out.println("desName = " + desName);
+                    if (desName != null) {
+                        pi.setDesignation(findDesignation(desName));
+//                        System.out.println("pi.getDesignation() = " + pi.getDesignation());
+                    }
+//                    System.out.println("48");
+                    pi.setStrDesignation(desName);
+                    System.out.println("pi.getStrDesignation() = " + pi.getStrDesignation());
+//                    System.out.println("50");
                     pi.setName(rowObjects[1].toString() + " " + rowObjects[2].toString() + " " + rowObjects[3].toString());
                     pi.setPayMonth(payMonth);
                     pi.setPayYear(payYear);
                     pi.setPaySet(insSet);
-
+//                    System.out.println("51");
                     if (rowObjects[4].toString().equals("") || rowObjects[50].toString().equals("")) {
                         pi.setPermanent(Boolean.FALSE);
                     } else {
                         pi.setPermanent(Boolean.TRUE);
                     }
-
+//                    System.out.println("52");
                     try {
                         if (Integer.valueOf(rowObjects[4].toString()) == 0) {
                             pi.setNopay(Boolean.TRUE);
@@ -1241,35 +1285,38 @@ public class DbfController implements Serializable {
                         }
                     } catch (Exception e) {
                     }
-
+//                    System.out.println("53");
                     try {
                         pi.setActiveState((Boolean) rowObjects[40]);
                     } catch (Exception e) {
                         pi.setActiveState(true);
                     }
-
+//                    System.out.println("54");
                     try {
                         pi.setNopay((Boolean) rowObjects[31]);
                     } catch (Exception e) {
                         pi.setNopay(false);
                     }
-
+//                    System.out.println("55");
                     try {
                         pi.setConSal((Double) rowObjects[4]);
                     } catch (Exception e) {
                         pi.setConSal(0.0);
                     }
-
+//                    System.out.println("55");
+//                    System.out.println("pi = " + pi);
                     newPersonInstitutions.add(pi);
+//                    System.out.println("pi added");
                 }
+//                System.out.println("56");
             }
-
+//            System.out.println("57");
             for (PersonInstitution temPi : newPersonInstitutions) {
                 temPi.setRetired(true);
                 System.out.println("saving pi " + temPi);
                 getPiFacade().create(temPi);
             }
-
+//            System.out.println("58");
             getSummeryCounts(newPersonInstitutions);
             JsfUtil.addSuccessMessage("Data Captured. But NOT Recorded to the database. Please click Save to confirm.");
         } catch (Exception e) {
@@ -1361,101 +1408,47 @@ public class DbfController implements Serializable {
     }
 
     private Designation findDesignation(String designationName) {
+        System.out.println("d1");
         designationName = designationName.trim();
+//        System.out.println("d2");
         Designation search;
+//        System.out.println("d3");
         Designation des;
+//        System.out.println("d4");
         if (designationName.equals("")) {
             return null;
         }
-
+        System.out.println("d5");
         Map m = new HashMap();
         m.put("i", getInstitution());
-
-        //Check same name mapped to a designation for that perticular institute
-        search = getDesFacade().findFirstBySQL("select d from Designation d where d.mappedToDesignation is not null and d.institution=:i and d.name = '" + designationName + "'", m);
-        if (search != null) {
-            return search.getMappedToDesignation();
-        }
-
-        //Check same name mapped to a designation for any other institute
-        search = getDesFacade().findFirstBySQL("select d from Designation d where d.mappedToDesignation is not null and d.name = '" + designationName + "'");
-        if (search != null) {
-            des = new Designation();
-            des.setName(designationName);
-            des.setCreatedAt(Calendar.getInstance().getTime());
-            des.setCreater(sessionController.loggedUser);
-            des.setOfficial(Boolean.FALSE);
-            des.setInstitution(getInstitution());
-            des.setMappedToDesignation(search.getMappedToDesignation());
-            getDesFacade().create(des);
-            return search.getMappedToDesignation();
-        }
+        m.put("n", designationName);
 
         //Check name without capital or simple for the same institute
-        search = getDesFacade().findFirstBySQL("select d from Designation d where d.mappedToDesignation is not null and d.institution=:i and lower(d.name) = '" + designationName.toLowerCase() + "'", m);
+        search = getDesFacade().findFirstBySQL("select d from Designation d where d.mappedToDesignation is not null and d.institution=:i and lower(d.name) =:n", m);
+        System.out.println("search = " + search);
         if (search != null) {
-            des = new Designation();
-            des.setName(designationName);
-            des.setCreatedAt(Calendar.getInstance().getTime());
-            des.setCreater(sessionController.loggedUser);
-            des.setOfficial(Boolean.FALSE);
-            des.setInstitution(getInstitution());
-            des.setMappedToDesignation(search.getMappedToDesignation());
-            getDesFacade().create(des);
+            System.out.println("search.getMappedToDesignation() = " + search.getMappedToDesignation());
             return search.getMappedToDesignation();
-
         }
 
+//        System.out.println("d6");
+        m = new HashMap();
+        m.put("n", designationName);
         //Check name without capital or simple for the any institute
-        search = getDesFacade().findFirstBySQL("select d from Designation d where d.mappedToDesignation is not null and lower(d.name) = '" + designationName.toLowerCase() + "'");
+        search = getDesFacade().findFirstBySQL("select d from Designation d where (d.official=true or d.mappedToDesignation is not null) and lower(d.name) =:n",m);
+//        System.out.println("search 1 = " + search);
         if (search != null) {
-            des = new Designation();
-            des.setName(designationName);
-            des.setCreatedAt(Calendar.getInstance().getTime());
-            des.setCreater(sessionController.loggedUser);
-            des.setOfficial(Boolean.FALSE);
-            des.setInstitution(getInstitution());
-            des.setMappedToDesignation(search.getMappedToDesignation());
-            getDesFacade().create(des);
-            return search.getMappedToDesignation();
-
+            if (search.getOfficial() == true) {
+//                System.out.println("search.getOfficial() = " + search.getOfficial());
+                return search;
+            } else {
+//                System.out.println("search.getMappedToDesignation() = " + search.getMappedToDesignation());
+                return search.getMappedToDesignation();
+            }
         }
 
-        //Check exact name to any match any official designation
-        search = getDesFacade().findFirstBySQL("select d from Designation d where d.official=true and d.name = '" + designationName + "'");
-        if (search != null) {
-            des = new Designation();
-            des.setName(designationName);
-            des.setCreatedAt(Calendar.getInstance().getTime());
-            des.setCreater(sessionController.loggedUser);
-            des.setOfficial(Boolean.FALSE);
-            des.setInstitution(getInstitution());
-            des.setMappedToDesignation(search);
-            getDesFacade().create(des);
-            return search;
-        }
+        return null;
 
-        //Check name ignore simple, capital to match any official designation
-        search = getDesFacade().findFirstBySQL("select d from Designation d where d.official=true and lower(d.name) = '" + designationName.toLowerCase() + "'");
-        if (search != null) {
-            des = new Designation();
-            des.setName(designationName);
-            des.setCreatedAt(Calendar.getInstance().getTime());
-            des.setCreater(sessionController.loggedUser);
-            des.setOfficial(Boolean.FALSE);
-            des.setInstitution(getInstitution());
-            des.setMappedToDesignation(search);
-            getDesFacade().create(des);
-            return search;
-        }
-        des = new Designation();
-        des.setName(designationName);
-        des.setCreatedAt(Calendar.getInstance().getTime());
-        des.setCreater(sessionController.loggedUser);
-        des.setOfficial(Boolean.FALSE);
-        des.setInstitution(getInstitution());
-        getDesFacade().create(des);
-        return des;
     }
 
     private Institution findInstitution(String insName) {
@@ -1467,75 +1460,22 @@ public class DbfController implements Serializable {
         m.put("i", getInstitution());
 
         Institution ins;
-
-        //Get Exact Match for that percerticular institute
-        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.institution=:i and d.mappedToInstitution is not null and d.retired = false and d.name = '" + insName + "'", m);
-        if (ins != null) {
-            return ins.getMappedToInstitution();
-        }
-
         //Get CapitalSimple Match for that percerticular institute
         ins = getInsFacade().findFirstBySQL("select d from Institution d where d.institution=:i and d.mappedToInstitution is not null and d.retired = false and upper(d.name) = '" + insName.toUpperCase() + "'", m);
         if (ins != null) {
-            Institution i = new Institution();
-            i.setName(insName);
-            i.setCreatedAt(Calendar.getInstance().getTime());
-            i.setCreater(sessionController.loggedUser);
-            i.setOfficial(Boolean.FALSE);
-            i.setInstitution(institution);
-            i.setMappedToInstitution(ins.getMappedToInstitution());
-            getInsFacade().create(i);
             return ins.getMappedToInstitution();
         }
 
-        //Get Exact Match for any other institute
-        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.retired = false  and d.mappedToInstitution is not null and  d.name = '" + insName + "'");
-        if (ins != null) {
-            Institution i = new Institution();
-            i.setName(insName);
-            i.setCreatedAt(Calendar.getInstance().getTime());
-            i.setCreater(sessionController.loggedUser);
-            i.setOfficial(Boolean.FALSE);
-            i.setInstitution(institution);
-            i.setMappedToInstitution(ins.getMappedToInstitution());
-            getInsFacade().create(i);
-            return ins;
-        }
-
         //Get Capital/Simple Match for any other institute
-        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.retired = false  and d.mappedToInstitution is not null and  upper(d.name) = '" + insName.toUpperCase() + "'");
+        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.retired = false  and (d.mappedToInstitution is not null or d.official==true ) and  upper(d.name) = '" + insName.toUpperCase() + "'");
         if (ins != null) {
-            Institution i = new Institution();
-            i.setName(insName);
-            i.setCreatedAt(Calendar.getInstance().getTime());
-            i.setCreater(sessionController.loggedUser);
-            i.setOfficial(Boolean.FALSE);
-            i.setInstitution(institution);
-            i.setMappedToInstitution(ins.getMappedToInstitution());
-            getInsFacade().create(i);
-            return ins;
+            if (ins.getOfficial()) {
+                return ins;
+            } else {
+                return ins.getMappedToInstitution();
+            }
         }
 
-        //Get Exact Match for that percerticular institute without mapped institution
-        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.institution=:i and d.retired = false and d.name = '" + insName + "'", m);
-        if (ins != null) {
-            return ins;
-        }
-
-        //Get Case Insensitive Match for that percerticular institute without mapped institution
-        ins = getInsFacade().findFirstBySQL("select d from Institution d where d.institution=:i and d.retired = false and upper(d.name) = '" + insName.toUpperCase() + "'", m);
-        if (ins != null) {
-            return ins;
-        }
-
-        ins = new Institution();
-        ins.setName(insName);
-        ins.setCreatedAt(Calendar.getInstance().getTime());
-        ins.setCreater(sessionController.loggedUser);
-        ins.setOfficial(Boolean.FALSE);
-        ins.setInstitution(institution);
-        getInsFacade().create(ins);
-
-        return ins;
+        return null;
     }
 }

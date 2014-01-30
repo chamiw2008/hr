@@ -76,6 +76,25 @@ public class PersonInstitution implements Serializable {
     @ManyToOne
     InstitutionSet paySet;
 
+    String strDesignation;
+    String strInstitution;
+
+    public String getStrDesignation() {
+        return strDesignation;
+    }
+
+    public void setStrDesignation(String strDesignation) {
+        this.strDesignation = strDesignation;
+    }
+
+    public String getStrInstitution() {
+        return strInstitution;
+    }
+
+    public void setStrInstitution(String strInstitution) {
+        this.strInstitution = strInstitution;
+    }
+    
     
     
     

@@ -64,6 +64,24 @@ public class DesignationController implements Serializable {
         this.institution = institution;
     }
     
+public Designation findDesingation(String desName, boolean createNew) {
+        desName = desName.trim();
+        if (desName.equals("")) {
+            return null;
+        }
+        Map m = new HashMap();
+        m.put("n", desName.toLowerCase() );
+        Designation des = getFacade().findFirstBySQL("select d from Designation d where d.retired = false and lower(d.name) =:n",m);
+        if (des == null && createNew == true) {
+            des = new Designation();
+            des.setName(desName);
+            des.setCreatedAt(Calendar.getInstance().getTime());
+            des.setCreater(sessionController.loggedUser);
+            des.setOfficial(Boolean.FALSE);
+            getFacade().create(des);
+        }
+        return des;
+    }
     
     
     
