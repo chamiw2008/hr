@@ -141,6 +141,35 @@ public abstract class AbstractFacade<T> {
         }
     }
 
+    
+    public Long findLongByJpql(String temSQL, Map<String, Object> parameters, TemporalType tt) {
+        TypedQuery<Long> qry = (TypedQuery<Long>) getEntityManager().createQuery(temSQL);
+        Set s = parameters.entrySet();
+        Iterator it = s.iterator();
+        while (it.hasNext()) {
+            Map.Entry m = (Map.Entry) it.next();
+            Object pVal = m.getValue();
+            String pPara = (String) m.getKey();
+            if (pVal instanceof Date) {
+                System.out.println("pval is a date");
+                Date d = (Date) pVal;
+                qry.setParameter(pPara, d, tt);
+            } else {
+                System.out.println("p val is NOT a date");
+                qry.setParameter(pPara, pVal);
+            }
+            System.out.println("Parameter " + pPara + "\t and Val\t " + pVal);
+        }
+        try {
+            return (Long) qry.getSingleResult();
+        } catch (Exception e) {
+            return 0l;
+        }
+    }
+
+    
+    
+    
     public List<T> findBySQL(String temSQL, Map<String, Object> parameters, TemporalType tt, int maxRecords) {
         TypedQuery<T> qry = getEntityManager().createQuery(temSQL, entityClass);
         Set s = parameters.entrySet();

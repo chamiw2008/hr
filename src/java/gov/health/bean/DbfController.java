@@ -17,6 +17,7 @@ import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFReader;
 import gov.health.data.DesignationSummeryRecord;
 import gov.health.entity.Designation;
+import gov.health.entity.InstitutionMonthSummery;
 import gov.health.entity.InstitutionSet;
 import gov.health.facade.CategoryFacade;
 import gov.health.facade.DbfFileFacade;
@@ -26,6 +27,7 @@ import gov.health.facade.InstitutionSetFacade;
 import gov.health.facade.PersonFacade;
 import gov.health.facade.PersonInstitutionFacade;
 import gov.health.entity.TransferHistory;
+import gov.health.facade.InstitutionMonthSummeryFacade;
 import gov.health.facade.TransferHistoryFacade;
 import java.io.ByteArrayInputStream;
 
@@ -49,6 +51,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
+import javax.persistence.TemporalType;
 
 import org.apache.commons.io.IOUtils;
 
@@ -81,8 +84,13 @@ public class DbfController implements Serializable {
     DesignationFacade desFacade;
     @EJB
     InstitutionSetFacade insetFacade;
+    @EJB
+    InstitutionMonthSummeryFacade institutionMonthSummeryFacade;
+    @EJB
+    InstitutionSetFacade institutionSetFacade;
     //
     //
+    InstitutionMonthSummery institutionMonthSummery;
     Institution institution;
     Person person;
     Category category;
@@ -285,29 +293,33 @@ public class DbfController implements Serializable {
     public void getSummeryCounts(List<PersonInstitution> pis) {
         System.out.println("getting summery counts");
         withoutNicCount = 0L;
+        System.out.println("withoutNicCount = " + withoutNicCount);
         withoutDesignationCount = 0L;
+        System.out.println("withoutDesignationCount = " + withoutDesignationCount);
         withoutMappedDesignationCount = 0L;
+        System.out.println("withoutMappedDesignationCount = " + withoutMappedDesignationCount);
         withoutInstitutionCount = 0L;
+        System.out.println("withoutInstitutionCount = " + withoutInstitutionCount);
         withoutMappedInstitutionCount = 0L;
+        System.out.println("withoutMappedInstitutionCount = " + withoutMappedInstitutionCount);
         activeCount = 0L;
+        System.out.println("activeCount = " + activeCount);
         temporaryCount = 0L;
+        System.out.println("temporaryCount  " + temporaryCount);
         for (PersonInstitution pi : pis) {
+            System.out.println("pi = " + pi);
             if (pi.getNic().trim().equals("")) {
                 withoutNicCount++;
             }
             if (pi.getDesignation() == null) {
                 withoutDesignationCount++;
             } else {
-                if (pi.getDesignation().getOfficial() == Boolean.FALSE && pi.getDesignation().getMappedToDesignation() == null) {
-                    withoutMappedInstitutionCount++;
-                }
+                withoutMappedInstitutionCount++;
             }
             if (pi.getInstitution() == null) {
                 withoutInstitutionCount++;
             } else {
-                if (pi.getInstitution().getOfficial() == Boolean.FALSE && pi.getInstitution().getMappedToInstitution() == null) {
-                    withoutMappedInstitutionCount++;
-                }
+                withoutMappedInstitutionCount++;
             }
             if (pi.getActiveState() == Boolean.TRUE) {
                 activeCount++;
@@ -319,8 +331,123 @@ public class DbfController implements Serializable {
 
     }
 
+    public InstitutionMonthSummery writeSummeryCounts(Institution institution, Integer year, Integer month) {
+        System.out.println("writing summery counts");
+        List<PersonInstitution> pis;
+
+        InstitutionMonthSummery sum;
+        String sql;
+        Map m = new HashMap();
+        Long paySetsSubmitted;
+        Long totalPaySets;
+
+        m.put("i", institution);
+
+        sql = "select count(ps) from InstitutionSet ps where ps.retired=false and ps.institution=:i";
+        totalPaySets = getInstitutionSetFacade().findLongByJpql(sql, m, TemporalType.DATE);
+
+        m.put("y", year);
+        m.put("m", month);
+
+        sql = "select pi from PersonInstitution pi where pi.retired=false and pi.payYear=:y and pi.payMonth=:m and pi.paySet.institution=:i";
+        pis = getPiFacade().findBySQL(sql, m);
+
+        sql = "select distinct(pi.paySet) from PersonInstitution pi where pi.retired=false and pi.payYear=:y and pi.payMonth=:m and pi.paySet.institution=:i";
+        List<InstitutionSet> ps;
+        ps = getInstitutionSetFacade().findBySQL(sql, m);
+
+        paySetsSubmitted = new Long(ps.size());
+
+        sql = "select s from InstitutionMonthSummery s where s.institution=:i and s.summeryYear=:y and s.summeryMonth=:m";
+        sum = getInstitutionMonthSummeryFacade().findFirstBySQL(sql, m);
+        if (sum == null) {
+            sum = new InstitutionMonthSummery();
+            sum.setInstitution(institution);
+            sum.setSummeryMonth(month);
+            sum.setSummeryYear(year);
+        }
+        Long twithoutNicCount = 0L;
+        Long twithoutDesignationCount = 0L;
+        Long twithoutMappedDesignationCount = 0L;
+        Long twithoutInstitutionCount = 0L;
+        Long twithoutMappedInstitutionCount = 0L;
+        Long tactiveCount = 0L;
+        Long ttemporaryCount = 0L;
+        for (PersonInstitution pi : pis) {
+            if (pi.getNic().trim().equals("")) {
+                twithoutNicCount++;
+            }
+            if (pi.getDesignation() == null) {
+                twithoutDesignationCount++;
+            } else {
+                twithoutMappedInstitutionCount++;
+            }
+            if (pi.getInstitution() == null) {
+                twithoutInstitutionCount++;
+            } else {
+                twithoutMappedInstitutionCount++;
+            }
+            if (pi.getActiveState() == Boolean.TRUE) {
+                tactiveCount++;
+            }
+            if (pi.getPermanent() == Boolean.FALSE) {
+                ttemporaryCount++;
+            }
+        }
+
+        sum.setRecordsWithoutNic(twithoutNicCount);
+        sum.setRecordsWithoutDesignations(twithoutDesignationCount);
+        sum.setRecordsWithoutDesignationMappging(twithoutMappedDesignationCount);
+        sum.setRecordsWithoutInstitution(twithoutInstitutionCount);
+        sum.setRecordsWithoutInstitutionMappings(twithoutMappedInstitutionCount);
+        sum.setActiveCount(tactiveCount);
+        sum.setTempCount(ttemporaryCount);
+        sum.setCompletedSets(paySetsSubmitted);
+        sum.setTotalSets(totalPaySets);
+        if (totalPaySets == null || totalPaySets == 0) {
+            sum.setCompleted(false);
+        } else if (paySetsSubmitted == 0) {
+            sum.setCompleted(false);
+            sum.setHalfway(true);
+
+        } else {
+            if (paySetsSubmitted == totalPaySets) {
+                sum.setCompleted(true);
+            } else {
+                sum.setHalfway(true);
+                sum.setCompleted(false);
+            }
+        }
+
+        if (sum.getId() == null || sum.getId() == 0) {
+            getInstitutionMonthSummeryFacade().create(sum);
+        } else {
+            getInstitutionMonthSummeryFacade().edit(sum);
+        }
+        return sum;
+    }
+
+    public InstitutionMonthSummery readSummeryCounts(Institution institution, Integer year, Integer month) {
+        System.out.println("reading summery counts");
+        InstitutionMonthSummery sum;
+        String sql;
+        Map m = new HashMap();
+        m.put("i", institution);
+        m.put("y", year);
+        m.put("m", month);
+        sql = "select s from InstitutionMonthSummery s where s.institution=:i and s.summeryYear=:y and s.summeryMonth=:m";
+        sum = getInstitutionMonthSummeryFacade().findFirstBySQL(sql, m);
+        if (sum == null) {
+            sum = new InstitutionMonthSummery();
+            sum.setInstitution(institution);
+            sum.setSummeryMonth(month);
+            sum.setSummeryYear(year);
+        }
+        return sum;
+    }
+
     public Long getWithoutNicCount() {
-        getExistingPersonInstitutions();
+//        getExistingPersonInstitutions();
         return withoutNicCount;
     }
 
@@ -329,7 +456,7 @@ public class DbfController implements Serializable {
     }
 
     public Long getWithoutDesignationCount() {
-        getExistingPersonInstitutions();
+//        getExistingPersonInstitutions();
         return withoutDesignationCount;
     }
 
@@ -338,7 +465,7 @@ public class DbfController implements Serializable {
     }
 
     public Long getWithoutMappedDesignationCount() {
-        getExistingPersonInstitutions();
+//        getExistingPersonInstitutions();
         return withoutMappedDesignationCount;
     }
 
@@ -348,7 +475,7 @@ public class DbfController implements Serializable {
     }
 
     public Long getWithoutInstitutionCount() {
-        getExistingPersonInstitutions();
+//        getExistingPersonInstitutions();
         return withoutInstitutionCount;
     }
 
@@ -357,7 +484,7 @@ public class DbfController implements Serializable {
     }
 
     public Long getWithoutMappedInstitutionCount() {
-        getExistingPersonInstitutions();
+//        getExistingPersonInstitutions();
         return withoutMappedInstitutionCount;
     }
 
@@ -366,7 +493,7 @@ public class DbfController implements Serializable {
     }
 
     public Long getActiveCount() {
-        getExistingPersonInstitutions();
+//        getExistingPersonInstitutions();
         return activeCount;
     }
 
@@ -375,7 +502,7 @@ public class DbfController implements Serializable {
     }
 
     public Long getTemporaryCount() {
-        getExistingPersonInstitutions();
+//        getExistingPersonInstitutions();
         return temporaryCount;
     }
 
@@ -575,13 +702,15 @@ public class DbfController implements Serializable {
     }
 
     public List<PersonInstitution> getExistingPersonInstitutions() {
+        return existingPersonInstitutions;
+    }
+
+    public void processExistingPersonInstitutions() {
         System.out.println("existing pis");
-        if (existingPersonInstitutions != null && !existingPersonInstitutions.isEmpty()) {
-            System.out.println("Already exists");
-            return existingPersonInstitutions;
-        }
         if (getInstitution() == null || getInsSet() == null) {
-            return new ArrayList<PersonInstitution>();
+            existingPersonInstitutions = new ArrayList<PersonInstitution>();
+            JsfUtil.addErrorMessage("Select Institution, Year and Month to fill");
+            return;
         }
         Map m = new HashMap();
         m.put("s", getInsSet());
@@ -594,7 +723,7 @@ public class DbfController implements Serializable {
         existingPersonInstitutions = getPiFacade().findBySQL(sql, m);
         System.out.println("existing is " + existingPersonInstitutions);
         getSummeryCounts(existingPersonInstitutions);
-        return existingPersonInstitutions;
+        institutionMonthSummery = readSummeryCounts(institution, payYear, payMonth);
     }
 
     public void recreateModel() {
@@ -1318,6 +1447,7 @@ public class DbfController implements Serializable {
             }
 //            System.out.println("58");
             getSummeryCounts(newPersonInstitutions);
+//            institutionMonthSummery = writeSummeryCounts(institution, payYear, payMonth);
             JsfUtil.addSuccessMessage("Data Captured. But NOT Recorded to the database. Please click Save to confirm.");
         } catch (Exception e) {
             System.out.println("Error " + e.getMessage());
@@ -1396,7 +1526,8 @@ public class DbfController implements Serializable {
         }
         recreateModel();
         newPersonInstitutions = new ArrayList<PersonInstitution>();
-        getExistingPersonInstitutions();
+        institutionMonthSummery= writeSummeryCounts(institution, payYear, payMonth);
+        processExistingPersonInstitutions();
         return "upload_view";
     }
 
@@ -1435,7 +1566,7 @@ public class DbfController implements Serializable {
         m = new HashMap();
         m.put("n", designationName);
         //Check name without capital or simple for the any institute
-        search = getDesFacade().findFirstBySQL("select d from Designation d where (d.official=true or d.mappedToDesignation is not null) and lower(d.name) =:n",m);
+        search = getDesFacade().findFirstBySQL("select d from Designation d where (d.official=true or d.mappedToDesignation is not null) and lower(d.name) =:n", m);
 //        System.out.println("search 1 = " + search);
         if (search != null) {
             if (search.getOfficial() == true) {
@@ -1478,4 +1609,29 @@ public class DbfController implements Serializable {
 
         return null;
     }
+
+    public InstitutionMonthSummery getInstitutionMonthSummery() {
+        return institutionMonthSummery;
+    }
+
+    public void setInstitutionMonthSummery(InstitutionMonthSummery institutionMonthSummery) {
+        this.institutionMonthSummery = institutionMonthSummery;
+    }
+
+    public InstitutionMonthSummeryFacade getInstitutionMonthSummeryFacade() {
+        return institutionMonthSummeryFacade;
+    }
+
+    public void setInstitutionMonthSummeryFacade(InstitutionMonthSummeryFacade institutionMonthSummeryFacade) {
+        this.institutionMonthSummeryFacade = institutionMonthSummeryFacade;
+    }
+
+    public InstitutionSetFacade getInstitutionSetFacade() {
+        return institutionSetFacade;
+    }
+
+    public void setInstitutionSetFacade(InstitutionSetFacade institutionSetFacade) {
+        this.institutionSetFacade = institutionSetFacade;
+    }
+
 }

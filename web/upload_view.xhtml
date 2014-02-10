@@ -19,7 +19,7 @@
             <h:form >
 
                 <p:panelGrid columns="1" >
-                    <p:panelGrid columns="2" >
+                    <p:panelGrid columns="3" >
 
                         <p:panelGrid columns="2" >
                             <h:outputText value="Institution"/>
@@ -39,7 +39,7 @@
                             <h:selectOneMenu    id="cmbYear" value="#{dbfController.payYear}" >
                                 <f:selectItem itemLabel="Select Year" />
                                 <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
-                                <f:ajax event="change" execute="cmbYear" render=":#{p:component('cmbSet')} :#{p:component('tblEx')} :#{p:component('gridSummery')}" />
+                                <!--<f:ajax event="change" execute="cmbYear" render=":#{p:component('cmbSet')} :#{p:component('tblEx')} :#{p:component('gridSummery')}" />-->
                             </h:selectOneMenu>
 
                             <h:outputText value="Month"/>
@@ -57,20 +57,21 @@
                                 <f:selectItem itemValue="10" itemLabel="October" />
                                 <f:selectItem itemValue="11" itemLabel="November" />
                                 <f:selectItem itemValue="12" itemLabel="December" />
-                                <f:ajax event="change" execute="cmbMonth" render=":#{p:component('cmbSet')} :#{p:component('tblEx')} :#{p:component('gridSummery')}" />
+                                <!--<f:ajax event="change" execute="cmbMonth" render=":#{p:component('cmbSet')} :#{p:component('tblEx')} :#{p:component('gridSummery')}" />-->
                             </h:selectOneMenu>
                             <h:outputText value="Set"/>
                             <h:selectOneMenu    id="cmbSet" value="#{dbfController.insSet}"      >
                                 <f:selectItem itemLabel ="Select Set" />
                                 <f:selectItems value="#{dbfController.insSets}" var="insset" itemValue="#{insset}" itemLabel="#{insset.name}" />
-                                <f:ajax event="change" execute="cmbSet" render=":#{p:component('cmbSet')} :#{p:component('tblEx')} :#{p:component('gridSummery')}" />
+                                <!--<f:ajax event="change" execute="cmbSet" render=":#{p:component('cmbSet')} :#{p:component('tblEx')} :#{p:component('gridSummery')}" />-->
                             </h:selectOneMenu>
+                            <p:commandButton value="Process" action="#{dbfController.processExistingPersonInstitutions}" ajax="false" ></p:commandButton>
                         </p:panelGrid>
 
 
                         <p:panel id="gridSummery"  >
                             <f:facet name="header" >
-                                <h:outputLabel value="Summery" />
+                                <h:outputLabel value="Set Summery" />
                                 <!--<p:commandButton ajax="false" style="float: right;" value="Refresh" />-->
                             </f:facet>
                             <p:panelGrid columns="2" >
@@ -96,6 +97,44 @@
                                 <h:outputLabel   value="#{dbfController.temporaryCount}" />
 
                             </p:panelGrid>
+                        </p:panel>
+
+
+
+                        <p:panel id="gridSummeryIns"  >
+                            <f:facet name="header" >
+                                <h:outputLabel value="Institution Summery" />
+                            </f:facet>
+                            <p:panelGrid columns="2" >
+                                <h:outputLabel value="Total Sets"/>
+                                <h:outputLabel   value="#{dbfController.institutionMonthSummery.totalSets}" />
+
+                                <h:outputLabel value="Completed Sets"/>
+                                <h:outputLabel   value="#{dbfController.institutionMonthSummery.completedSets}" />
+
+
+                                <h:outputLabel value="Records without NIC"/>
+                                <h:outputLabel   value="#{dbfController.institutionMonthSummery.recordsWithoutNic }" />
+
+                                <h:outputLabel value="Records without Designations"/>
+                                <h:outputLabel   value="#{dbfController.institutionMonthSummery.recordsWithoutDesignations}" />
+
+                                <h:outputLabel value="Records without Identifiable Designations"/>
+                                <h:outputLabel   value="#{dbfController.institutionMonthSummery.recordsWithoutDesignationMappging}" />
+
+                                <h:outputLabel value="Records without Institutions"/>
+                                <h:outputLabel   value="#{dbfController.institutionMonthSummery.recordsWithoutInstitution}" />
+
+                                <h:outputLabel value="Records without Identifiable Institutions"/>
+                                <h:outputLabel   value="#{dbfController.institutionMonthSummery.recordsWithoutInstitutionMappings}" />
+
+                                <h:outputLabel value="Active Records"/>
+                                <h:outputLabel   value="#{dbfController.institutionMonthSummery.activeCount}" />
+
+                                <h:outputLabel value="Temporary Person Records"/>
+                                <h:outputLabel   value="#{dbfController.institutionMonthSummery.tempCount}" />
+                            </p:panelGrid>
+
                         </p:panel>
 
                     </p:panelGrid>
@@ -125,7 +164,7 @@
                             </p:column>  
                             <p:column>
                                 <f:facet name="header">Institution</f:facet>
-                                <h:outputLabel value="#{exPi.institution}" ></h:outputLabel>
+                                <h:outputLabel value="#{exPi.institution.name}" ></h:outputLabel>
                             </p:column>
                             <p:column > 
                                 <f:facet name="header">F1_CONSAL</f:facet>

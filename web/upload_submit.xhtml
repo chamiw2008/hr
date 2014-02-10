@@ -20,16 +20,10 @@
             <h:form >
 
                 <p:panelGrid columns="1" >
-                    <p:panelGrid columns="2" >
-
+                    <p:panelGrid columns="3" >
                         <p:panelGrid columns="2" >
                             <h:outputText value="Institution"/>
-                            
-                            <h:selectOneMenu readonly="true" rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc" value="#{dbfController.institution}" >
-                                <f:selectItem itemLabel="Select Paycenter"/>
-                                <f:selectItems value="#{institutionController.payCentres}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
-                            </h:selectOneMenu>
-                            <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
+                            <h:outputText value="#{dbfController.institution.name}"/>
                             <h:outputText value="Year"/>
                             <h:outputLabel value="#{dbfController.payYear}"/>
                             <h:outputText value="Month"/>
@@ -53,14 +47,14 @@
                         </p:panelGrid>
 
 
-                        <p:panel id="gridSummery"  >
+                        <p:panel id="gridSummerySet"  >
                             <f:facet name="header" >
-                                <h:outputLabel value="Summery" />
+                                <h:outputLabel value="Uploaded Set Summery" />
                             </f:facet>
                             <p:panelGrid columns="2" >
                                 <h:outputLabel value="Records without NIC"/>
                                 <h:outputLabel   value="#{dbfController.withoutNicCount}" />
-                                
+
                                 <h:outputLabel value="Records without Designations"/>
                                 <h:outputLabel   value="#{dbfController.withoutDesignationCount}" />
 
@@ -82,17 +76,19 @@
                             </p:panelGrid>
                         </p:panel>
 
+                       
+
                     </p:panelGrid>
 
                     <p:panel header="Details" >
 
                         <h:outputStylesheet library="css" name="default.css" ></h:outputStylesheet>
-                        
+
                         <p:dataTable  id="tblEx" value="#{dbfController.newPersonInstitutions}" 
                                       rowIndexVar="rowIndex" var="exPi" 
                                       editable="true" editMode="cell" 
                                       rowStyleClass="#{exPi.conSal le 1 and exPi.activeState eq false ? 'redrow' : 'greenrow'}">
-                            
+
                             <p:column >
                                 <f:facet name="header">Serial</f:facet>
                                 <h:outputLabel value="#{rowIndex + 1}"/>
