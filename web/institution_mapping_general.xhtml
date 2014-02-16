@@ -15,7 +15,11 @@
 
                     <p:panel >
                         <f:facet name="header" >
-                            <h:outputLabel value="General Institution Mapping" ></h:outputLabel>
+                            <h:outputLabel value="Mapped Institutions - Common to all Institutions" ></h:outputLabel>
+                            <f:facet name="header" >
+                                <h:outputLabel value="Unmapped Institutions" ></h:outputLabel>
+                                <p:commandButton value="List Mapped Institutions" action="#{institutionController.listUnmappedInstitutions()}" ajax="false" ></p:commandButton>
+                            </f:facet>
                         </f:facet>
 
                         <p:panelGrid columns="2" >
@@ -31,6 +35,16 @@
                             <p:commandButton ajax="false" value="Add" action="#{institutionController.saveCurrentMapping()}" ></p:commandButton>
                         </p:panelGrid>
 
+                    </p:panel>
+                    <p:panel >
+                        <f:facet name="header" >
+                            <h:outputLabel value="Mapped Institutions - Common to all Institutions" ></h:outputLabel>
+                            <f:facet name="header" >
+                                <h:outputLabel value="Unmapped Institutions" ></h:outputLabel>
+                                <p:commandButton value="List Mapped Institutions" action="#{institutionController.listMappedInstitutions()}" ajax="false" ></p:commandButton>
+                            </f:facet>
+                        </f:facet>
+
                         <p:dataTable id="tbl" value="#{institutionController.mappedInstitutions}" var="pi" >
                             <p:column headerText="Mapped For" >
                                 <h:outputLabel value="#{pi.name}" ></h:outputLabel>
@@ -42,6 +56,19 @@
                                 <h:commandButton  action="#{institutionController.removeMapping()}" value="Remove" >
                                     <f:setPropertyActionListener value="#{pi}" target="#{institutionController.currentMappingInstitution}" ></f:setPropertyActionListener>
                                 </h:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+
+
+                    <p:panel header="Unmapped Institutions" >
+                        <f:facet name="header" >
+                            <h:outputLabel value="Unmapped Institutions" ></h:outputLabel>
+                            <p:commandButton value="List Unmapped Institutions" action="#{institutionController.listUnmappedInstitutions()}" ajax="false" ></p:commandButton>
+                        </f:facet>
+                        <p:dataTable id="tblUm" value="#{institutionController.unmappedInstitutions}" var="ui" >
+                            <p:column headerText="Name" >
+                                <h:outputLabel value="#{ui}" ></h:outputLabel>
                             </p:column>
                         </p:dataTable>
                     </p:panel>

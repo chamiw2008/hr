@@ -23,7 +23,7 @@
                             <p:selectOneMenu id="cmbPs" value="#{institutionController.mappingsForInstitution}" >
                                 <f:selectItem itemLabel="Select a pay centre" />
                                 <f:selectItems value="#{institutionController.payCentres}" var="ps" itemLabel="#{ps.name}" itemValue="#{ps}" ></f:selectItems>
-                                <f:ajax event="change" execute="cmbPs" render="chkSite chkSection chkMap tbl" />
+                                <f:ajax event="change" execute="cmbPs" render="tbl" />
                             </p:selectOneMenu>
                             <h:outputLabel value="Instituion Name to Map" ></h:outputLabel>
                             <p:inputText value="#{institutionController.currentMappingInstitution.name}" ></p:inputText>
@@ -33,9 +33,19 @@
                                 <f:selectItems value="#{institutionController.officialInstitutions}" var="oi" itemLabel="#{oi.name}" itemValue="#{oi}" ></f:selectItems>
                             </p:selectOneMenu>
                             <p:commandButton ajax="false" value="Add" action="#{institutionController.saveCurrentMapping()}" ></p:commandButton>
-
                         </p:panelGrid>
 
+
+                    </p:panel>
+
+                    <p:panel>
+                        <f:facet name="header" >
+                            <h:outputLabel value="Mapped Institutions - Common to all Institutions" ></h:outputLabel>
+                            <f:facet name="header" >
+                                <h:outputLabel value="Unmapped Institutions" ></h:outputLabel>
+                                <p:commandButton value="List Mapped Institutions" action="#{institutionController.listMappedInstitutions()}" ajax="false" ></p:commandButton>
+                            </f:facet>
+                        </f:facet>
                         <p:dataTable id="tbl" value="#{institutionController.mappedInstitutions}" var="pi" >
                             <p:column headerText="Mapped For" >
                                 <h:outputLabel value="#{pi.name}" ></h:outputLabel>

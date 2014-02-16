@@ -14,6 +14,134 @@
             <p:growl id="messages" autoUpdate="true"/>
 
 
+            <p:panel header="Dashboard" >
+
+                <p:panelGrid columns="2" >
+
+                    <p:panel >
+
+
+                        <p:panel header="Institution Hirachy">
+                            <f:facet name="header" >
+                                <p:commandButton value="Display" ajax="false"  ></p:commandButton>
+                            </f:facet>
+
+                            <p:tree  value="#{institutionController.root}" var="node" dynamic="true" cache="false"  
+                                     selectionMode="single"  selection="#{institutionController.selectedNode}" id="tree">  
+                                <p:ajax event="select"  update=":#{p:component('tblIns')}  :#{p:component('tblDes')} :#{p:component('panPay')}"   listener="#{institutionController.onNodeSelect}" />  
+                                <p:treeNode>  
+                                    <h:outputText value="#{node}" />  
+                                </p:treeNode>  
+                            </p:tree>
+                        </p:panel>
+
+                        <p:panel >
+                            <f:facet name="header" >
+                                <h:outputLabel value="Selected Institutions under " ></h:outputLabel>
+                                <h:outputLabel value="#{institutionController.current.name}" rendered="#{institutionController.current ne null}" ></h:outputLabel>
+                            </f:facet>
+                            <p:dataTable id="tblIns" value="#{institutionController.selectedIns}" var="i"  >
+
+                                <p:column >
+                                    <h:outputLabel value="#{i.name}" ></h:outputLabel>
+                                </p:column>
+
+                            </p:dataTable>
+
+                        </p:panel>
+
+
+                    </p:panel>
+
+                    <p:panelGrid >
+                        <p:row>
+                            <p:column colspan="2" >
+                                <!--Institution-->                            
+                                <p:panel id="cmbLoc" style="border: 0px;margin: 0px;padding: 0px;">
+                                    <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
+                                </p:panel>
+                                <!--Year-->
+                                <p:selectOneMenu id="cmbYear" value="#{dbfController.payYear}" >
+                                    <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
+                                    <f:ajax event="change" execute="cmbYear cmbMonth :#{p:component('tblDes')} :#{p:component('panPay')}" render="tblDes" />
+                                </p:selectOneMenu>
+                                <!--Month-->
+                                <p:selectOneMenu id="cmbMonth" value="#{dbfController.payMonth}"  >
+                                    <f:selectItem itemValue="1" itemLabel="January" />
+                                    <f:selectItem itemValue="2" itemLabel="February" />
+                                    <f:selectItem itemValue="3" itemLabel="March" />
+                                    <f:selectItem itemValue="4" itemLabel="April" />
+                                    <f:selectItem itemValue="5" itemLabel="May" />
+                                    <f:selectItem itemValue="6" itemLabel="June" />
+                                    <f:selectItem itemValue="7" itemLabel="July" />
+                                    <f:selectItem itemValue="8" itemLabel="August" />
+                                    <f:selectItem itemValue="9" itemLabel="September" />
+                                    <f:selectItem itemValue="10" itemLabel="October" />
+                                    <f:selectItem itemValue="11" itemLabel="November" />
+                                    <f:selectItem itemValue="12" itemLabel="December" />
+                                    <f:ajax event="change" execute="cmbLoc  cmbYear cmbMonth :#{p:component('tblDes')} :#{p:component('panPay')}" render="tblDes" />
+                                </p:selectOneMenu>
+
+                            </p:column>
+                        </p:row>
+                        <p:row >
+                            <p:column>
+                                <p:panel header="Designation Summery"  >
+
+
+                                    <p:dataTable id="tblDes" value="#{dbfController.designationSummery}" var="ds" >
+                                        <f:facet name="header" >
+                                            <h:outputLabel value="Designation Summery " ></h:outputLabel><br/>
+                                            <h:outputLabel value=" #{institutionController.current.name}" ></h:outputLabel><br/>
+                                            <h:outputLabel value=" #{dbfController.payYear}" ></h:outputLabel><br/>
+                                            <h:outputLabel value=" #{dbfController.payMonth}" ></h:outputLabel><br/>
+                                        </f:facet>
+                                        <p:column >
+                                            <f:facet name="header" >Designation</f:facet>
+                                            <h:outputLabel value="#{ds.designationName}" />
+                                        </p:column>
+                                        <p:column >
+                                            <f:facet name="header" >Count</f:facet>
+                                            <h:outputLabel value="#{ds.count}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+
+                            </p:column>
+                            <p:column >
+                                <p:panel id="panPay" header="Completion of Uploading Sets - Total Sets #{dbfController.setCount}" >
+
+                                    <p:panelGrid style="border: 2px;padding: 1px; padding: 1px;margin: 1px;" >
+                                        <p:row>
+                                            <p:column style="background-color: rgb( #{dbfController.monthColR[0]} ,#{dbfController.monthColG[0]},#{dbfController.monthColB[0]}); border: 2px;padding: 10px;margin: 3px;" >January - #{dbfController.completedSet[0]}</p:column>
+                                            <p:column style="background-color: rgb( #{dbfController.monthColR[1]} ,#{dbfController.monthColG[1]},#{dbfController.monthColB[1]});border: 2px;padding: 10px;" >February - #{dbfController.completedSet[1]}</p:column>
+                                            <p:column style="background-color: rgb( #{dbfController.monthColR[2]} ,#{dbfController.monthColG[2]},#{dbfController.monthColB[2]});border: 2px;padding: 10px;" >March - #{dbfController.completedSet[2]}</p:column>
+                                            <p:column style="background-color: rgb( #{dbfController.monthColR[3]} ,#{dbfController.monthColG[3]},#{dbfController.monthColB[3]});border: 2px;padding: 10px;" >April - #{dbfController.completedSet[3]}</p:column>
+                                            <p:column style="background-color: rgb( #{dbfController.monthColR[4]} ,#{dbfController.monthColG[4]},#{dbfController.monthColB[4]});border: 2px;padding: 10px;" >May - #{dbfController.completedSet[4]}</p:column>
+                                            <p:column style="background-color: rgb( #{dbfController.monthColR[5]} ,#{dbfController.monthColG[5]},#{dbfController.monthColB[5]});border: 2px;padding: 10px;" >June - #{dbfController.completedSet[5]}</p:column>
+                                        </p:row>
+                                        <p:row>
+                                            <p:column style="background-color: rgb( #{dbfController.monthColR[6]} ,#{dbfController.monthColG[6]},#{dbfController.monthColB[6]});border: 2px;padding: 10px;" >July - #{dbfController.completedSet[6]}</p:column>
+                                            <p:column style="background-color: rgb( #{dbfController.monthColR[7]} ,#{dbfController.monthColG[7]},#{dbfController.monthColB[7]});border: 2px;padding: 10px;" >August - #{dbfController.completedSet[7]}</p:column>
+                                            <p:column style="background-color: rgb( #{dbfController.monthColR[8]} ,#{dbfController.monthColG[8]},#{dbfController.monthColB[8]});border: 2px;padding: 10px;" >September - #{dbfController.completedSet[8]}</p:column>
+                                            <p:column style="background-color: rgb( #{dbfController.monthColR[9]} ,#{dbfController.monthColG[9]},#{dbfController.monthColB[9]});border: 2px;padding: 10px;" >October - #{dbfController.completedSet[9]}</p:column>
+                                            <p:column style="background-color: rgb( #{dbfController.monthColR[10]} ,#{dbfController.monthColG[10]},#{dbfController.monthColB[10]});border: 2px;padding: 10px;" >November - #{dbfController.completedSet[10]}</p:column>
+                                            <p:column style="background-color: rgb( #{dbfController.monthColR[11]} ,#{dbfController.monthColG[11]},#{dbfController.monthColB[11]});border: 2px;padding: 10px;" >December - #{dbfController.completedSet[11]}</p:column>
+                                        </p:row>
+                                    </p:panelGrid>
+                                </p:panel>
+
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>    
+
+
+
+                </p:panelGrid>
+            </p:panel> 
+
+
+
         </h:form>
     </ui:define>
 

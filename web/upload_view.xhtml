@@ -57,13 +57,14 @@
                                 <f:selectItem itemValue="10" itemLabel="October" />
                                 <f:selectItem itemValue="11" itemLabel="November" />
                                 <f:selectItem itemValue="12" itemLabel="December" />
-                                <!--<f:ajax event="change" execute="cmbMonth" render=":#{p:component('cmbSet')} :#{p:component('tblEx')} :#{p:component('gridSummery')}" />-->
+                                <f:ajax event="change" execute="cmbMonth"  />
                             </h:selectOneMenu>
                             <h:outputText value="Set"/>
                             <h:selectOneMenu    id="cmbSet" value="#{dbfController.insSet}"      >
                                 <f:selectItem itemLabel ="Select Set" />
                                 <f:selectItems value="#{dbfController.insSets}" var="insset" itemValue="#{insset}" itemLabel="#{insset.name}" />
-                                <!--<f:ajax event="change" execute="cmbSet" render=":#{p:component('cmbSet')} :#{p:component('tblEx')} :#{p:component('gridSummery')}" />-->
+                                <f:ajax event="change" execute="cmbSet" />
+                                
                             </h:selectOneMenu>
                             <p:commandButton value="Process" action="#{dbfController.processExistingPersonInstitutions}" ajax="false" ></p:commandButton>
                         </p:panelGrid>

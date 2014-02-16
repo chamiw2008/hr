@@ -21,6 +21,7 @@ import gov.health.facade.InstitutionFacade;
 import gov.health.entity.Institution;
 import gov.health.entity.InstitutionSet;
 import gov.health.entity.InstitutionType;
+import gov.health.entity.PersonInstitution;
 import gov.health.facade.InstitutionSetFacade;
 import gov.health.facade.InstitutionTypeFacade;
 import gov.health.facade.PersonInstitutionFacade;
@@ -41,6 +42,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -59,6 +61,7 @@ public class InstitutionController implements Serializable {
     PersonInstitutionFacade piFacade;
     @EJB
     InstitutionSetFacade inSetFacade;
+
     @Inject
     SessionController sessionController;
     List<Institution> offItems;
@@ -102,8 +105,8 @@ public class InstitutionController implements Serializable {
     }
 
     public void saveIndividualMapping(Institution mappingFor, Institution mappedTo) {
-        System.out.println("mapped for " + mappingFor);
-        System.out.println("mapped to " + mappedTo);
+        //System.out.println("mapped for " + mappingFor);
+        //System.out.println("mapped to " + mappedTo);
         mappingFor.setMappedToInstitution(mappedTo);
         mappingFor.setInstitution(mappingsForInstitution);
         if (mappingFor.getId() == null || mappingFor.getId() == 0) {
@@ -120,20 +123,90 @@ public class InstitutionController implements Serializable {
         return "institution_mapping_general";
     }
 
+    List<String> unmappedInstitutions;
+    String selectedToMap;
+    Institution institutionToMap;
+
+    public void listUnmappedInstitutions() {
+        String sql;
+        sql = "select distinct(pi.strInstitution) from PersonInstitution pi where pi.institution is null and pi.name is not null and pi.name<>'' ";
+        unmappedInstitutions = getEjbFacade().findString(sql);
+    }
+
+    public void mapToInstitution() {
+        //System.out.println("mapToInstitution");
+        if (institutionToMap == null) {
+            JsfUtil.addErrorMessage("Please select designations");
+            return;
+        }
+        String sql;
+        Map m = new HashMap();
+        m.put("stri", selectedToMap);
+        //System.out.println("m = " + m);
+        sql = "Select i from Institution i where i.name =:stri";
+        //System.out.println("sql = " + sql);
+        Institution i = getFacade().findFirstBySQL(sql, m);
+        //System.out.println("i = " + i);
+        if (i == null) {
+            i = new Institution();
+            i.setName(selectedToMap);
+            i.setMappedToInstitution(institutionToMap);
+            getFacade().create(i);
+        } else {
+            i.setMappedToInstitution(institutionToMap);
+            getFacade().create(i);
+        }
+        sql = "select pi from PersonInstitution pi where pi.strInstitution=:s and pi.institution is null";
+        List<PersonInstitution> pis = getPiFacade().findBySQL(sql, m, TemporalType.DATE);
+        //System.out.println("pis = " + pis);
+        for (PersonInstitution pi : pis) {
+            pi.setInstitution(institutionToMap);
+            getPiFacade().edit(pi);
+        }
+
+    }
+
+    public List<String> getUnmappedInstitutions() {
+        return unmappedInstitutions;
+    }
+
+    public void setUnmappedInstitutions(List<String> unmappedInstitutions) {
+        this.unmappedInstitutions = unmappedInstitutions;
+    }
+
+    public String getSelectedToMap() {
+        return selectedToMap;
+    }
+
+    public void setSelectedToMap(String selectedToMap) {
+        this.selectedToMap = selectedToMap;
+    }
+
+    public Institution getInstitutionToMap() {
+        return institutionToMap;
+    }
+
+    public void setInstitutionToMap(Institution institutionToMap) {
+        this.institutionToMap = institutionToMap;
+    }
+
     public List<Institution> getMappedInstitutions() {
+        return mappedInstitutions;
+    }
+
+    public void listMappedInstitutions() {
         String sql;
         if (mappingsForInstitution == null) {
             sql = "select i from Institution i where i.retired=false and i.mappedToInstitution is not null and i.institution is null order by i.name";
-            System.out.println("sql is " + sql);
+            //System.out.println("sql is " + sql);
             mappedInstitutions = getFacade().findBySQL(sql);
-            System.out.println("mappedInstitutions is " + mappedInstitutions);
+            //System.out.println("mappedInstitutions is " + mappedInstitutions);
         } else {
             Map m = new HashMap();
             m.put("ii", mappingsForInstitution);
             sql = "select i from Institution i where i.retired=false and i.mappedToInstitution is not null and i.institution=:ii order by i.name";
             mappedInstitutions = getFacade().findBySQL(sql, m);
         }
-        return mappedInstitutions;
     }
 
     public void setMappedInstitutions(List<Institution> mappedInstitutions) {
@@ -302,15 +375,15 @@ public class InstitutionController implements Serializable {
         List<Institution> ins;
         String sql;
         if (parent == null) {
-            sql = "select ci from Institution ci where ci.retired=false and ci.superInstitution is null order by ci.name";
+            sql = "select ci from Institution ci where ci.retired=false and ci.official=true and ci.superInstitution is null order by ci.name";
             ins = getFacade().findBySQL(sql);
         } else {
-            sql = "select ci from Institution ci where ci.retired=false and ci.superInstitution=:pi order by ci.name";
+            sql = "select ci from Institution ci where ci.retired=false and ci.official=true and ci.superInstitution=:pi order by ci.name";
             m.put("pi", parent);
             ins = getFacade().findBySQL(sql, m);
         }
-        System.out.println("sql is " + sql);
-        System.out.println("Institutions retreved are " + ins);
+        //System.out.println("sql is " + sql);
+        //System.out.println("Institutions retreved are " + ins);
         return ins;
     }
 
@@ -368,7 +441,7 @@ public class InstitutionController implements Serializable {
 
     public void setSelectedNode(TreeNode selectedNode) {
         if (this.selectedNode != selectedNode) {
-            System.out.println("set select node");
+            //System.out.println("set select node");
             getDbfController().recreateModel();
             getDbfController().getSelectedPersonInstitutions();
         }
@@ -406,7 +479,7 @@ public class InstitutionController implements Serializable {
 
     public void onNodeSelect(NodeSelectEvent event) {
         current = findInstitution(event.getTreeNode().toString(), false);
-        System.out.println("set on node select");
+        //System.out.println("set on node select");
         getDbfController().recreateModel();
         getDbfController().getSelectedPersonInstitutions();
         JsfUtil.addSuccessMessage(current.getName());
@@ -426,7 +499,7 @@ public class InstitutionController implements Serializable {
                 addChildInstituionNodes(getSessionController().getLoggedUser().getRestrictedInstitution(), tn);
             } else {
 
-                System.out.println("Logged user and ins " + getSessionController().getLoggedUser().getRestrictedInstitution());
+                //System.out.println("Logged user and ins " + getSessionController().getLoggedUser().getRestrictedInstitution());
                 addChildInstituionNodes(null, root);
             }
         }
@@ -435,17 +508,17 @@ public class InstitutionController implements Serializable {
 
     private boolean addChildInstituionNodes(Institution parent, TreeNode parentNode) {
         if (parent == null) {
-            System.out.println("parent is null");
+            //System.out.println("parent is null");
         } else {
-            System.out.println("parent is " + parent.getName());
+            //System.out.println("parent is " + parent.getName());
         }
         List<Institution> cis = childInstitutions(parent);
         if (cis.isEmpty()) {
-            System.out.println("no children");
+            //System.out.println("no children");
             return false;
         } else {
             for (Institution i : cis) {
-                System.out.println("one child is " + i.getName());
+                //System.out.println("one child is " + i.getName());
                 TreeNode tn = new DefaultTreeNode(i.getName(), parentNode);
                 tn.setExpanded(true);
                 addChildInstituionNodes(i, tn);
@@ -576,7 +649,7 @@ public class InstitutionController implements Serializable {
             }
         }
         items = getFacade().findBySQL(temSql);
-        System.out.println(temSql);
+        //System.out.println(temSql);
 
         return items;
     }
@@ -781,8 +854,6 @@ public class InstitutionController implements Serializable {
         return ins;
     }
 
-    
-    
     public List<Institution> completePayCentres(String qry) {
         String temSql;
         List<Institution> ins;
@@ -791,8 +862,6 @@ public class InstitutionController implements Serializable {
         return ins;
     }
 
-    
-    
     public List<Institution> getAllOfficialInstitutions() {
         String temSql;
         temSql = "SELECT i FROM Institution i where i.retired=false and i.official = true order by i.name";
