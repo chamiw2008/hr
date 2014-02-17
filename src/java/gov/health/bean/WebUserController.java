@@ -186,7 +186,7 @@ public class WebUserController implements Serializable {
         Person p = new Person();
         current.setWebUserPerson(p);
         this.prepareSelectControlDisable();
-        return "";
+        return "register_user";
     }
 
     public void saveSelected() {

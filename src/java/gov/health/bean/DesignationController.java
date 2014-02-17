@@ -11,6 +11,8 @@ package gov.health.bean;
 import gov.health.facade.DesignationFacade;
 import gov.health.entity.Designation;
 import gov.health.entity.Institution;
+import gov.health.entity.PersonInstitution;
+import gov.health.facade.PersonInstitutionFacade;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -27,6 +29,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.inject.Inject;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -82,6 +85,13 @@ public Designation findDesingation(String desName, boolean createNew) {
         }
         return des;
     }
+
+public List<Designation> completeDesignation(String qry){
+        Map m = new HashMap();
+        m.put("n", "%" + qry.toLowerCase() + "%" );
+        List<Designation> des = getFacade().findBySQL("select d from Designation d where d.retired = false and d.official=true and lower(d.name) like :n",m);
+        return des;
+}
     
     
     
@@ -106,10 +116,37 @@ public Designation findDesingation(String desName, boolean createNew) {
             getFacade().edit(currentMappingDesignation);
             JsfUtil.addSuccessMessage("Updated");
         }
+        
+        Map m = new HashMap();
+        m.put("s", currentMappingDesignation.getName());
+        String    sql = "select pi from PersonInstitution pi where pi.strDesignation=:s and pi.designation is null";
+        List<PersonInstitution> pis = getPiFacade().findBySQL(sql, m, TemporalType.DATE);
+        //System.out.println("pis = " + pis);
+        for (PersonInstitution pi : pis) {
+            pi.setDesignation(currentMappingDesignation.getMappedToDesignation());
+            getPiFacade().edit(pi);
+        }
+
+        
+        
         currentMappingDesignation=null;
         getCurrentMappingDesignation();
     }
 
+    @EJB
+    PersonInstitutionFacade piFacade;
+
+    public PersonInstitutionFacade getPiFacade() {
+        return piFacade;
+    }
+
+    public void setPiFacade(PersonInstitutionFacade piFacade) {
+        this.piFacade = piFacade;
+    }
+    
+    
+    
+    
     public void saveIndividualMapping(Designation mappingFor, Designation mappedTo){
         System.out.println("mapped for " + mappingFor);
         System.out.println("mapped to " + mappedTo);
@@ -130,6 +167,11 @@ public Designation findDesingation(String desName, boolean createNew) {
     }
     
     public List<Designation> getMappedDesignations() {
+        return mappedDesignations;
+    }
+
+    
+    public void listMappedDesignations(){
         String sql;
         if(institution==null){
             sql = "select i from Designation i where i.retired=false and i.mappedToDesignation is not null and i.institution is null order by i.name";
@@ -141,10 +183,27 @@ public Designation findDesingation(String desName, boolean createNew) {
             m.put("ii", institution);
             sql = "select i from Designation i where i.retired=false and i.mappedToDesignation is not null and i.institution=:ii order by i.name";
             mappedDesignations=getFacade().findBySQL(sql,m);
-        }
-        return mappedDesignations;
+        }        
+    }
+    
+    public void listUnmappedDesignations(){
+        String sql;
+        sql = "select distinct(pi.strDesignation) from PersonInstitution pi where pi.designation is null and pi.name is not null and pi.name<>'' ";
+        unmappedDesignations = getEjbFacade().findString(sql);
+    }
+    
+    List<String> unmappedDesignations;
+
+    public List<String> getUnmappedDesignations() {
+        return unmappedDesignations;
     }
 
+    public void setUnmappedDesignations(List<String> unmappedDesignations) {
+        this.unmappedDesignations = unmappedDesignations;
+    }
+    
+    
+    
     public void setMappedDesignations(List<Designation> mappedDesignations) {
         this.mappedDesignations = mappedDesignations;
     }

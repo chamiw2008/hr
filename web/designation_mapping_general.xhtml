@@ -23,27 +23,55 @@
                             <h:outputLabel value="Designation Name to Map" ></h:outputLabel>
                             <p:inputText value="#{designationController.currentMappingDesignation.name}" ></p:inputText>
                             <h:outputLabel value="Designation to Map" ></h:outputLabel>
-                            <p:selectOneMenu value="#{designationController.currentMappingDesignation.mappedToDesignation}" >
-                                <f:selectItem itemLabel="Select" ></f:selectItem>
-                                <f:selectItems value="#{designationController.officialDesignations}" var="oi" itemLabel="#{oi.name}" itemValue="#{oi}" ></f:selectItems>
-                            </p:selectOneMenu>
+                            <p:autoComplete completeMethod="#{designationController.completeDesignation}" 
+                                            value="#{designationController.currentMappingDesignation.mappedToDesignation}" 
+                                            var="oi" itemLabel="#{oi.name}" itemValue="#{oi}"                                              
+                                            ></p:autoComplete>
                             <p:commandButton ajax="false" value="Add" action="#{designationController.saveCurrentMapping()}" ></p:commandButton>
-
                         </p:panelGrid>
 
-                        <p:dataTable id="tbl" value="#{designationController.mappedDesignations}" var="pi" >
-                            <p:column headerText="Mapped For" >
-                                <h:outputLabel value="#{pi.name}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="Mapped to" >
-                               <h:outputLabel value="#{pi.mappedToDesignation.name}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="Remove" >
-                                <h:commandButton  action="#{designationController.removeMapping()}" value="Remove" >
-                                    <f:setPropertyActionListener value="#{pi}" target="#{designationController.currentMappingDesignation}" ></f:setPropertyActionListener>
-                                </h:commandButton>
-                            </p:column>
-                        </p:dataTable>
+                        <p:tabView >
+
+                            <p:tab title="Mapped Designations">
+
+                                <p:dataTable id="tbl" value="#{designationController.mappedDesignations}" var="pi" >
+                                    <f:facet name="header" >
+                                        <h:outputLabel value="Mapped Designations" ></h:outputLabel>
+                                        <p:spacer width="30" ></p:spacer>
+                                        <p:commandButton ajax="false" value="Display" action="#{designationController.listMappedDesignations()}" ></p:commandButton>
+                                    </f:facet>
+                                    <p:column headerText="Mapped For" >
+                                        <h:outputLabel value="#{pi.name}" ></h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Mapped to" >
+                                        <h:outputLabel value="#{pi.mappedToDesignation.name}" ></h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Remove" >
+                                        <h:commandButton  action="#{designationController.removeMapping()}" value="Remove" >
+                                            <f:setPropertyActionListener value="#{pi}" target="#{designationController.currentMappingDesignation}" ></f:setPropertyActionListener>
+                                        </h:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+
+
+                            </p:tab>
+
+                            <p:tab title="Unmapped Designations" >
+
+                                <p:dataTable id="tblUm" value="#{designationController.unmappedDesignations}" var="umd" >
+                                    <f:facet name="header" >
+                                        <h:outputLabel value="Unmapped Designations" ></h:outputLabel>
+                                        <p:spacer width="30" ></p:spacer>
+                                        <p:commandButton ajax="false" value="Display" action="#{designationController.listUnmappedDesignations()}" ></p:commandButton>
+                                    </f:facet>
+                                    <p:column  >
+                                        <h:outputLabel value="#{umd}" ></h:outputLabel>
+                                    </p:column>
+                                </p:dataTable>
+
+                            </p:tab>
+
+                        </p:tabView>
                     </p:panel>
                 </h:form>
             </ui:define>

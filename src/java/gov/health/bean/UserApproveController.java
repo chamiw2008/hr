@@ -90,6 +90,7 @@ public class UserApproveController implements Serializable {
         setInstitution(null);
         getSelectedUser().setRestrictedInstitution(null);
         getUserFacade().edit(selectedUser);
+        JsfUtil.addErrorMessage("Restrictions Removed");
     }
 
     public List<WebUser> getUsers() {

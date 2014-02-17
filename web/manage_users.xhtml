@@ -43,9 +43,13 @@
 
                             <h:outputLabel value="Previleges Restricted to" />
                             <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution!=null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}" />
-                            <p:selectOneListbox id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}" value="#{userApproveController.institution}"  >
-                                <f:selectItems value="#{institutionController.payCentres}" var="ri" itemValue="#{ri}" itemLabel="#{ri.name}" />
-                            </p:selectOneListbox>
+
+                            <p:autoComplete  id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}" value="#{userApproveController.selectedUser.restrictedInstitution}" 
+                                             completeMethod="#{institutionController.completePayCentres}"
+                                             var="ri" itemValue="#{ri}" itemLabel="#{ri.name}" 
+                                             >
+
+                            </p:autoComplete>
 
                             <h:outputLabel rendered="#{sessionController.sysAdmin}"  value="&nbsp;"/>
                             <p:commandButton ajax="false" rendered="#{sessionController.sysAdmin}" value="Remove Institution Restriction" action="#{userApproveController.removeInsRes}" />
