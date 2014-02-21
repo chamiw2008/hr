@@ -88,6 +88,9 @@ public class InstitutionController implements Serializable {
     Institution currentMappingInstitution;
 
     public void saveCurrentMapping() {
+        if(getSessionController().getLoggedUser().getRestrictedInstitution()!=null){
+            currentMappingInstitution=getSessionController().getLoggedUser().getRestrictedInstitution();
+        }
         if (currentMappingInstitution == null) {
             JsfUtil.addErrorMessage("Nothing to save");
             return;
@@ -128,9 +131,19 @@ public class InstitutionController implements Serializable {
     Institution institutionToMap;
 
     public void listUnmappedInstitutions() {
+        if(getSessionController().getLoggedUser().getRestrictedInstitution()!=null){
+            mappingsForInstitution=getSessionController().getLoggedUser().getRestrictedInstitution();
+        }
         String sql;
-        sql = "select distinct(pi.strInstitution) from PersonInstitution pi where pi.institution is null and pi.name is not null and pi.name<>'' ";
-        unmappedInstitutions = getEjbFacade().findString(sql);
+        if (mappingsForInstitution == null) {
+            sql = "select distinct(pi.strInstitution) from PersonInstitution pi where pi.institution is null and pi.name is not null and pi.name<>'' ";
+            unmappedInstitutions = getEjbFacade().findString(sql);
+        }else{
+            sql = "select distinct(pi.strInstitution) from PersonInstitution pi where pi.payCentre=:i and pi.institution is null and pi.name is not null and pi.name<>'' ";
+            Map m = new HashMap();
+            m.put("i", mappingsForInstitution);
+            unmappedInstitutions = getEjbFacade().findString(sql,m);
+        }
     }
 
     public void mapToInstitution() {
@@ -196,6 +209,9 @@ public class InstitutionController implements Serializable {
 
     public void listMappedInstitutions() {
         String sql;
+        if(getSessionController().getLoggedUser().getRestrictedInstitution()!=null){
+            mappingsForInstitution=getSessionController().getLoggedUser().getRestrictedInstitution();
+        }
         if (mappingsForInstitution == null) {
             sql = "select i from Institution i where i.retired=false and i.mappedToInstitution is not null and i.institution is null order by i.name";
             //System.out.println("sql is " + sql);
@@ -495,7 +511,7 @@ public class InstitutionController implements Serializable {
         if (getSessionController().getLoggedUser() != null) {
             if (getSessionController().getLoggedUser().getRestrictedInstitution() != null) {
                 TreeNode tn = new DefaultTreeNode(getSessionController().getLoggedUser().getRestrictedInstitution().getName(), root);
-                tn.setExpanded(true);
+                tn.setExpanded(false);
                 addChildInstituionNodes(getSessionController().getLoggedUser().getRestrictedInstitution(), tn);
             } else {
 
@@ -759,6 +775,32 @@ public class InstitutionController implements Serializable {
         selectedItemIndex = intValue(current.getId());
     }
 
+    
+    public void addAllToMoh(){
+        Institution moh = findInstitution("Logical Ministry", false);
+        if(moh==null){
+            JsfUtil.addErrorMessage("Can Not Locate Ministry");
+            return;
+        }
+        List<Institution> is = getFacade().findAll();
+        for(Institution i: is){
+            System.out.println("i = " + i);
+            if(i.equals(moh)){
+                System.out.println("i is Moh");
+            }else{
+                System.out.println("i is NOT Moh");
+//                System.out.println("i.getSuperInstitution().getName() = " + i.getSuperInstitution().getName());
+                if(i.getSuperInstitution()==null || i.getSuperInstitution().getName()==null || i.getSuperInstitution().getName().trim().equals("")){
+                    System.out.println("No Supper Institution");
+                    i.setSuperInstitution(moh);
+                    getFacade().edit(i);
+                    System.out.println("set the super Institutions");
+                }
+            }
+        }
+        createInsTree();
+    }
+    
     public void addDirectly() {
         JsfUtil.addSuccessMessage("1");
         try {

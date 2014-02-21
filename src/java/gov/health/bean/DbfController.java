@@ -98,6 +98,7 @@ public class DbfController implements Serializable {
     //
     DbfFile defFile;
 //    List<DbfFile> dbfFiles;
+    List<PersonInstitution> personInstitutions;
     List<PersonInstitution> existingPersonInstitutions;
     List<PersonInstitution> previousPersonInstitutions;
     List<PersonInstitution> newPersonInstitutions;
@@ -169,16 +170,20 @@ public class DbfController implements Serializable {
     }
 
     public int getSetCount() {
+        System.out.println("getSetCount()");
         if (getInstitution() == null) {
+            System.out.println("ins is null");
             return 0;
         }
         String sql;
         sql = "select iset from InstitutionSet iset where iset.retired = false and iset.institution.id in " + getInstitutionController().getInsIds() + " ";
+        System.out.println("sql = " + sql);
         try {
             setCount = getPiFacade().findBySQL(sql).size();
+            System.out.println("setCount.size() = " + setCount );
             return setCount;
         } catch (Exception e) {
-            //System.out.println("Error in getting set count is " + e.getMessage());
+            System.out.println("Error in getting set count is " + e.getMessage());
             return 0;
         }
     }
@@ -214,9 +219,9 @@ public class DbfController implements Serializable {
     public void prepareSetSeubmitColours() {
         getSetCount();
         completedSetCount(getPayYear());
-        //System.out.println("Set Count " + setCount);
+        System.out.println("Set Count " + setCount);
         for (int i = 0; i < 12; i++) {
-            //System.out.println("Completed Sets " + completedSet[i]);
+            System.out.println("Completed Sets " + completedSet[i]);
             if (setCount == 0) {
                 monthColR[i] = 0;
                 monthColG[i] = 255;
@@ -234,9 +239,9 @@ public class DbfController implements Serializable {
                 monthColG[i] = 245;
                 monthColB[i] = 245;
             }
-            //System.out.println("i " + i);
-            //System.out.println("R " + monthColR[i]);
-            //System.out.println("G " + monthColG[i]);
+            System.out.println("i " + i);
+            System.out.println("R " + monthColR[i]);
+            System.out.println("G " + monthColG[i]);
         }
     }
 
@@ -531,26 +536,75 @@ public class DbfController implements Serializable {
         this.activeTab = activeTab;
     }
 
-    public List<DesignationSummeryRecord> getDesignationSummery() {
+    public void processSingleDesignationSummery(){
+        System.out.println("processDesignationSummery");
+        String sql = "select pi.designation.name, count(pi) from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.institution.id = " + getInstitution().getId() + " group by pi.designation.name";
+        System.out.println("sql = " + sql);
+        List lst = getPiFacade().findGroupingBySql(sql);
+        System.out.println("lst size = " + lst.size());
+        List<DesignationSummeryRecord> sums = new ArrayList<DesignationSummeryRecord>();
+        Iterator<Object[]> itr = lst.iterator();
+        while (itr.hasNext()) {
+            Object[] o = itr.next();
+            System.out.println("o = " + o);
+            DesignationSummeryRecord s = new DesignationSummeryRecord();
+            s.setDesignationName(o[0].toString());
+            s.setCount(Long.valueOf(o[1].toString()));
+            System.out.println("s = " + s);
+            sums.add(s);
+        }
+        designationSummery= sums;
+    }
+    
 
-//        
-//        
-//        String sql = "select pi.designation.name, count(pi) from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.institution.id in " + getInstitutionController().getInsIds() + " group by pi.designation.name";
-//        
+    
+    public void processPisWithoutNic(){
+        System.out.println("processWithoutNICs");
+        String sql = "select pi from PersonInstitution pi where (pi.nic=null or pi.nic='') and pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.payCentre.id = " + getInstitution().getId() + " ";
+        System.out.println("sql = " + sql);
+        personInstitutions = getPiFacade().findBySQL(sql);
+    }
+
+    
+    public void processPisWithDuplicateNic(){
+        System.out.println("processWithoutNICs");
+        String sql ;
+//        sql= "select pi.nic, count(pi) as picount  from PersonInstitution pi where  (pi.nic<>null and pi.nic<>'') and pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and picount>1 group by pi.nic";
 //        List lst = getPiFacade().findGroupingBySql(sql);
-//        List<DesignationSummeryRecord> sums = new ArrayList<DesignationSummeryRecord>();
-//        Iterator<Object[]> itr = lst.iterator();
-//        while (itr.hasNext()) {
-//            Object[] o = itr.next();
-//            DesignationSummeryRecord s = new DesignationSummeryRecord();
-//            s.setDesignationName(o[0].toString());
-//            s.setCount(Long.valueOf(o[1].toString()));
-//            sums.add(s);
-//        }
-//        getSetCount();
-//        prepareSetSeubmitColours();
-//        return sums;
-        return new ArrayList<DesignationSummeryRecord>();
+//        System.out.println("lst = " + lst);
+//        sql = "select p from PersonInstitution p where p.nic in (select pi.nic, count(pi) as picount  from PersonInstitution pi where  (pi.nic<>null and pi.nic<>'') and pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and picount>1 group by pi.nic) order by p.nic";
+//        System.out.println("sql = " + sql);
+        Map m = new HashMap();
+        m.put("py", payYear);
+        m.put("pm", payMonth);
+        sql = "select distinct p1 from PersonInstitution p1,  PersonInstitution p2 where p1.nic<>null and p1.nic<>'' and  p2.nic<>null and p2.nic<>'' and p1.retired = false and p1.payYear=:py and p2.payMonth=:pm and  p2.retired = false and p2.payYear=:py and p2.payMonth=:pm and p1.id <> p2.id and p1.nic=p2.nic order by p1.nic";
+        personInstitutions = getPiFacade().findBySQL(sql,m);
+    }
+
+    
+    public void processSinglePaycentreSummery(){
+        System.out.println("processPcDesignationSummery");
+        String sql = "select pi.designation.name, count(pi) from PersonInstitution pi where pi.retired = false and pi.payYear = " + getPayYear() + " and pi.payMonth = " + getPayMonth() + " and pi.payCentre.id = " + getInstitution().getId() + " group by pi.designation.name";
+        System.out.println("sql = " + sql);
+        List lst = getPiFacade().findGroupingBySql(sql);
+        System.out.println("lst size = " + lst.size());
+        List<DesignationSummeryRecord> sums = new ArrayList<DesignationSummeryRecord>();
+        Iterator<Object[]> itr = lst.iterator();
+        while (itr.hasNext()) {
+            Object[] o = itr.next();
+            System.out.println("o = " + o);
+            DesignationSummeryRecord s = new DesignationSummeryRecord();
+            s.setDesignationName(o[0].toString());
+            s.setCount(Long.valueOf(o[1].toString()));
+            System.out.println("s = " + s);
+            sums.add(s);
+        }
+        designationSummery= sums;
+    }
+    
+    
+    public List<DesignationSummeryRecord> getDesignationSummery() {
+        return designationSummery;
     }
 
     public TransferHistoryFacade getThFacade() {
@@ -1688,5 +1742,15 @@ public class DbfController implements Serializable {
     public void setInstitutionSetFacade(InstitutionSetFacade institutionSetFacade) {
         this.institutionSetFacade = institutionSetFacade;
     }
+
+    public List<PersonInstitution> getPersonInstitutions() {
+        return personInstitutions;
+    }
+
+    public void setPersonInstitutions(List<PersonInstitution> personInstitutions) {
+        this.personInstitutions = personInstitutions;
+    }
+
+
 
 }

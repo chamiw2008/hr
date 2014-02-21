@@ -24,7 +24,7 @@
 
                         <p:panelGrid columns="2" >
                             <h:outputLabel value="Instituion to Map" ></h:outputLabel>
-                            <p:autoComplete converter="institutionConverter"
+                            <p:autoComplete   forceSelection="true"  converter="institutionConverter"
                                             value="#{institutionController.currentMappingInstitution.mappedToInstitution}"
                                             completeMethod="#{institutionController.completeOffcialInstitutions}"
                                             var="ins"

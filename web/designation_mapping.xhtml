@@ -23,7 +23,6 @@
                             <p:selectOneMenu id="cmbPs" value="#{designationController.institution}" >
                                 <f:selectItem itemLabel="Select a pay centre" />
                                 <f:selectItems value="#{institutionController.payCentres}" var="ps" itemLabel="#{ps.name}" itemValue="#{ps}" ></f:selectItems>
-                                <f:ajax event="change" execute="cmbPs" render="chkSite chkSection chkMap tbl" />
                             </p:selectOneMenu>
                             <h:outputLabel value="Designation Name to Map" ></h:outputLabel>
                             <p:inputText value="#{designationController.currentMappingDesignation.name}" ></p:inputText>

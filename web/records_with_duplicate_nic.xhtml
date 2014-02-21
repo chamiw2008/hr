@@ -14,24 +14,16 @@
             <p:panel  >
 
                 <f:facet name="header" >
-                    <h:outputLabel value="Records without NIC" ></h:outputLabel>
+                    <h:outputLabel value="Records with duplicate NIC" ></h:outputLabel>
                     <h:outputLabel value="" ></h:outputLabel>
                 </f:facet>
 
                 <p:panelGrid columns="3" >
-                    <h:outputText value="Paycentre"/>
                     <h:outputText value="Year"/>
                     <h:outputText value="Month"/>
-                    <p:panel id="cmbLoc" style="border: 0px;margin: 0px;padding: 0px;">
-                        <p:autoComplete   forceSelection="true"  rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}"  
-                                        completeMethod ="#{institutionController.completePayCentres}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" >
-                        </p:autoComplete>
-                        <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
-                    </p:panel>
                     <p:selectOneMenu id="cmbYear" value="#{dbfController.payYear}" >
                         <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
                     </p:selectOneMenu>
-
                     <p:selectOneMenu id="cmbMonth" value="#{dbfController.payMonth}" >
                         <f:selectItem itemValue="1" itemLabel="January" />
                         <f:selectItem itemValue="2" itemLabel="February" />
@@ -46,7 +38,7 @@
                         <f:selectItem itemValue="11" itemLabel="November" />
                         <f:selectItem itemValue="12" itemLabel="December" />
                     </p:selectOneMenu>
-                    <p:commandButton ajax="false" value="Display" action="#{dbfController.processPisWithoutNic}" ></p:commandButton>
+                    <p:commandButton ajax="false" value="Display" action="#{dbfController.processPisWithDuplicateNic}" ></p:commandButton>
                 </p:panelGrid>
             </p:panel>
 

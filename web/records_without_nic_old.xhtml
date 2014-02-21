@@ -9,30 +9,35 @@
 
     <ui:define name="content">
 
-        <h:form>
-
-            <p:panel  >
-
-                <f:facet name="header" >
-                    <h:outputLabel value="Records without NIC" ></h:outputLabel>
-                    <h:outputLabel value="" ></h:outputLabel>
-                </f:facet>
-
-                <p:panelGrid columns="3" >
-                    <h:outputText value="Paycentre"/>
+        <h:form enctype="multipart/form-data">
+            <p:growl ></p:growl>
+            <p:panel header="Uploading Payment Cycle Details" >
+                <p:panelGrid columns="4" >
+                    <h:outputText value="Institution"/>
+                    <h:outputText value="Set"/>
                     <h:outputText value="Year"/>
                     <h:outputText value="Month"/>
+
                     <p:panel id="cmbLoc" style="border: 0px;margin: 0px;padding: 0px;">
-                        <p:autoComplete   forceSelection="true"  rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}"  
-                                        completeMethod ="#{institutionController.completePayCentres}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" >
-                        </p:autoComplete>
+                        <p:selectOneMenu rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}"  >
+                            <f:selectItems value="#{institutionController.offItems}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
+                            <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="cmbSet tabTbls" />
+                        </p:selectOneMenu>
                         <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
                     </p:panel>
-                    <p:selectOneMenu id="cmbYear" value="#{dbfController.payYear}" >
-                        <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
+
+
+                    <p:selectOneMenu id="cmbSet" value="#{dbfController.insSet}" >
+                        <f:selectItems value="#{dbfController.insSets}" var="insset" itemValue="#{insset}" itemLabel="#{insset.name}" />
+                        <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="tabTbls" />
                     </p:selectOneMenu>
 
-                    <p:selectOneMenu id="cmbMonth" value="#{dbfController.payMonth}" >
+                    <p:selectOneMenu id="cmbYear" value="#{dbfController.payYear}" >
+                        <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
+                        <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="tabTbls" />
+                    </p:selectOneMenu>
+
+                    <p:selectOneMenu id="cmbMonth" value="#{dbfController.payMonth}"  >
                         <f:selectItem itemValue="1" itemLabel="January" />
                         <f:selectItem itemValue="2" itemLabel="February" />
                         <f:selectItem itemValue="3" itemLabel="March" />
@@ -45,20 +50,11 @@
                         <f:selectItem itemValue="10" itemLabel="October" />
                         <f:selectItem itemValue="11" itemLabel="November" />
                         <f:selectItem itemValue="12" itemLabel="December" />
+                        <f:ajax event="change" execute="cmbLoc cmbSet cmbYear cmbMonth" render="tabTbls" />
                     </p:selectOneMenu>
-                    <p:commandButton ajax="false" value="Display" action="#{dbfController.processPisWithoutNic}" ></p:commandButton>
                 </p:panelGrid>
             </p:panel>
-
-
-
-
-            <p:dataTable  id="tblEx" value="#{dbfController.personInstitutions}" rowIndexVar="rowIndex" var="exPi" editable="true" editMode="cell" >
-                <p:column >
-                    <f:facet name="header">Serial</f:facet>
-                    <h:outputLabel value="#{rowIndex + 1}"/>
-                </p:column>
-
+            <p:dataTable id="tabTbls" value="#{dbfController.personInstitutionsWithoutNic}" var="exPi">
                 <p:column>
                     <f:facet name="header">Employee Id</f:facet>
                     <h:outputLabel value="#{exPi.empNo}"/>
@@ -68,26 +64,17 @@
                     <h:outputLabel value="#{exPi.name}"/>
                 </p:column> 
                 <p:column>
+                    <f:facet name="header">Designation</f:facet>
+                    <h:outputLabel value="#{exPi.designation.name}"/>
+                </p:column>  
+                <p:column>
                     <f:facet name="header">NIC</f:facet>
                     <h:outputLabel value="#{exPi.nic}"/>
                 </p:column>           
-                <p:column>
-                    <f:facet name="header">Designation</f:facet>
-                    <h:outputLabel  value="#{exPi.designation.name}" ></h:outputLabel>
-                </p:column>  
-                <p:column>
-                    <f:facet name="header">Institution</f:facet>
-                    <h:outputLabel value="#{exPi.institution.name}" ></h:outputLabel>
-                </p:column>
-                <p:column > 
-                    <f:facet name="header">F1_CONSAL</f:facet>
-                    <h:outputLabel value="#{exPi.conSal}" ></h:outputLabel>
-                </p:column>
-                <p:column > 
-                    <f:facet name="header">F1_STAT</f:facet>
-                    <h:outputLabel value="#{exPi.activeState}" ></h:outputLabel>
-                </p:column>
             </p:dataTable>
+
+
+
 
         </h:form>
     </ui:define>

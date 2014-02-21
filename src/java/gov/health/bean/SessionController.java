@@ -468,6 +468,16 @@ public class SessionController implements Serializable {
         return "manage_users";
     }
 
+    public void updateLoggedInstitution() {
+        if (loggedUser == null || loggedUser.getRestrictedInstitution() == null) {
+            JsfUtil.addErrorMessage("No Restricted Institution");
+            return;
+        }
+        getInstitutionFacade().edit(
+                getLoggedUser().getRestrictedInstitution());
+        JsfUtil.addSuccessMessage("Updated");
+    }
+
     public String changePassword() {
         WebUser user = getLoggedUser();
         if (!HOSecurity.matchPassword(passord, user.getWebUserPassword())) {

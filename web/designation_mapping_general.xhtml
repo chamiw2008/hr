@@ -23,7 +23,7 @@
                             <h:outputLabel value="Designation Name to Map" ></h:outputLabel>
                             <p:inputText value="#{designationController.currentMappingDesignation.name}" ></p:inputText>
                             <h:outputLabel value="Designation to Map" ></h:outputLabel>
-                            <p:autoComplete completeMethod="#{designationController.completeDesignation}" 
+                            <p:autoComplete rendered="true" completeMethod="#{designationController.completeDesignation}" 
                                             value="#{designationController.currentMappingDesignation.mappedToDesignation}" 
                                             var="oi" itemLabel="#{oi.name}" itemValue="#{oi}"                                              
                                             ></p:autoComplete>

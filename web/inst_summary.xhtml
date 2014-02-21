@@ -2,6 +2,7 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 template="./resources/template/template_1.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core">
@@ -10,27 +11,34 @@
 
         <h:form>
 
-            <p:panel header="Institution Summery" >
+            <p:panel  >
+
+                <f:facet name="header" >
+                    <h:outputLabel value="Institution Designation Summery" ></h:outputLabel>
+                    <h:outputLabel value="" ></h:outputLabel>
+                </f:facet>
+                <p:panel  >
+                    <p style="color: red;">
+                        This lists the selected institution's details, NOT that of pay-centre.
+                    </p>
+                </p:panel>
+
                 <p:panelGrid columns="3" >
                     <h:outputText value="Institution"/>
                     <h:outputText value="Year"/>
                     <h:outputText value="Month"/>
-
                     <p:panel id="cmbLoc" style="border: 0px;margin: 0px;padding: 0px;">
-                        <p:selectOneMenu rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}"  >
-                            <f:selectItems value="#{institutionController.offItems}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" />
-                            <f:ajax event="change" execute="cmbLoc  cmbYear cmbMonth" render=" tabTbls" />
-                        </p:selectOneMenu>
+                        <p:autoComplete  rendered="true" rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}"  
+                                        completeMethod ="#{institutionController.completeOffcialInstitutions}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" >
+                        </p:autoComplete>
                         <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
                     </p:panel>
-
-
                     <p:selectOneMenu id="cmbYear" value="#{dbfController.payYear}" >
                         <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
                         <f:ajax event="change" execute="cmbLoc  cmbYear cmbMonth" render="tabTbls" />
                     </p:selectOneMenu>
 
-                    <p:selectOneListbox id="cmbMonth" value="#{dbfController.payMonth}" >
+                    <p:selectOneMenu id="cmbMonth" value="#{dbfController.payMonth}" >
                         <f:selectItem itemValue="1" itemLabel="January" />
                         <f:selectItem itemValue="2" itemLabel="February" />
                         <f:selectItem itemValue="3" itemLabel="March" />
@@ -43,8 +51,8 @@
                         <f:selectItem itemValue="10" itemLabel="October" />
                         <f:selectItem itemValue="11" itemLabel="November" />
                         <f:selectItem itemValue="12" itemLabel="December" />
-                        <f:ajax event="change" execute="cmbLoc  cmbYear cmbMonth" render=" tabTbls" />
-                    </p:selectOneListbox>
+                    </p:selectOneMenu>
+                    <p:commandButton ajax="false" value="Display" action="#{dbfController.processSingleDesignationSummery()}" ></p:commandButton>
                 </p:panelGrid>
             </p:panel>
 

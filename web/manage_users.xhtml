@@ -44,7 +44,7 @@
                             <h:outputLabel value="Previleges Restricted to" />
                             <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution!=null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}" />
 
-                            <p:autoComplete  id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}" value="#{userApproveController.selectedUser.restrictedInstitution}" 
+                            <p:autoComplete    forceSelection="true"  id="cmbIns" rendered="#{sessionController.loggedUser.restrictedInstitution==null}" value="#{userApproveController.selectedUser.restrictedInstitution}" 
                                              completeMethod="#{institutionController.completePayCentres}"
                                              var="ri" itemValue="#{ri}" itemLabel="#{ri.name}" 
                                              >

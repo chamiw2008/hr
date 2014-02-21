@@ -23,7 +23,8 @@
 
                         <p:panelGrid columns="2" >
                             <h:outputText value="Institution"/>
-                            <p:autoComplete converter="institutionConverter"
+                            <p:autoComplete  forceSelection="true" 
+                                             converter="institutionConverter"
                                             value="#{dbfController.institution}"
                                             completeMethod="#{institutionController.completePayCentres}"
                                             var="ins"
@@ -141,6 +142,8 @@
                     </p:panelGrid>
 
                     <p:panel header="Details" >
+                        
+                        
                         <p:dataTable  id="tblEx" value="#{dbfController.existingPersonInstitutions}" rowIndexVar="rowIndex" var="exPi" editable="true" editMode="cell" >
                             <p:column >
                                 <f:facet name="header">Serial</f:facet>

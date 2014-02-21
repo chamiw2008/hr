@@ -68,7 +68,7 @@
                                     </p:selectOneMenu>
 
                                     <h:outputText id="lblPi"   value="Super Institute"  ></h:outputText>
-                                    <p:autoComplete id="acPi" value="#{institutionController.current.superInstitution}"   completeMethod="#{institutionController.completeOffcialInstitutions}" var="pi" itemLabel="#{pi.name}" itemValue="#{pi}" >
+                                    <p:autoComplete   forceSelection="true"  id="acPi" value="#{institutionController.current.superInstitution}"   completeMethod="#{institutionController.completeOffcialInstitutions}" var="pi" itemLabel="#{pi.name}" itemValue="#{pi}" >
                                     </p:autoComplete>
 
                                     <h:outputText id="lblPayCentre" value="Pay Centre" ></h:outputText>

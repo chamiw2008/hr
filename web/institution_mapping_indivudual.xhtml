@@ -20,46 +20,76 @@
 
                         <p:panelGrid columns="2" >
                             <h:outputLabel value="Paycenter" ></h:outputLabel>
-                            <p:selectOneMenu id="cmbPs" value="#{institutionController.mappingsForInstitution}" >
+                            <p:selectOneMenu rendered="#{sessionController.loggedUser.restrictedInstitution eq null}" id="cmbPs" value="#{institutionController.mappingsForInstitution}" >
                                 <f:selectItem itemLabel="Select a pay centre" />
                                 <f:selectItems value="#{institutionController.payCentres}" var="ps" itemLabel="#{ps.name}" itemValue="#{ps}" ></f:selectItems>
-                                <f:ajax event="change" execute="cmbPs" render="tbl" />
                             </p:selectOneMenu>
-                            <h:outputLabel value="Instituion Name to Map" ></h:outputLabel>
+                            <h:outputLabel value="#{sessionController.loggedUser.restrictedInstitution.name}"  rendered="#{sessionController.loggedUser.restrictedInstitution ne null}"></h:outputLabel>
+                            <h:outputLabel value="Used Name" ></h:outputLabel>
                             <p:inputText value="#{institutionController.currentMappingInstitution.name}" ></p:inputText>
-                            <h:outputLabel value="Instituion to Map" ></h:outputLabel>
-                            <p:selectOneMenu value="#{institutionController.currentMappingInstitution.mappedToInstitution}" >
-                                <f:selectItem itemLabel="Select" ></f:selectItem>
-                                <f:selectItems value="#{institutionController.officialInstitutions}" var="oi" itemLabel="#{oi.name}" itemValue="#{oi}" ></f:selectItems>
-                            </p:selectOneMenu>
+                            <h:outputLabel value="Mapped to" ></h:outputLabel>
+                            <p:autoComplete
+  forceSelection="true"                                 value="#{institutionController.currentMappingInstitution.mappedToInstitution}" 
+                                completeMethod="#{institutionController.completeOffcialInstitutions}"
+                                var="oi" itemLabel="#{oi.name}" itemValue="#{oi}" >
+                            </p:autoComplete>
                             <p:commandButton ajax="false" value="Add" action="#{institutionController.saveCurrentMapping()}" ></p:commandButton>
                         </p:panelGrid>
 
 
                     </p:panel>
 
-                    <p:panel>
-                        <f:facet name="header" >
-                            <h:outputLabel value="Mapped Institutions - Common to all Institutions" ></h:outputLabel>
-                            <f:facet name="header" >
-                                <h:outputLabel value="Unmapped Institutions" ></h:outputLabel>
-                                <p:commandButton value="List Mapped Institutions" action="#{institutionController.listMappedInstitutions()}" ajax="false" ></p:commandButton>
-                            </f:facet>
-                        </f:facet>
-                        <p:dataTable id="tbl" value="#{institutionController.mappedInstitutions}" var="pi" >
-                            <p:column headerText="Mapped For" >
-                                <h:outputLabel value="#{pi.name}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="Mapped to" >
-                                <h:outputLabel value="#{pi.mappedToInstitution.name}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="Remove" >
-                                <h:commandButton  action="#{institutionController.removeMapping()}" value="Remove" >
-                                    <f:setPropertyActionListener value="#{pi}" target="#{institutionController.currentMappingInstitution}" ></f:setPropertyActionListener>
-                                </h:commandButton>
-                            </p:column>
-                        </p:dataTable>
-                    </p:panel>
+                    <p:tabView>
+                        <p:tab title="Mapped Institutions" >
+                            <p:panel>
+                                <f:facet name="header" >
+                                    <h:outputLabel value="Mapped Institutions" ></h:outputLabel>
+                                    <f:facet name="header" >
+                                        <h:outputLabel value="Mapped Institutions" ></h:outputLabel>
+                                        <p:commandButton value="List Mapped Institutions" action="#{institutionController.listMappedInstitutions()}" ajax="false" ></p:commandButton>
+                                    </f:facet>
+                                </f:facet>
+                                <p:dataTable id="tblM" value="#{institutionController.mappedInstitutions}" var="pi" >
+                                    <p:column headerText="Used Name" >
+                                        <h:outputLabel value="#{pi.name}" ></h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Mapped to" >
+                                        <h:outputLabel value="#{pi.mappedToInstitution.name}" ></h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Remove" >
+                                        <h:commandButton  action="#{institutionController.removeMapping()}" value="Remove" >
+                                            <f:setPropertyActionListener value="#{pi}" target="#{institutionController.currentMappingInstitution}" ></f:setPropertyActionListener>
+                                        </h:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+
+                        </p:tab>
+                        <p:tab  title="Unmapped Institutions" >
+                            <p:panel>
+                                <f:facet name="header" >
+                                    <h:outputLabel value="Unmapped Institutions" ></h:outputLabel>
+                                    <f:facet name="header" >
+                                        <h:outputLabel value="Unmapped Institutions" ></h:outputLabel>
+                                        <p:commandButton value="List Unmapped Institutions" action="#{institutionController.listUnmappedInstitutions()}" ajax="false" ></p:commandButton>
+                                    </f:facet>
+                                </f:facet>
+                                <p:dataTable id="tblUm" value="#{institutionController.unmappedInstitutions}" var="pi" >
+                                    <p:column headerText="Unmapped" >
+                                        <h:outputLabel value="#{pi}" ></h:outputLabel>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>   
+
+                        </p:tab>
+
+                    </p:tabView>
+
+
+
+
+
+
                 </h:form>
             </ui:define>
         </ui:composition>

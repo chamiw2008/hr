@@ -10,7 +10,10 @@
 
     <ui:define name="content">
 
+         
         <h:form>
+            
+             
             <p:growl id="messages" autoUpdate="true"/>
 
 
@@ -23,16 +26,19 @@
 
                         <p:panel header="Institution Hirachy">
                             <f:facet name="header" >
-                                <p:commandButton value="Display" ajax="false"  ></p:commandButton>
+                                <p:commandButton value="Update" ajax="false"  action="#{institutionController.createInsTree()}" ></p:commandButton>
                             </f:facet>
 
-                            <p:tree  value="#{institutionController.root}" var="node" dynamic="true" cache="false"  
+                            <p:tree   widgetVar="insTree" value="#{institutionController.root}" var="node" dynamic="true" cache="false"  
                                      selectionMode="single"  selection="#{institutionController.selectedNode}" id="tree">  
                                 <p:ajax event="select"  update=":#{p:component('tblIns')}  :#{p:component('tblDes')} :#{p:component('panPay')}"   listener="#{institutionController.onNodeSelect}" />  
-                                <p:treeNode>  
+                                <p:treeNode >  
                                     <h:outputText value="#{node}" />  
                                 </p:treeNode>  
                             </p:tree>
+                            
+                           
+                            
                         </p:panel>
 
                         <p:panel >

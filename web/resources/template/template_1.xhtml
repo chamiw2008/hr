@@ -72,42 +72,41 @@
                         <p:menubar styleClass="nonPrintBlock" style=" border: 0px;" >
                             <p:menuitem  ajax="false"  action="index" value="Home" ></p:menuitem>
                             <p:submenu label="View Data" >
-                                <p:menuitem ajax="false" action="inst_summary" value="Institution Summery" ></p:menuitem>
+                                <p:menuitem ajax="false" action="institution_designation_summary" value="Institution Designation Summery" ></p:menuitem>
+                                <p:menuitem ajax="false" action="paycentre_designation_summary" value="Pay-centre Designation Summery" ></p:menuitem>
                                 <p:menuitem ajax="false" action="records_without_nic"  value="Records without NIC"  ></p:menuitem>
+                                <p:menuitem ajax="false" action="records_with_duplicate_nic"  value="Records with Duplicate NICs"  ></p:menuitem>
                                 <p:menuitem ajax="false" action="records_without_designation" value="Records without Designations"  ></p:menuitem>
                             </p:submenu>
                             <p:submenu label="Upload Data"  >
                                 <p:menuitem  ajax="false"  action="upload_view" value="Upload" ></p:menuitem>
                             </p:submenu>
+                            <p:submenu label="Mapping"  >
+                                <p:menuitem  ajax="false"  action="institution_mapping_fields" value="Institution Mapping Fields"  rendered="#{sessionController.insAdmin}"></p:menuitem>
+                                <p:menuitem  ajax="false"  action="institution_mapping_indivudual" value="Paycenter-vice Institution Mapping"  rendered="#{sessionController.insAdmin or sessionController.sysAdmin }"></p:menuitem>
+                                <p:menuitem  ajax="false"  action="designation_mapping" value="Paycentre-vice Desgination Mapping"  rendered="#{sessionController.insAdmin or sessionController.sysAdmin }"></p:menuitem>
+                                <p:menuitem  ajax="false"  action="#{designationController.toMapGeneralDesignations}" value="General Desgination Mapping" rendered="#{sessionController.sysAdmin}" ></p:menuitem>
+                            </p:submenu>
+
                             <p:submenu label="Administration"  rendered="#{sessionController.sysAdmin}">
                                 <p:submenu label="Institutions" >
                                     <p:menuitem  ajax="false"  action="institution_type" value="Institution Type"   ></p:menuitem>
                                     <p:menuitem  ajax="false"  action="institutions" value="Institutions"  ></p:menuitem>
-                                    <p:menuitem  ajax="false"  action="#{institutionController.toMapGeneralInstitutions}" value="General Institution Mapping"  ></p:menuitem>
-                                    <p:menuitem  ajax="false"  action="institution_mapping" value="Institution Mapping Fields"  ></p:menuitem>
-                                    <p:menuitem  ajax="false"  action="institution_mapping_indivudual" value="Paycenter-vice Mapping"  ></p:menuitem>
                                     <p:menuitem  ajax="false"  action="import_institutions" value="Import Official Institutions"  ></p:menuitem>
                                     <p:menuitem  ajax="false"  action="institution_set" value="Institution Sets"  ></p:menuitem>
                                 </p:submenu>
-
                                 <p:submenu label="Designations" >
-                                <p:menuitem  ajax="false"  action="designation" value="Designations"  ></p:menuitem>
-                                <p:menuitem  ajax="false"  action="designation_category" value="Designation (Service) Type"  ></p:menuitem>
-                                <p:menuitem  ajax="false"  action="designation_mapping" value="Paycentre-vice Desgination Mapping"  ></p:menuitem>
-                                <p:menuitem  ajax="false"  action="import_designations" value="Import Official Designations"  ></p:menuitem>
-                                <p:menuitem  ajax="false"  action="#{designationController.toMapGeneralDesignations}" value="General Desgination Mapping"  ></p:menuitem>
-
+                                    <p:menuitem  ajax="false"  action="designation" value="Designations"  ></p:menuitem>
+                                    <p:menuitem  ajax="false"  action="designation_category" value="Designation (Service) Type"  ></p:menuitem>
+                                    <p:menuitem  ajax="false"  action="import_designations" value="Import Official Designations"  ></p:menuitem>
                                 </p:submenu>
                                 <p:menuitem  ajax="false"  action="#{webUserController.newUserAdd}" value="Add Users"  ></p:menuitem>
                                 <p:menuitem  ajax="false"  action="manage_users" value="Manage Users"  ></p:menuitem>
-
                             </p:submenu>
                             <p:submenu label="Administration"  rendered="#{sessionController.insAdmin}">
                                 <p:menuitem  ajax="false" action="institution_set"  value="Institution Sets"  ></p:menuitem>
-                                <p:menuitem  ajax="false" action="map_institution"  value="Map Institution"  ></p:menuitem>
                                 <p:menuitem  ajax="false"  action="register_user" value="Add Users"  ></p:menuitem>
                                 <p:menuitem  ajax="false"  action="manage_users" value="Manage Users"  ></p:menuitem>
-
                             </p:submenu>
                             <p:submenu label="Options"  >
                                 <p:menuitem  ajax="false"  action="change_password" value="Change Password" ></p:menuitem>

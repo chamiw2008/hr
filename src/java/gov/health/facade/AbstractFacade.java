@@ -405,6 +405,28 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
+    
+    public List<String> findString(String strJQL, Map parameters, TemporalType tt) {
+        TypedQuery<String> qry = getEntityManager().createQuery(strJQL, String.class);
+        Set s = parameters.entrySet();
+        Iterator it = s.iterator();
+        while (it.hasNext()) {
+            Map.Entry m = (Map.Entry) it.next();
+            Object pVal = m.getValue();
+            String pPara = (String) m.getKey();
+            if (pVal instanceof Date) {
+                Date d = (Date) pVal;
+                qry.setParameter(pPara, d, tt);
+            } else {
+                qry.setParameter(pPara, pVal);
+            }
+        }
+        return qry.getResultList();
+    }
+    
+    public List<String> findString(String strJQL, Map parameters) {
+        return findString(strJQL, parameters, TemporalType.DATE);
+    }
 
     public List<Object[]> findAggregates(String temSQL, Map<String, Date> parameters) {
         TypedQuery<Object[]> qry = getEntityManager().createQuery(temSQL, Object[].class);

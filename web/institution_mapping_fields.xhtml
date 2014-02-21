@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="./resources/template/template_1.xhtml">
+
+
+            <ui:define name="content">
+
+                <h:form>
+
+                    <p:panel header="Manage Institution Mapping Fields for #{sessionController.loggedUser.restrictedInstitution.name}" rendered="#{sessionController.loggedUser.restrictedInstitution ne null}" >
+
+                        <p:panelGrid columns="2">
+                            <h:outputText  value="Only contain Pay Centre Data" ></h:outputText>
+                            <p:selectBooleanCheckbox value="#{sessionController.loggedUser.restrictedInstitution.insMapToPaycentre}" ></p:selectBooleanCheckbox>
+                            <h:outputText  value="Map Institution by address" ></h:outputText>
+                            <p:selectBooleanCheckbox value="#{sessionController.loggedUser.restrictedInstitution.insmapAddress}" ></p:selectBooleanCheckbox>
+                            <h:outputText  value="Map Institution by site" ></h:outputText>
+                            <p:selectBooleanCheckbox value="#{sessionController.loggedUser.restrictedInstitution.insmapSite}" ></p:selectBooleanCheckbox>
+                            <h:outputText  value="Map Institution by section" ></h:outputText>
+                            <p:selectBooleanCheckbox value="#{sessionController.loggedUser.restrictedInstitution.insmapSection}" ></p:selectBooleanCheckbox>
+                            <p:column colspan="2" >
+                                <p:commandButton ajax="false" action="#{sessionController.updateLoggedInstitution()}" value="Update" ></p:commandButton>
+                            </p:column>
+                        </p:panelGrid>
+
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+
+
+        </ui:composition>
+
+    </body>
+</html>

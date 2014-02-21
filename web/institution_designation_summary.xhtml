@@ -14,22 +14,28 @@
             <p:panel  >
 
                 <f:facet name="header" >
-                    <h:outputLabel value="Records without NIC" ></h:outputLabel>
+                    <h:outputLabel value="Institution Designation Summery" ></h:outputLabel>
                     <h:outputLabel value="" ></h:outputLabel>
                 </f:facet>
+                <p:panel  >
+                    <p style="color: red;">
+                        This lists the selected institution's details, NOT that of pay-centre.
+                    </p>
+                </p:panel>
 
                 <p:panelGrid columns="3" >
-                    <h:outputText value="Paycentre"/>
+                    <h:outputText value="Institution"/>
                     <h:outputText value="Year"/>
                     <h:outputText value="Month"/>
                     <p:panel id="cmbLoc" style="border: 0px;margin: 0px;padding: 0px;">
                         <p:autoComplete   forceSelection="true"  rendered="#{sessionController.loggedUser.restrictedInstitution == null}"  id="cmbLoc1" value="#{dbfController.institution}"  
-                                        completeMethod ="#{institutionController.completePayCentres}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" >
+                                        completeMethod ="#{institutionController.completeOffcialInstitutions}" var="ins" itemValue="#{ins}" itemLabel="#{ins.name}" >
                         </p:autoComplete>
                         <h:outputLabel rendered="#{sessionController.loggedUser.restrictedInstitution != null}"  value="#{sessionController.loggedUser.restrictedInstitution.name}"/>
                     </p:panel>
                     <p:selectOneMenu id="cmbYear" value="#{dbfController.payYear}" >
                         <f:selectItems value="#{dbfController.payYears}" var="py" itemValue="#{py}" itemLabel="#{py}" />
+                        <f:ajax event="change" execute="cmbLoc  cmbYear cmbMonth" render="tabTbls" />
                     </p:selectOneMenu>
 
                     <p:selectOneMenu id="cmbMonth" value="#{dbfController.payMonth}" >
@@ -46,47 +52,22 @@
                         <f:selectItem itemValue="11" itemLabel="November" />
                         <f:selectItem itemValue="12" itemLabel="December" />
                     </p:selectOneMenu>
-                    <p:commandButton ajax="false" value="Display" action="#{dbfController.processPisWithoutNic}" ></p:commandButton>
+                    <p:commandButton ajax="false" value="Display" action="#{dbfController.processSingleDesignationSummery()}" ></p:commandButton>
                 </p:panelGrid>
             </p:panel>
 
 
 
-
-            <p:dataTable  id="tblEx" value="#{dbfController.personInstitutions}" rowIndexVar="rowIndex" var="exPi" editable="true" editMode="cell" >
-                <p:column >
-                    <f:facet name="header">Serial</f:facet>
-                    <h:outputLabel value="#{rowIndex + 1}"/>
-                </p:column>
-
-                <p:column>
-                    <f:facet name="header">Employee Id</f:facet>
-                    <h:outputLabel value="#{exPi.empNo}"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">Name</f:facet>
-                    <h:outputLabel value="#{exPi.name}"/>
-                </p:column> 
-                <p:column>
-                    <f:facet name="header">NIC</f:facet>
-                    <h:outputLabel value="#{exPi.nic}"/>
-                </p:column>           
+            <p:dataTable id="tabTbls" value="#{dbfController.designationSummery}" var="exPi">
                 <p:column>
                     <f:facet name="header">Designation</f:facet>
-                    <h:outputLabel  value="#{exPi.designation.name}" ></h:outputLabel>
-                </p:column>  
+                    <h:outputLabel rendered="#{exPi.designationName.trim()!=''}" value="#{exPi.designationName}"/>
+                    <h:outputLabel rendered="#{exPi.designationName.trim()==''}" value="No Designation Entered"/>
+                </p:column>
                 <p:column>
-                    <f:facet name="header">Institution</f:facet>
-                    <h:outputLabel value="#{exPi.institution.name}" ></h:outputLabel>
-                </p:column>
-                <p:column > 
-                    <f:facet name="header">F1_CONSAL</f:facet>
-                    <h:outputLabel value="#{exPi.conSal}" ></h:outputLabel>
-                </p:column>
-                <p:column > 
-                    <f:facet name="header">F1_STAT</f:facet>
-                    <h:outputLabel value="#{exPi.activeState}" ></h:outputLabel>
-                </p:column>
+                    <f:facet name="header">Count</f:facet>
+                    <h:outputLabel value="#{exPi.count}"/>
+                </p:column> 
             </p:dataTable>
 
         </h:form>
