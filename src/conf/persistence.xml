@@ -7,8 +7,8 @@
     <shared-cache-mode>DISABLE_SELECTIVE</shared-cache-mode>
     <validation-mode>CALLBACK</validation-mode>
     <properties>
-      <property name="eclipselink.ddl-generation" value="create-tables"/>
-      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+      <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
+      <property name="javax.persistence.schema-generation.database.action" value="create-or-extend-tables"/>
     </properties>
   </persistence-unit>
 </persistence>

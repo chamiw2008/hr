@@ -14,6 +14,7 @@ import javax.persistence.*;
  */
 @Entity
 public class AppImage implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,7 +35,7 @@ public class AppImage implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     Date retiredAt;
     String retireComments;
-    
+
     @ManyToOne
     Person person;
     @ManyToOne
@@ -43,15 +44,53 @@ public class AppImage implements Serializable {
     Area area;
     @ManyToOne
     Category category;
+
+    int payYear;
+    int payMonth;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    Date payDate;
+    @ManyToOne
+    InstitutionSet insSet;
+
+    public InstitutionSet getInsSet() {
+        return insSet;
+    }
+
+    public void setInsSet(InstitutionSet insSet) {
+        this.insSet = insSet;
+    }
     
     
-    
+
+    public int getPayYear() {
+        return payYear;
+    }
+
+    public void setPayYear(int payYear) {
+        this.payYear = payYear;
+    }
+
+    public int getPayMonth() {
+        return payMonth;
+    }
+
+    public void setPayMonth(int payMonth) {
+        this.payMonth = payMonth;
+    }
+
+    public Date getPayDate() {
+        return payDate;
+    }
+
+    public void setPayDate(Date payDate) {
+        this.payDate = payDate;
+    }
+
     @Lob
     byte[] baImage;
     String fileName;
     String fileType;
 
-    
     public String getFileName() {
         return fileName;
     }
@@ -179,8 +218,7 @@ public class AppImage implements Serializable {
     public void setRetirer(WebUser retirer) {
         this.retirer = retirer;
     }
-    
-    
+
     public Long getId() {
         return id;
     }
@@ -189,7 +227,6 @@ public class AppImage implements Serializable {
         this.id = id;
     }
 
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -214,5 +251,5 @@ public class AppImage implements Serializable {
     public String toString() {
         return "gov.health.entity.UnitImage[ id=" + id + " ]";
     }
-    
+
 }
