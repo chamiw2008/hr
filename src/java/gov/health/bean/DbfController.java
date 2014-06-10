@@ -16,7 +16,6 @@ import gov.health.entity.Category;
 import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFReader;
 import gov.health.data.DesignationSummeryRecord;
-import gov.health.entity.AppImage;
 import gov.health.entity.Designation;
 import gov.health.entity.InstitutionMonthSummery;
 import gov.health.entity.InstitutionSet;
@@ -28,7 +27,6 @@ import gov.health.facade.InstitutionSetFacade;
 import gov.health.facade.PersonFacade;
 import gov.health.facade.PersonInstitutionFacade;
 import gov.health.entity.TransferHistory;
-import gov.health.facade.AppImageFacade;
 import gov.health.facade.InstitutionMonthSummeryFacade;
 import gov.health.facade.TransferHistoryFacade;
 import java.io.ByteArrayInputStream;
@@ -40,7 +38,6 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1270,20 +1267,6 @@ public class DbfController implements Serializable {
         return "upload_view";
     }
 
-    
-    @EJB
-    AppImageFacade appImageFacade;
-
-    public AppImageFacade getAppImageFacade() {
-        return appImageFacade;
-    }
-
-    public void setAppImageFacade(AppImageFacade appImageFacade) {
-        this.appImageFacade = appImageFacade;
-    }
-    
-    
-    
     public String extractData() {
         //System.out.println("extracting date");
         InputStream in;
@@ -1328,29 +1311,6 @@ public class DbfController implements Serializable {
         try {
             //System.out.println("9");
             in = file.getInputstream();
-            
-            
-            AppImage saveFile = new AppImage();
-            saveFile.setBaImage(IOUtils.toByteArray(in));
-            saveFile.setInstitution(institution);
-            saveFile.setCreatedAt(new Date());
-            saveFile.setCreater(getSessionController().getLoggedUser());
-            saveFile.setPayMonth(payMonth);
-            saveFile.setPayYear(payYear);
-            Calendar c = Calendar.getInstance();
-            c.set(Calendar.YEAR, payYear);
-            c.set(Calendar.MONTH, payMonth);
-            c.set(Calendar.DATE, 1);
-            saveFile.setPayDate(c.getTime());
-            saveFile.setInsSet(insSet);
-            String temFileName;
-            temFileName = institution.getName() + "_" + payMonth + "_" + payYear + "_" + insSet.getName() + ".dbf";
-            
-            saveFile.setFileName(temFileName);
-            saveFile.setFileType("application/book");
-            
-            getAppImageFacade().create(saveFile);
-            
             //System.out.println("10");
             DBFReader reader = new DBFReader(in);
             //System.out.println("11");

@@ -39,5 +39,6 @@
         <group>
             <file>file:/root/NetBeansProjects/hr/src/conf/persistence.xml</file>
         </group>
+        <group name="Ministry of Health"/>
     </open-files>
 </project-private>
